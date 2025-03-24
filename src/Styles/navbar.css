@@ -1,0 +1,72 @@
+.navbar-nav {
+    margin-left: auto; 
+    display: flex;
+    justify-content: flex-end; 
+    width: 100%; 
+    gap: 20px; 
+}
+
+.navbar-brand{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+}
+
+.navbar-brand:hover{
+    color: #63318A ;
+}
+
+.nav-item {
+    display: inline-block;
+}
+
+.nav-item > .nav-link.active {
+    padding: 10px 15px; 
+    font-family: "Raleway", sans-serif;
+    font-size: 20px;
+    color: #2E186A;
+    font-weight: 400;
+}
+
+.nav-item > .nav-link.active:hover{
+    border-radius: 6px;
+    box-shadow: 0 6px 0 rgba(107, 66, 194, 0.384);
+}
+
+.nav-link.active.sign-in{
+    background-color: #2E186A;
+    border-radius: 4px;
+    color: white;
+    box-shadow: 1px 6px 1px rgba(68, 33, 114, 0.253);
+}
+
+.nav-link.active.sign-up{
+    background-color: #2E186A;
+    border-radius: 4px;
+    color: white;
+    box-shadow: 1px 6px 1px rgba(68, 33, 114, 0.253);
+}
+
+.nav-link.active.sign-in:hover{
+    background-color: #8B5DFF;
+    box-shadow: 1px 6px 1px rgba(107, 66, 194, 0.384);
+}
+
+.nav-link.active.sign-up:hover{
+    background-color: #8B5DFF;
+    box-shadow: 1px 6px 1px rgba(107, 66, 194, 0.384);
+}
+
+@media (max-width: 991px) { 
+    .navbar-nav {
+        justify-content: center; 
+    }
+
+    .nav-link.active.sign-in{
+        text-align: center;
+    }
+
+    .nav-link.active.sign-up{
+        text-align: center;
+    }
+}

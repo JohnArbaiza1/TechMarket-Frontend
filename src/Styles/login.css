@@ -1,0 +1,51 @@
+.contenido{
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+    box-shadow: 0px 6px 2px rgba(66, 66, 139, 0.384);
+}
+
+.card-body{
+    padding: 40px;
+}
+
+.btn-login{
+    width: 100%;
+    height: 40px;
+    border-radius: 6px;
+    border: none;
+    box-shadow: 1px 6px 1px rgba(68, 33, 114, 0.253);
+    font-weight: 600;
+    background-color: #2E186A;
+    color: white;
+    margin-top: 20px;
+}
+
+.btn-login:hover{
+    background-color: #8B5DFF;
+    box-shadow: 1px 6px 1px rgba(107, 66, 194, 0.384);
+}
+
+.custom-input{
+    color: #63318A ;
+    font-size: 1.2em;
+    width: 100%;
+    height: 46px;
+}
+
+.pregunta{
+    float: right;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #2E186A;
+}
+
+.opciones-login{
+    text-decoration: none;
+    color: #6A42C2;
+}

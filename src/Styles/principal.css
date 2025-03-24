@@ -1,0 +1,43 @@
+.title{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+    font-size: 2.5em;
+    margin-top: 50px;
+    text-align:left;
+}
+
+.texto-info{
+    text-align:left;
+    color: #63318A ;
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+
+.texto-info2{
+    font-family: "Tektur", sans-serif;
+    font-size: 32px;
+    text-align: left;
+    font-weight: 500;
+    margin-top: 100px;
+    color: #2E186A;
+    box-shadow: 0px 6px 1px rgba(164, 164, 219, 0.384);
+}
+
+.img-principal{
+    width: 500px;
+}
+
+@media (max-width: 768px) {
+
+    .row{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .texto-info2{
+        font-size: 22px;
+        margin-top: 20px;
+    }
+
+}

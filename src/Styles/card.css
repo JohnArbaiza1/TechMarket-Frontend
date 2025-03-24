@@ -1,0 +1,49 @@
+.card{
+    box-shadow: 0px 6px 2px rgba(164, 164, 219, 0.384);
+}
+
+.card-title{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+    font-size: 1.8em;
+    margin-top: 10px;
+}
+
+.sub-title{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+    font-size: 1.3em;
+    margin-top: 50px;
+}
+
+.btn{
+    margin-top: 30px;
+    width: 260px;
+    border: 1px solid #DDDDEA ;
+    box-shadow: 0px 6px 2px rgba(164, 164, 219, 0.384);
+    color: #6A42C2;
+    font-weight: 500;
+}
+
+.btn:hover{
+    background-color: #8B5DFF;
+    box-shadow: 1px 6px 1px rgba(107, 66, 194, 0.384);
+    color: white;
+    
+}
+
+@media (max-width: 768px) {
+    .btn{
+        width: 100%;
+    }
+
+}
+  
+  /* Para pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+    .btn{
+        width: 100%;
+    }
+}

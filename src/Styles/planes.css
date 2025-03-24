@@ -1,0 +1,45 @@
+.pricing-header{
+    margin-top: 40px;
+}
+
+.title-planes{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+    font-size: 2.5em;
+}
+
+.titulo-planes{
+    font-family: "Tektur", sans-serif;
+    color: #63318A ;
+    text-align: left;
+    margin-top: 20px;
+}
+
+.info-planes{
+    color: #63318A ;
+    font-size: 1.2em;
+    margin-top: 30px;
+}
+
+.planes{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Crea tres columnas de tamaño igual */
+    gap: 20px; /* Ajusta el espacio entre los elementos */
+    padding: 20px;
+}
+
+
+/* Para pantallas medianas (tabletas) */
+@media (max-width: 768px) {
+    .planes {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+}
+  
+  /* Para pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+    .planes {
+      grid-template-columns: 1fr;
+    }
+}
