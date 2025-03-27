@@ -12,11 +12,16 @@ const Register = () =>{
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const { register } = useAuth(); // Usamos la función de registro del contexto
     const navigate = useNavigate(); // Usamos useNavigate para redirigir después del registro
+    // definimos dos estados para poder controlar la visibilidad de las contraseñas
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         //Pequeña Validación para confirmar la contraseña y que no hayan vampos vacios
@@ -29,15 +34,25 @@ const Register = () =>{
             alert("Las contraseñas no coinciden.");
             return;
         }
-        
 
-        // Llamamos a la función de registro con los datos que se piden ingresar
-        register(username, email, password);
+        try{
+            await register(username, email, password);
 
-        //Se encarga de redirigir al login después del registro
-        navigate('/login'); 
+            // Si el registro es exitoso, mostramos el mensaje de éxito
+            setSuccessMessage('Usuario registrado exitosamente.');
+            setErrorMessage('');
+
+            // Redirigimos a la página de login depues de unos segundos
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+
+        }catch(e){
+            // Si hay un error, mostramos el mensaje de error
+            setErrorMessage(e || 'Error al registrar el usuario.');
+            setSuccessMessage('');
+        }
     };
-
 
     return(
         <>
@@ -66,24 +81,40 @@ const Register = () =>{
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Control
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Contraseña"
-                            className="custom-input"
-                        />
-                    </Form.Group>
+                            <div className="password-input-container">
+                                <Form.Control
+                                    type={showPassword ? "text" : "password"} // Cambia el tipo del input dependiendo de showPassword
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Contraseña"
+                                    className="custom-input"
+                                />
+                                <span
+                                    className="toggle-password"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
+                                </span>
+                            </div>
+                        </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formConfirmPassword">
-                        <Form.Control
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Confirmar contraseña"
-                            className="custom-input"
-                        />
-                    </Form.Group>
+                        <Form.Group className="mb-3" controlId="formConfirmPassword">
+                            <div className="password-input-container">
+                                <Form.Control
+                                    type={showConfirmPassword ? "text" : "password"} // Cambia el tipo del input dependiendo de showConfirmPassword
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirmar contraseña"
+                                    className="custom-input"
+                                />
+                                <span
+                                    className="toggle-password"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    <i className={`bi ${showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
+                                </span>
+                            </div>
+                        </Form.Group>
                 </Form>
 
                 <button onClick={handleSubmit} className="btn-login" type="submit">Registrarse</button>
@@ -93,7 +124,6 @@ const Register = () =>{
         <Footer />
     </>
     )
-
 }
 
 export default Register;

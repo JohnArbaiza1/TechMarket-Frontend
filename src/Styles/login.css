@@ -49,3 +49,22 @@
     text-decoration: none;
     color: #6A42C2;
 }
+
+
+/*Parte donde se trabaja los iconos para ver las contraseñas*/
+.password-input-container {
+    position: relative;
+}
+
+.custom-input {
+    padding-right: 40px; /* Deja espacio a la derecha para el ícono */
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Ajusta la distancia entre el ícono y el borde derecho */
+    transform: translateY(-50%); /* Centra el ícono verticalmente */
+    cursor: pointer;
+    font-size: 1.2rem;
+}

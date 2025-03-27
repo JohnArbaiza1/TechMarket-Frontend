@@ -46,10 +46,6 @@ export function Planes(){
 
                     </CardPrice>
                 </div>
-
-
-
-
             </div>
 
             <Footer></Footer>

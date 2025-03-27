@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
+import authservice from '../Services/authservice';
 
 //Definimos el contexto
 const AuthContext = createContext();
@@ -10,12 +11,20 @@ export const AuthProvider = ({ children }) => {
     //función para iniciar sesión
     const login = () => setIsAuth(true);
 
-    //función para el registro de usuarios
-    const register = (username, email, password) =>{
-        // esto solo es de prueba acá iria lo de la API
-        console.log('Usuario registrado:', { username, email, password });
-        setIsAuth(true);
-    }
+    // Función para el registro de usuarios
+    const register = async (username, email, password) => {
+        try {
+            // Usamos el servicio para hacer la solicitud de registro
+            const data = await authservice.register(username, email, password);
+            
+            // Si el registro es exitoso, seteamos el estado de autenticación
+            setIsAuth(true);
+            console.log('Usuario registrado:', data);
+        } catch (error) {
+            // Si hay un error, lo mostramos
+            console.error('Error al registrar el usuario:', error);
+        }
+    };
     
     //Función para cuando se cierra la sesión
     const logout = () => setIsAuth(false);
