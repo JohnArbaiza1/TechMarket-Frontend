@@ -1,13 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import Principal from "../Pages/Principal";
-import {Planes} from "../Pages/Planes";
-import Layout from "../Components/layout";
+
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 
-//importamos el archivo que nos permite proteger las rutas
+//importamos los archivo que se encargan de proteger las rutas
 import ProtectedRoutes from "./ProtectedRoutes";
+import PublicRoute from "./PublicRoute";
+
+//importamos las pages a emplear
 import Home from "../Pages/Home";
+import Principal from "../Pages/Principal";
+import {Planes} from "../Pages/Planes";
+import Layout from "../Components/layout";
 
 const router = createBrowserRouter([
     {
@@ -22,7 +26,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/principal",
-                element: <Principal />,
+                element: (
+                    <PublicRoute>
+                        <Principal/>
+                    </PublicRoute>
+                )
             },
             {
                 path: "/planes",
@@ -30,11 +38,19 @@ const router = createBrowserRouter([
             },
             {
                 path: "/login",
-                element: <Login/>
+                element: (
+                    <PublicRoute>
+                        <Login />
+                    </PublicRoute>
+                ),
             },
             {
                 path: "/register",
-                element: <Register/>
+                element: (
+                    <PublicRoute>
+                        <Register />
+                    </PublicRoute>
+                ),
             },
 
         ]
@@ -49,13 +65,7 @@ const router = createBrowserRouter([
             element: <Home />,
         },
         ],
-    },
-
-    // Ruta a la que devuelve si no ha accedido
-    {
-        path: "/login",
-        element: <Login />,
-    },
+    }
 
     ]);
     

@@ -6,25 +6,39 @@ const AuthContext = createContext();
 
 //Proveedor del contexto
 export const AuthProvider = ({ children }) => {
-    const [isAuth, setIsAuth] = useState(false);
-
-    //función para iniciar sesión
-    const login = () => setIsAuth(true);
+    //inicializamos nuestro isAuth con el valor que tengamos en el localstorage
+    const [isAuth, setIsAuth] = useState(!!localStorage.getItem("token"));
 
     // Función para el registro de usuarios
     const register = async (username, email, password) => {
         try {
             // Usamos el servicio para hacer la solicitud de registro
             const data = await authservice.register(username, email, password);
-            
-            // Si el registro es exitoso, seteamos el estado de autenticación
-            setIsAuth(true);
             console.log('Usuario registrado:', data);
+            navigate("/login");
+            
         } catch (error) {
             // Si hay un error, lo mostramos
             console.error('Error al registrar el usuario:', error);
         }
     };
+
+    //función para iniciar sesión
+    const login = async (userLogin, password) => {
+        try{
+            // Llamamos a la función login del authservice
+            const data = await authservice.login(userLogin, password);
+
+            if (data.token) {
+                localStorage.setItem("token", data.token);
+                setIsAuth(true);  // Actualizar estado de autenticación
+                console.log("Usuario autenticado:", data);
+            }
+
+        }catch(error){
+            console.error("Error al iniciar sesión:", error);      
+        }
+    }
     
     //Función para cuando se cierra la sesión
     const logout = () => setIsAuth(false);

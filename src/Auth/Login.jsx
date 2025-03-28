@@ -4,7 +4,7 @@ import CardProject from "../Components/Card";
 import { Form } from 'react-bootstrap';
 import '../Styles/login.css';
 import Footer from "../Components/Footer";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
@@ -12,12 +12,22 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth(); // Accedemos a la función login del contexto
+    const navigate = useNavigate();
+    // definimos dos estados para poder controlar la visibilidad de las contraseñas
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Aquí va la lógica para verificar el login, con la API
-        // Si el login es exitoso:
-        login(); // Cambiamos el estado de autenticación a true
+
+        try{
+            await login(username, password);
+            navigate("/home");
+            console.log("Inicio de sesión exitoso");
+        }catch(error){
+            console.log("Error al iniciar sesión: ", error);
+        }
+
     };
 
     return (
@@ -38,14 +48,24 @@ const Login = () => {
                             </Form.Group>
 
                             <br />
-                            <Form.Group>
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
+                                <div className="password-input-container">
+
+                                </div>
                                 <Form.Control 
-                                    type="password" 
+                                    type={showPassword ? "text" : "password"}
                                     value={password} 
                                     onChange={(e) => setPassword(e.target.value)} 
                                     placeholder="Enter password"
                                     className="custom-input"
                                 />
+
+                                <span
+                                    className="toggle-password-login"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
+                                </span>
                             </Form.Group>
                             <span className="pregunta"><Link className="opciones-login">¿Ha olvidado su contraseña?</Link></span>
                         </Form>
