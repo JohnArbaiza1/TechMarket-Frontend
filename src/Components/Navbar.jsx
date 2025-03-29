@@ -52,14 +52,41 @@ const Navbar = () => {
     );
 };
 
-const NavHome = () =>{
+const NavHome = ({ onToggleSidebar }) =>{
     return(
         <>
-            <div className='nav-logueado'>
-                <h3 className="title-home"> TechMarket </h3>
+        <div className="nav-logueado">
+            <h3 className="title-home">TechMarket</h3>
+            <button className="menu-btn" onClick={onToggleSidebar}>
+                <i className="fa-solid fa-bars"></i>
+            </button>
+            <div className="nav-icons">
 
+                <div className="notification-icon">
+                    <a href="#" className="notifications">
+                        <i className="fas fa-bell"></i> 
+                        <span className="badge">3</span> 
+                    </a>
+                </div>
+
+                <div className='dropdown text-end profile-menu'>
+                    <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https:/unavatar.io/JohnArbaiza1" alt="mdo" width="32" height="32"
+                            className="rounded-circle"/>
+                    </a>
+
+                    <ul className="dropdown-menu text-small">
+                        <li><a className="dropdown-item" href="#">Settings</a></li>
+                        <li><a className="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <hr className="dropdown-divider"/>
+                        </li>
+                        <li><a className="dropdown-item" href="#">Sign out</a></li>
+                    </ul>
+                </div>
             </div>
-
+        </div>
         </>
     );
 }
