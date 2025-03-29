@@ -72,8 +72,8 @@
 
 .toggle-password-login{
     position: absolute;
-    top: 53%;
-    right: 40px; /* Ajusta la distancia entre el ícono y el borde derecho */
+    top: 56%;
+    right: 68px; /* Ajusta la distancia entre el ícono y el borde derecho */
     transform: translateY(-50%); /* Centra el ícono verticalmente */
     cursor: pointer;
     font-size: 1.2rem;

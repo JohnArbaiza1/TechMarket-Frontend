@@ -6,6 +6,7 @@ import '../Styles/planes.css';
 export function Planes(){
     return(
         <>
+        <div className="planes-contenido">
             <div className="pricing-header p-3 pb-md-4 mx-auto text-center">
                 <h1 className="mt-4 title-planes">¡Da el siguiente paso en tu carrera o proyecto!</h1>
                 <p className="fs-5 info-planes">
@@ -47,6 +48,7 @@ export function Planes(){
                     </CardPrice>
                 </div>
             </div>
+        </div>
 
             <Footer></Footer>
         </>

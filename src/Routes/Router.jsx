@@ -8,24 +8,28 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoute from "./PublicRoute";
 
 //importamos las pages a emplear
-import Home from "../Pages/Home";
+import Home from "../Pages/Session/Home";
 import Principal from "../Pages/Principal";
 import {Planes} from "../Pages/Planes";
-import Layout from "../Components/layout";
+import PerfilUser from "../Pages/Session/Perfil";
+import Publicaciones from "../Pages/Session/Publicar";
+
+//importamos los layouts
+import Layout from "../Layouts/layout";
+import SessionLayout from "../Layouts/layout_session";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Layout />, 
+        element: <Layout />,
         children: [
             {
-                path: "/",
                 element: <Principal />,// Esta es la página que se mostrará por defecto
                 index: true,  // Esto marca esta ruta como la predeterminada para "/"
 
             },
             {
-                path: "/principal",
+                path: "principal",
                 element: (
                     <PublicRoute>
                         <Principal/>
@@ -33,11 +37,11 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/planes",
+                path: "planes",
                 element: <Planes/>
             },
             {
-                path: "/login",
+                path: "login",
                 element: (
                     <PublicRoute>
                         <Login />
@@ -45,7 +49,7 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/register",
+                path: "register",
                 element: (
                     <PublicRoute>
                         <Register />
@@ -58,12 +62,15 @@ const router = createBrowserRouter([
 
     // Rutas protegidas
     {
-        element: <ProtectedRoutes />, // Envuelve las rutas a proteger
+        element: <ProtectedRoutes />,  // Envuelve las rutas a proteger
         children: [
-        {
-            path: "/home", // Solo se podrá acceder si está autenticado
-            element: <Home />,
-        },
+            {
+                element: <SessionLayout />,  // Aplica a todas las rutas protegidas
+                children: [
+                    { path: "/home", element: <Home /> },
+                    { path: "/publicar", element: <Publicaciones /> },
+                ],
+            },
         ],
     }
 

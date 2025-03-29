@@ -1,3 +1,8 @@
+.nav-contenido{
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2rem;
+}
 .navbar-nav {
     margin-left: auto; 
     display: flex;
@@ -55,6 +60,19 @@
 .nav-link.active.sign-up:hover{
     background-color: #8B5DFF;
     box-shadow: 1px 6px 1px rgba(107, 66, 194, 0.384);
+}
+
+/*Navbar de cuando ya se ha ingresado*/
+.nav-logueado{
+    padding: 1rem 2rem;
+    box-shadow: 0px 0px 8px 4px rgba(164, 164, 219, 0.384);
+}
+
+.title-home{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+    font-size: 1.8em;
 }
 
 @media (max-width: 991px) { 

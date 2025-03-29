@@ -13,6 +13,7 @@ const Navbar = () => {
 
     return (
         <>
+        <div className="nav-contenido">
             <nav className="navbar navbar-expand-lg">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/principal">
@@ -45,8 +46,25 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav>
+
+        </div>
         </>
     );
 };
 
+const NavHome = () =>{
+    return(
+        <>
+            <div className='nav-logueado'>
+                <h3 className="title-home"> TechMarket </h3>
+
+            </div>
+
+        </>
+    );
+}
+
 export default Navbar;
+export {
+    NavHome
+}

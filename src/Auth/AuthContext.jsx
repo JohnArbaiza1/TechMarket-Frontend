@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
             // Usamos el servicio para hacer la solicitud de registro
             const data = await authservice.register(username, email, password);
             console.log('Usuario registrado:', data);
-            navigate("/login");
             
         } catch (error) {
             // Si hay un error, lo mostramos
@@ -41,7 +40,10 @@ export const AuthProvider = ({ children }) => {
     }
     
     //Función para cuando se cierra la sesión
-    const logout = () => setIsAuth(false);
+    const logout = () => {
+        localStorage.removeItem("token"); // Elimina el token almacenado
+        setIsAuth(false); // Actualiza el estado de autenticación
+    };
     
     return(
         <AuthContext.Provider value={{ isAuth, login, logout, register }}>
