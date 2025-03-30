@@ -40,10 +40,26 @@ export const AuthProvider = ({ children }) => {
     }
     
     //Función para cuando se cierra la sesión
-    const logout = () => {
-        localStorage.removeItem("token"); // Elimina el token almacenado
-        setIsAuth(false); // Actualiza el estado de autenticación
-    };
+    const logout = async () =>{
+        try{
+
+            const token = localStorage.getItem("token"); // Obtenemos el token almacenado
+            if (!token) {
+                console.warn("No hay token para cerrar sesión");
+                return;
+            }
+
+            // Llamamos a la función logout del authservice y le pasamos el token
+            await authservice.logout(token);
+            // Eliminamos el token del localStorage
+            localStorage.removeItem("token");
+            // Actualiza el estado de autenticación en el contexto
+            setIsAuth(false);
+            console.log("Después de actualizar estado: ", isAuth);
+        }catch(error){
+            console.log("Error al cerrar la sesión ", error);
+        }
+    }
     
     return(
         <AuthContext.Provider value={{ isAuth, login, logout, register }}>

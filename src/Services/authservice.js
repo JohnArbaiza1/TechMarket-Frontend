@@ -1,8 +1,6 @@
 //Importación la librería axios para hacer solicitudes HTTP
 import axios from "axios";
 
-import { createContext, useState, useEffect } from "react";
-
 //Parte donde se trabaja el registro de usuario con la API
 
 //Definimos una constante para almacenar la URL
@@ -57,7 +55,37 @@ const login = async (userLogin, password) => {
     }
 }
 
+const logout = async (authorization) => {
+    try{
+
+        // console.log("Enviando token:", authorization);
+
+        //Definimos la solictud Post para el cierre de la sesion
+        const response = await axios.post(
+            `${API_URL}logout`, 
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${authorization}`
+                }
+            }
+        );
+
+        //eliminamos el token del localstorage
+        localStorage.removeItem("token");
+
+        return response.data;
+    }catch(e){
+        if(e.response){
+            throw e.response.data.message || "Error al cerrar la sesión";
+        }else{
+            throw "Error de servidor";
+        }
+    }
+}
+
 export default {
     register,
-    login
+    login,
+    logout
 }

@@ -1,4 +1,4 @@
-import '../Styles/card.css';
+import '../Styles/Componentes/card.css';
 
 // Componente funcional Card para mostrar los planes y sus precios
 export function CardPrice ({title,subtitle,texto}){

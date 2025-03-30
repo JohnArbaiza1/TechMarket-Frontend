@@ -6,8 +6,6 @@ import '../Styles/login.css';
 import Footer from "../Components/Footer";
 import { Link, useNavigate } from 'react-router-dom';
 
-
-
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -15,7 +13,7 @@ const Login = () => {
     const navigate = useNavigate();
     // definimos dos estados para poder controlar la visibilidad de las contraseñas
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();

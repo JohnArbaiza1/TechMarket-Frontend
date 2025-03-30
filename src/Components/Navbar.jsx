@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import '../Styles/navbar.css';
+import '../Styles/Componentes/navbar.css';
 
 const Navbar = () => {
     const location = useLocation(); // Obtener la ubicación actual
