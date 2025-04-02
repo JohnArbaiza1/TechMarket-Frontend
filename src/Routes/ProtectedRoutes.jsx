@@ -6,7 +6,7 @@ const ProtectedRoutes = () => {
     const { isAuth } = useAuth(); // Obtenemos el estado de autenticación
 
     // Si el usuario no está autenticado, redirige al login
-    return isAuth ? <Outlet /> : <Navigate to="/login" />;
+    return isAuth ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoutes;

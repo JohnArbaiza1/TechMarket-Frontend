@@ -1,61 +1,82 @@
 import { createBrowserRouter } from "react-router-dom";
-import Principal from "../Pages/Principal";
-import {Planes} from "../Pages/Planes";
-import Layout from "../Components/layout";
+
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 
-//importamos el archivo que nos permite proteger las rutas
+//importamos los archivo que se encargan de proteger las rutas
 import ProtectedRoutes from "./ProtectedRoutes";
-import Home from "../Pages/Home";
+import PublicRoute from "./PublicRoute";
+
+//importamos las pages a emplear
+import Home from "../Pages/Session/Home";
+import Principal from "../Pages/Principal";
+import {Planes} from "../Pages/Planes";
+import PerfilUser from "../Pages/Session/Perfil";
+import Publicaciones from "../Pages/Session/Publicar";
+import ConfigProfile from "../Pages/Session/ConfigPerfil";
+
+//importamos los layouts
+import Layout from "../Layouts/layout";
+import SessionLayout from "../Layouts/layout_session";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Layout />, 
+        element: <Layout />,
         children: [
             {
-                path: "/",
                 element: <Principal />,// Esta es la página que se mostrará por defecto
                 index: true,  // Esto marca esta ruta como la predeterminada para "/"
 
             },
             {
-                path: "/principal",
-                element: <Principal />,
+                path: "principal",
+                element: (
+                    <PublicRoute>
+                        <Principal/>
+                    </PublicRoute>
+                )
             },
             {
-                path: "/planes",
+                path: "planes",
                 element: <Planes/>
             },
             {
-                path: "/login",
-                element: <Login/>
+                path: "login",
+                element: (
+                    <PublicRoute>
+                        <Login />
+                    </PublicRoute>
+                ),
             },
             {
-                path: "/register",
-                element: <Register/>
+                path: "register",
+                element: (
+                    <PublicRoute>
+                        <Register />
+                    </PublicRoute>
+                ),
             },
-
-        ]
+        ],
+    },
+    {
+        path: "config-profile",
+        element: <ConfigProfile />
     },
 
     // Rutas protegidas
     {
-        element: <ProtectedRoutes />, // Envuelve las rutas a proteger
+        element: <ProtectedRoutes />,  // Envuelve las rutas a proteger
         children: [
-        {
-            path: "/home", // Solo se podrá acceder si está autenticado
-            element: <Home />,
-        },
+            {
+                element: <SessionLayout />,  // Aplica a todas las rutas protegidas
+                children: [
+                    { path: "/home", element: <Home /> },
+                    { path: "/publicar", element: <Publicaciones /> },
+                ],
+            },
         ],
-    },
-
-    // Ruta a la que devuelve si no ha accedido
-    {
-        path: "/login",
-        element: <Login />,
-    },
+    }
 
     ]);
     
