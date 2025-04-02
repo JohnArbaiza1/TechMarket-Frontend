@@ -39,12 +39,17 @@ const login = async (userLogin, password) => {
             user_pass:password
         });
 
+        console.log("Respuesta del backend en login:", response.data);
+
         //Guardamos el token en el storage si el login es exitoso
-        if(response.data.token){
-            localStorage.setItem("token", response.data.token)
+        if (response.data.token) {
+            localStorage.setItem("token", response.data.token);
+            if (response.data.user && response.data.user.id) {
+                localStorage.setItem("user_id", response.data.user.id);
+            }
         }
 
-        return response.data
+        return response.data;
 
     }catch(e){
         if (e.response) {
@@ -57,8 +62,6 @@ const login = async (userLogin, password) => {
 
 const logout = async (authorization) => {
     try{
-
-        // console.log("Enviando token:", authorization);
 
         //Definimos la solictud Post para el cierre de la sesion
         const response = await axios.post(

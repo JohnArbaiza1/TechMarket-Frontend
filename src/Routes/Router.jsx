@@ -13,6 +13,7 @@ import Principal from "../Pages/Principal";
 import {Planes} from "../Pages/Planes";
 import PerfilUser from "../Pages/Session/Perfil";
 import Publicaciones from "../Pages/Session/Publicar";
+import ConfigProfile from "../Pages/Session/ConfigPerfil";
 
 //importamos los layouts
 import Layout from "../Layouts/layout";
@@ -56,8 +57,11 @@ const router = createBrowserRouter([
                     </PublicRoute>
                 ),
             },
-
-        ]
+        ],
+    },
+    {
+        path: "config-profile",
+        element: <ConfigProfile />
     },
 
     // Rutas protegidas

@@ -38,14 +38,8 @@ const Register = () =>{
         try{
             await register(username, email, password);
 
-            // Si el registro es exitoso, mostramos el mensaje de éxito
-            setSuccessMessage('Usuario registrado exitosamente.');
-            setErrorMessage('');
-
-            // Redirigimos a la página de login depues de unos segundos
-            setTimeout(() => {
-                navigate('/login');
-            }, 1000);
+            //Redirigimos a la pagina de configuracion del perfil despues del registro
+            navigate('/config-profile');
 
         }catch(e){
             // Si hay un error, mostramos el mensaje de error

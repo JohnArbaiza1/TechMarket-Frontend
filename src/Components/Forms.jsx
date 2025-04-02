@@ -1,13 +1,15 @@
 import { useState } from "react";
 import {Card ,Form }from 'react-bootstrap';
+import { createProfile } from "../Services/profileService";
 
-const FormularioPerfil = () => {
+const FormularioPerfil = ({ userId, onProfileSave}) => {
     const [formData, setFormData] = useState({
-        nombre: "",
-        apellido: "",
-        biografia: "",
-        direccion: "",
-        telefono: "",
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        address: "",
+        description: "",
+        id_user: userId,
         github: ""
     });
 
@@ -28,46 +30,57 @@ const FormularioPerfil = () => {
     // Maneja cambios en los inputs
     const handleChange = (e) => {
         setFormData({
-          ...formData,
-          [e.target.name]: e.target.value,
+            ...formData,
+            [e.target.name]: e.target.value,
         });
-      };
+    };
+    
 
     // Función para manejar el envío del formulario
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Datos del usuario:", formData);
-        alert("Perfil guardado exitosamente");
+        try {
+            const response = await createProfile(formData);
+            console.log("Perfil guardado:", response.data);
+            alert("Perfil guardado exitosamente");
+
+            if (onProfileSave) {
+                onProfileSave();
+            }
+        } catch (error) {
+            console.error("Error al guardar el perfil:", error.response?.data || error.message);
+            alert("Error al guardar el perfil");
+        }
     };
 
     return (
         <>
-            <Card style={{ width: '30rem' }}>
+            <Card className="w-100">
                 <h2 style={styles.titleForm}>Configura tu perfil</h2>
                 <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Nombre</Form.Label>
-                    <Form.Control type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+                    <Form.Control type="text" name="first_name" value={formData.first_name} onChange={handleChange} required />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Apellido</Form.Label>
-                    <Form.Control type="text" name="apellido" value={formData.apellido} onChange={handleChange} required />
+                    <Form.Control type="text" name="last_name" value={formData.last_name} onChange={handleChange} required />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Biografía</Form.Label>
-                    <Form.Control as="textarea" name="biografia" value={formData.biografia} onChange={handleChange} />
+                    <Form.Control as="textarea" name="description" value={formData.description} onChange={handleChange} />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Dirección</Form.Label>
-                    <Form.Control type="text" name="direccion" value={formData.direccion} onChange={handleChange} required />
+                    <Form.Control type="text" name="address" value={formData.address} onChange={handleChange} required />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Teléfono</Form.Label>
-                    <Form.Control type="tel" name="telefono" value={formData.telefono} onChange={handleChange} required />
+                    <Form.Control type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} required />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
