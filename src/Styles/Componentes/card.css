@@ -1,3 +1,79 @@
+/*Estilo de la card de los planes*/
+.cardPrice{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
+    box-shadow: 4px 6px 2px rgba(164, 164, 219, 0.384);
+    border-radius: 10px;
+    width: 400px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #BDA0D9;
+    margin-top: 20px;
+}
+
+.card-bodyPrice {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-titlePrice {
+    font-family: "Tektur", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2E186A;
+    margin-bottom: 10px;
+}
+
+.card-price {
+    font-family: "Raleway", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2E186A;
+    margin: 10px 0;
+}
+
+.card-price span {
+    font-size: 18px;
+    font-weight: normal;
+    color: #5E308C;
+}
+
+.separator {
+    background-color: #8B5DFF;
+    height: 5px;
+    width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.card-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #5E308C;
+    font-size: 14px;
+    text-align: left; /* Alinea los elementos de la lista a la izquierda */
+}
+
+.card-benefits li {
+    padding: 5px 0;
+    font-size: 14px;
+    margin: 5px 0;
+    display: flex;
+    display: flex;
+}
+
+.card-benefits i {
+    color: #8B5DFF; 
+    margin-right: 8px; 
+    font-size: 18px; 
+}
+/*--------------------------------------------*/
 .card{
     box-shadow: 0px 6px 2px rgba(164, 164, 219, 0.384);
     width: 400px;  
@@ -77,5 +153,37 @@
 
     .btn{
         width: 100%;
+    }
+}
+
+/*Responsive de la card de los planes*/
+@media (max-width: 767px) {
+    .cardPrice {
+        width: 100%; 
+        padding: 15px; 
+    }
+
+    .card-titlePrice {
+        font-size: 20px; 
+    }
+
+    .card-price {
+        font-size: 20px; 
+    }
+
+    .card-price span {
+        font-size: 16px; 
+    }
+
+    .separator {
+        margin: 8px 0; 
+    }
+
+    .card-benefits {
+        font-size: 12px; 
+    }
+
+    .card-benefits li {
+        padding: 3px 0; 
     }
 }

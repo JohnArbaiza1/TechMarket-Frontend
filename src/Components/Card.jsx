@@ -1,12 +1,30 @@
 import '../Styles/Componentes/card.css';
 
 // Componente funcional Card para mostrar los planes y sus precios
-export function CardPrice ({title,subtitle,texto}){
+export function CardPrice ({title,subtitle,texto,description}){
+    // Filtramos los elementos vacíos o undefined
+    const filteredDescription = description.filter(item => item && item.trim() !== "");
+    const isGratis = Math.abs(subtitle) < 0.01;
     return(
-        <div className="card">
-            <div className="card-body">
-                <h4 className="card-title">{title}</h4>
-                <h5 className='sub-title'>{subtitle}</h5>
+        <div className="cardPrice">
+            <div className="card-bodyPrice">
+                <h4 className="card-titlePrice">{title}</h4>
+                <h5 className="card-price">
+                    {isGratis ? "Gratuito" : `$${subtitle}`} 
+                    {!isGratis && <span>/ Mes</span>}
+                </h5>
+                <div className="separator"></div>
+                {/* Mostrar la descripción como lista */}
+                <ul className="card-benefits">
+                    {filteredDescription.map((item, index) => (
+                        // Muestra cada elemento de la descripción como un item de lista
+                        <li key={index}>
+                        {/* Ícono de check */}
+                        <i className="fa-solid fa-circle-check"></i> 
+                        {item}
+                    </li>
+                    ))}
+                </ul>
                 <button className='btn'> {texto}</button>
             </div>
         </div>
