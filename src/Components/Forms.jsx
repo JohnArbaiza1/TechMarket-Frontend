@@ -13,6 +13,15 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         github: ""
     });
 
+    //Evnto para los errores
+    const [errors, setErrors] = useState({
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        address: "",
+        description: ""
+    });
+
     const styles = {
         titleForm: {
             fontFamily: '"Tektur", sans-serif',
@@ -24,6 +33,10 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         },
         labelForm:{
             color:"#63318A"
+        },
+        errorMessage: {
+            color: "red",
+            fontSize: "0.9em",
         }
     };
 
@@ -33,12 +46,61 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
             ...formData,
             [e.target.name]: e.target.value,
         });
+
+        // Se encarga de limpiar los mensajes de error
+        setErrors({
+            ...errors,
+            [e.target.name]:""
+        });
     };
-    
+
+    //Validaciones
+    const validacionesForm = () =>{
+
+        let formIsValid = true;
+        const newErrors = {};
+
+        if (!formData.first_name.trim()) {
+            formIsValid = false;
+            newErrors.first_name = "El nombre es obligatorio.";
+        }
+
+        if (!formData.last_name.trim()) {
+            formIsValid = false;
+            newErrors.last_name = "El apellido es obligatorio.";
+        }
+
+        if (formData.description.trim() === "") {
+            formIsValid = false;
+            newErrors.description = "La biografía es obligatoria.";
+        }
+
+        if (!formData.phone_number.trim()) {
+            formIsValid = false;
+            newErrors.phone_number = "El teléfono es obligatorio.";
+        }else if(!/^\d+$/.test(formData.phone_number)){
+            formIsValid = false;
+            newErrors.phone_number = "El teléfono solo puede contener números.";
+        }
+
+        if (!formData.address.trim()) {
+            formIsValid = false;
+            newErrors.address = "La dirección es obligatoria.";
+        }
+
+        setErrors(newErrors);
+        return formIsValid;
+    }
 
     // Función para manejar el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validacionesForm()) {
+            alert("Por favor, complete los campos obligatorios.");
+            return;
+        }
+
         try {
             const response = await createProfile(formData);
             console.log("Perfil guardado:", response.data);
@@ -61,26 +123,31 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Nombre</Form.Label>
                     <Form.Control type="text" name="first_name" value={formData.first_name} onChange={handleChange} required />
+                    {errors.first_name && <div style={styles.errorMessage}>{errors.first_name}</div>}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Apellido</Form.Label>
                     <Form.Control type="text" name="last_name" value={formData.last_name} onChange={handleChange} required />
+                    {errors.last_name && <div style={styles.errorMessage}>{errors.last_name}</div>}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Biografía</Form.Label>
                     <Form.Control as="textarea" name="description" value={formData.description} onChange={handleChange} />
+                    {errors.description && <div style={styles.errorMessage}>{errors.description}</div>}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Dirección</Form.Label>
                     <Form.Control type="text" name="address" value={formData.address} onChange={handleChange} required />
+                    {errors.address && <div style={styles.errorMessage}>{errors.address}</div>}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label style={styles.labelForm}>Teléfono</Form.Label>
                     <Form.Control type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} required />
+                    {errors.phone_number && <div style={styles.errorMessage}>{errors.phone_number}</div>}
                 </Form.Group>
 
                 <Form.Group className="mb-3">

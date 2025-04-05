@@ -1,0 +1,37 @@
+.mensaje{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: #2E186A;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.container2{
+    padding: 20px;
+    background: white;
+    border: 1px solid #2a14474f;
+    border-radius: 10px;
+    box-shadow: 0px 6px 8px rgba(164, 164, 219, 0.384);
+}
+
+.title-input{
+    font-family: "Raleway", sans-serif;
+    color: #63318A ;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.form-control{
+    border:1px solid #bda0d993;
+}
+
+.publicar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-publiacion{
+    width: 80%;
+}
+

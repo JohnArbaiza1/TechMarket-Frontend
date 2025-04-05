@@ -1,55 +1,91 @@
-.sidebar{
+.sidebar {
     width: 16rem;
     height: calc(100vh - 52px);
     box-shadow: 4px 20px 15px -2px rgba(164, 164, 219, 0.5);
     position: fixed;
     left: 0;
     top: 52px;
-    overflow-y: auto;  
+    overflow-y: auto;
     transition: transform 0.3s ease-in-out;
 }
 
-.sidebar ul{
+.sidebar.collapsed {
+    width: 4rem;  /* Reduce el ancho del sidebar cuando está colapsado */
+    justify-content: center; 
+}
+
+/* Ocultamos el texto cuando el sidebar está colapsado */
+.sidebar.collapsed .item span {
+    display: none;
+}
+
+.sidebar .item a {
+    text-decoration: none;
+    width: 100%;
+    padding: 0.75rem 1rem;  /* Reducimos el padding para no ocupar demasiado espacio */
+    font-family: "Raleway", sans-serif;
+    color: #2E186A;
+    font-weight: 500;
+    display: flex;
+    align-items: center;  
+    justify-content: flex-start;  
+}
+/*------------------------------------------------------------------------*/
+/*Estilo del button que collapsa el sidebar*/
+.collapse-btn {
+    float: right;
+    margin-top: 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 24px; 
+    color: #2E186A;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar.collapsed .collapse-btn{
+    margin-right: 20px;
+}
+
+/* Para los iconos de la flecha */
+.collapse-btn i {
+    font-size: 22px;  
+    transition: transform 0.3s ease;
+}
+
+.sidebar.collapsed .collapse-btn i {
+    transform: rotate(360deg);  /* Gira la flecha 360 grados cuando el sidebar está colapsado */
+}
+/*------------------------------------------------------------------------*/
+
+/* Para el estado colapsado, centramos los iconos y cambiamos el tamaño */
+.sidebar.collapsed .item a {
+    justify-content: center; 
+    padding: 0.75rem 1rem;  
+}
+
+.sidebar .item a i {
+    margin-right: 8px;
+    font-size: 20px; 
+}
+
+/* Para los iconos en modo colapsado */
+.sidebar.collapsed a i {
+    font-size: 24px;  
+}
+
+.sidebar ul {
     width: auto;
     list-style: none;
-    padding: 1rem ;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     margin-top: 40px;
 }
 
-.item{
-    width: 100%;
-    display: block;
-    padding: 0.5rem;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-}
-
-.item:hover {
-    background-color: #2E186A;
-    box-shadow: 2px 2px 5px rgba(139, 93, 255, 0.3);
-}
-
-.item a{
-    text-decoration: none;
-    width: 100%;
-    padding: 0.75rem 2rem;
-    font-family: "Raleway", sans-serif;
-    color: #2E186A;
-    font-weight: 500;
-}
-
-.item:hover a {
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.sidebar a i {
-    margin-right: 8px;
-}
-
+/*------------------------------------------------------------------------*/
+/*Para el contenido que se mostrara al lado del sidebar*/
 .home-layout{
     display: flex;
     flex-direction: column;
@@ -67,10 +103,14 @@
     margin-top: 30px;
     margin-left: 260px; 
     padding: 20px; 
-    transition: margin-left 0.3s ease-in-out;
+    transition: margin-left 0.6s ease-in-out;
 }
 
-/* Ocultamos el sidebar en móviles */
+.home-main.shifted {
+    margin-left: 5rem; 
+    transition: margin-left 0.6s ease-in-out;
+}
+/*------------------------------------------------------------------------*/
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
@@ -105,6 +145,10 @@
         font-size: 24px;
         color: white;
         cursor: pointer;
+    }
+
+    .collapse-btn {
+        display: none; /* Ocultar el botón de colapsar en la vista responsive */
     }
 
     .menu-btn {
