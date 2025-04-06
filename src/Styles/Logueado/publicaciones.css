@@ -7,7 +7,7 @@
 }
 
 .container2{
-    padding: 20px;
+    padding: 22px;
     background: white;
     border: 1px solid #2a14474f;
     border-radius: 10px;
@@ -21,8 +21,33 @@
     font-size: 18px;
 }
 
+.form-group{
+    margin-bottom: 10px;
+    flex: 1;
+}
 .form-control{
     border:1px solid #bda0d993;
+}
+
+.tags{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    align-items: center; 
+}
+
+.form-group:first-child {
+    flex: 3; /* Aumenta el tamaño del primer input (Etiquetas) */
+}
+
+.form-group:last-child {
+    flex: 1; /* Mantén el campo de color más pequeño */
+}
+
+.form-Tag{
+    width: 60px;
+    height: 40px; 
 }
 
 .publicar{
@@ -31,7 +56,41 @@
     align-items: center;
 }
 
-.btn-publiacion{
-    width: 80%;
+.buttonsIMG{
+    width: 100%;
+}
+
+.btn-img{
+    border-radius:6px;
+    color:#8B5DFF;
+    background: white;
+    border: 2px solid #5E308C;
+    padding: 8px 8px;
+    margin: 6px;
+}
+
+.btn-img:hover{
+    background: #5E308C;
+    color: white;
+}
+
+/*Parte donde se trabaja el estilo de la publicación previa*/
+.imgPrevia{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenidoPrevia{
+    max-height: 250px;
+    margin-top: 20px;
+    margin-left: 20px;
+    overflow-y: auto;
+}
+
+.col-publication{
+    overflow-y: auto;
+    border-right: 2px solid #5E308C;
 }
 
