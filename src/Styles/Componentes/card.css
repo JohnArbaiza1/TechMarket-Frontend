@@ -180,6 +180,7 @@ Estilo de la card de la publicacion
 }
 
 .card-date {
+    margin: 0px;
     font-size: 14px;
     color: #888;
 }

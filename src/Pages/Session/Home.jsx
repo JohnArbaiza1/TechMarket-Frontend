@@ -1,19 +1,41 @@
+import { useEffect, useState } from "react";
 import { CardPublication } from "../../Components/Card";
+import { getPulications } from "../../Services/publicationServices";
+import "../../Styles/Home.css";
 
-const Home = () =>{
-    return(
-        <>
-            <CardPublication
+const Home = () => {
+    const [publications, setPublications] = useState([]);
+
+    useEffect(() => {
+        const fetchPublications = async () => {
+            try {
+                const data = await getPulications();
+                setPublications(data); // Guardar las publicaciones en el estado
+            } catch (error) {
+                console.error("Error al cargar las publicaciones:", error.message);
+            }
+        };
+
+        fetchPublications();
+    }, []);
+
+    return (
+        <div className="grid-container">
+            {publications.map((publication) => (
+                <CardPublication
+                    key={publication.id}
                     image=""
-                    tags={['Frontend', 'Backend']}
-                    title="Nuevo Proyecto"
-                    date="06.04.2025"
-                    link="#"
-                    description={
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"}
-            ></CardPublication>
-        </>
-    )   
-}
+                    tags={publication.tags.split(", ")} // Convertir la cadena de tags en un array
+                    title={publication.title}
+                    date={new Date(publication.created_at).toLocaleDateString()} // Formatear la fecha
+                    link={`#`} 
+                    quota={publication.quota}
+                    rating={publication.publication_rating}
+                    description={publication.publication_description} // Ejemplo de descripción
+                />
+            ))}
+        </div>
+    );
+};
 
 export default Home;

@@ -55,7 +55,7 @@ CardProject.defaultProps = {
 };
 
 //Componente Card para las punlicaciones
-export const CardPublication = ({image, tags, title, description, date}) =>{
+export const CardPublication = ({image, tags, title, description, date, quota, rating}) =>{
     //Definimos un estado para controlar el modal
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -104,6 +104,8 @@ export const CardPublication = ({image, tags, title, description, date}) =>{
                     ))}
                 </div>
                 <h3 className="card-titlePublication">{title}</h3>
+                <p className="card-date" >Cupos disponibles: {quota}</p>
+                <p className='card-date'>Rating: {rating}</p>
                 <p className="card-date">{date}</p>
 
                 <div className="cardButtonContainer">
