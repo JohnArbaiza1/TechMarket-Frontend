@@ -1,4 +1,6 @@
 import '../Styles/Componentes/card.css';
+import { ModalPublication } from './Modal';
+import { useState } from 'react';
 
 // Componente funcional Card para mostrar los planes y sus precios
 export function CardPrice ({title,subtitle,texto,description}){
@@ -50,6 +52,80 @@ CardProject.defaultProps = {
     title: null,
     image: null,
     description: null,
+};
+
+//Componente Card para las punlicaciones
+export const CardPublication = ({image, tags, title, description, date}) =>{
+    //Definimos un estado para controlar el modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // Función para generar un color HEX aleatorio
+    const getRandomColor = () => {
+        const letters = ["#8B5DFF", "#2E186A", "#5E308C","#CB6E5A","#BC522B"];
+        return letters[Math.floor(Math.random() * letters.length)];
+    };
+
+    // const placeholderColor = getRandomColor();
+    const color1 = getRandomColor();
+    const color2 = getRandomColor();
+
+    // Función para abrir y cerrar el modal
+    const handleModalToggle = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
+    // Función para manejar el evento de aplicar a proyecto
+    const handleApply = () => {
+        alert('Aplicado al proyecto');
+        handleModalToggle();  // Cerramos el modal después de aplicar
+    };
+    
+    return(
+        <>
+        <div className="cardPublication">
+        {image ? (
+                <img src={image} alt="card" className="card-imagePublication" />
+            ) : (
+                <div
+                    className="card-imagePublication"
+                    style={{
+                        backgroundImage: `linear-gradient(to right, ${color1}, ${color2})`,
+                        width: '100%',
+                        height: '200px',
+                        borderRadius: '8px',
+                        filter: "drop-shadow(2px 2px 2px rgb(80, 73, 99)"
+                    }}
+                />
+            )}
+            <div className="card-content">
+                <div className="card-tags">
+                    {tags.map((tag, index) => (
+                        <span key={index} className="card-tag">{tag}</span>
+                    ))}
+                </div>
+                <h3 className="card-titlePublication">{title}</h3>
+                <p className="card-date">{date}</p>
+
+                <div className="cardButtonContainer">
+                    <button onClick={handleModalToggle} className="card-button">
+                        Leer más
+                    </button>
+                </div>
+            </div>
+            <ModalPublication 
+                isOpen={isModalOpen} 
+                title={title} 
+                description={description} 
+                onClose={handleModalToggle} 
+                onApply={handleApply} 
+            />
+        </div>
+        </>
+    );
+}
+
+CardPublication.defaultProps = {
+    image: null
 };
 
 export default CardProject;
