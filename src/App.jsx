@@ -4,13 +4,18 @@ import { RouterProvider } from 'react-router-dom'
 // Importamos el archivo del router 
 import router from './Routes/Router' 
 import { AuthProvider } from './Auth/AuthContext'
+import LoaderPages from './Components/Loader'
 
 
 function App() {
   return (
-    <AuthProvider> 
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <>
+      <LoaderPages delay={3000} />
+      <AuthProvider> 
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </>
+    
   )
 }
 

@@ -1,21 +1,24 @@
+//Importamos los componentes de React y los propios
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-//importamos los componentes necesarios
 import { NavHome } from "../Components/Navbar";
 import Sidebar from "../Components/Sidebar";
 
-const SessionLayout = () =>{
+const SessionLayout = () => {
+    //Definimos los estados a emplear
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Controla si la barra lateral está abierta o no.
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Controla si la barra lateral está colapsada o expandida.
 
-    //Definimos un estado para el sidebar
-    const[isSidebarOpen, setIsSidebarOpen] = useState(false);
-    return(
+    return (
         <div className="home-layout">
-            {/* Pasamos el estado al navbar para que pueda abrir/cerrar el sidebar */}
             <NavHome onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
             <div className="home-content">
-                {/* Pasamos isOpen para manejar la visibilidad */}
-                <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-                <main className="home-main">
+                <Sidebar 
+                    isOpen={isSidebarOpen} 
+                    onClose={() => setIsSidebarOpen(false)} 
+                    onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+                />
+                <main className={`home-main ${isSidebarCollapsed ? 'shifted' : ''}`}>
                     <Outlet />
                 </main>
             </div>

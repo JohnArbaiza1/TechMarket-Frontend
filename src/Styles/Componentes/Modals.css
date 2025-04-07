@@ -1,0 +1,47 @@
+.modal-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color:rgba(0, 0, 0, 0.7) ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+}
+
+.container-modal{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 10px 10px;
+}
+
+.close-Modal{
+    background-color:#BC522B ;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.btnAplicar-proyecto{
+    background-color: #63318A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}

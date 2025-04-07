@@ -1,3 +1,79 @@
+/*Estilo de la card de los planes*/
+.cardPrice{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
+    box-shadow: 4px 6px 2px rgba(164, 164, 219, 0.384);
+    border-radius: 10px;
+    width: 400px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #BDA0D9;
+    margin-top: 20px;
+}
+
+.card-bodyPrice {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-titlePrice {
+    font-family: "Tektur", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2E186A;
+    margin-bottom: 10px;
+}
+
+.card-price {
+    font-family: "Raleway", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2E186A;
+    margin: 10px 0;
+}
+
+.card-price span {
+    font-size: 18px;
+    font-weight: normal;
+    color: #5E308C;
+}
+
+.separator {
+    background-color: #8B5DFF;
+    height: 5px;
+    width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.card-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #5E308C;
+    font-size: 14px;
+    text-align: left; /* Alinea los elementos de la lista a la izquierda */
+}
+
+.card-benefits li {
+    padding: 5px 0;
+    font-size: 14px;
+    margin: 5px 0;
+    display: flex;
+    display: flex;
+}
+
+.card-benefits i {
+    color: #8B5DFF; 
+    margin-right: 8px; 
+    font-size: 18px; 
+}
+/*--------------------------------------------*/
 .card{
     box-shadow: 0px 6px 2px rgba(164, 164, 219, 0.384);
     width: 400px;  
@@ -8,7 +84,6 @@
     align-items: center;
     margin: 0 auto;
     padding: 20px;
-
 }
 
 .card-body {
@@ -56,16 +131,92 @@
     
 }
 
+/*--------------------------------------------------------------
+Estilo de la card de la publicacion
+*/
+.cardPublication{
+    width: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-imagePublication{
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.card-tag {
+    background-color: #e0d4ff;
+    color: #5e3c99;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+}
+
+.card-titlePublication{
+    font-family: "Tektur", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.card-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.cardButtonContainer{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.card-button {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #6c4ed6;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    transition: background-color 0.3s;
+    width: fit-content;
+    
+}
+
+.card-button:hover {
+    background-color: #5639c8;
+}
+
+/*-----------------------------------------------*/
+
 @media (max-width: 768px) {
     .card {
         width: 90%; 
         min-height: auto;
     }
-
     .btn{
         width: 100%;
     }
-
 }
 
   /* Para pantallas pequeñas (móviles) */
@@ -74,8 +225,34 @@
         width: 98%; 
         padding: 18px;
     }
-
     .btn{
         width: 100%;
     }
 }
+
+/*Responsive de la card de los planes*/
+@media (max-width: 767px) {
+    .cardPrice {
+        width: 100%; 
+        padding: 15px; 
+    }
+    .card-titlePrice {
+        font-size: 20px; 
+    }
+    .card-price {
+        font-size: 20px; 
+    }
+    .card-price span {
+        font-size: 16px; 
+    }
+    .separator {
+        margin: 8px 0; 
+    }
+    .card-benefits {
+        font-size: 12px; 
+    }
+    .card-benefits li {
+        padding: 3px 0; 
+    }
+}
+

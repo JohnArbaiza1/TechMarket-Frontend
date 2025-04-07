@@ -78,3 +78,7 @@
     cursor: pointer;
     font-size: 1.2rem;
 }
+
+.error-message{
+    color: #BC522B;
+}
