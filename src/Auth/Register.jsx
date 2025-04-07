@@ -16,6 +16,8 @@ const Register = () =>{
     const [successMessage, setSuccessMessage] = useState('');
     const { register } = useAuth(); // Usamos la función de registro del contexto
     const navigate = useNavigate(); // Usamos useNavigate para redirigir después del registro
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
     // definimos dos estados para poder controlar la visibilidad de las contraseñas
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -24,21 +26,46 @@ const Register = () =>{
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //Pequeña Validación para confirmar la contraseña y que no hayan vampos vacios
+        let valid = true;
+
+        //Reseteamos los errores
+        setPasswordError('');
+        setConfirmPasswordError('');
+
+        //Pequeña Validación para confirmar la contraseña y que no hayan campos vacíos
         if (username === "" || email === "" || password === "" || confirmPassword === "") {
             alert("Todos los campos son obligatorios.");
             return;
         }
-        
-        if (password !== confirmPassword) {
-            alert("Las contraseñas no coinciden.");
-            return;
+
+        // Validamos la contraseña
+        const minLengthValidation = /.{8,}/;  // Al menos 8 caracteres
+        const letterNumberSpecialValidation = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$!%*?&.-])/; // Al menos una letra, un número, y un carácter especial
+
+        // Verificamos que la contraseña tenga al menos 8 caracteres
+        if (!minLengthValidation.test(password)) {
+            setPasswordError('La contraseña debe tener al menos 8 caracteres.');
+            valid = false;
         }
+
+        // Verificamos si la contraseña cumple con los requisitos de letras, números y caracteres especiales
+        if (!letterNumberSpecialValidation.test(password)) {
+            setPasswordError('La contraseña debe incluir al menos una letra, un número y un carácter especial.');
+            valid = false;
+        }
+
+        // Verificamos que las contraseñas coincidan
+        if (password !== confirmPassword) {
+            setConfirmPasswordError('Las contraseñas no coinciden.');
+            valid = false;
+        }
+
+        if (!valid) return;
 
         try{
             await register(username, email, password);
 
-            //Redirigimos a la pagina de configuracion del perfil despues del registro
+            //Redirigimos a la página de configuración del perfil después del registro
             navigate('/config-profile');
 
         }catch(e){
@@ -90,6 +117,7 @@ const Register = () =>{
                                     <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
                                 </span>
                             </div>
+                            {passwordError && <p className="error-message">{passwordError}</p>}
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formConfirmPassword">
@@ -108,10 +136,12 @@ const Register = () =>{
                                     <i className={`bi ${showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
                                 </span>
                             </div>
+                            {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
                         </Form.Group>
+
+                    <button className="btn-login" type="submit">Registrarse</button>
                 </Form>
 
-                <button onClick={handleSubmit} className="btn-login" type="submit">Registrarse</button>
                 <span className="pregunta">¿Ya tienes cuenta? <Link className="opciones-login" to="/login">Inicia sesión</Link></span>
             </CardProject>
         </div>
