@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa'; // Importamos los iconos
 import '../Styles/Componentes/Modals.css';
 
-const ModalComponent = ({ show, onHide, title, message, variant, onAction }) => {
+const ModalComponent = ({ show, onHide, title, message, variant, onAction}) => {
     // Función para renderizar el icono según el tipo de acción
     const renderIcon = () => {
         switch (variant) {
@@ -44,7 +44,7 @@ const ModalComponent = ({ show, onHide, title, message, variant, onAction }) => 
     );
 };
 
-export const ModalPublication = ({ isOpen, title, description, onClose, onApply }) =>{
+export const ModalPublication = ({ isOpen, title, description, onClose, onApply, isApplied}) =>{
     if (!isOpen) return null;
 
     return(
@@ -56,8 +56,8 @@ export const ModalPublication = ({ isOpen, title, description, onClose, onApply 
                     <button className='close-Modal' onClick={onClose}>
                         Cerrar
                     </button>
-                    <button className='btnAplicar-proyecto' onClick={onApply}>
-                        Aplicar a Proyecto
+                    <button className='btnAplicar-proyecto' onClick={onApply} disabled={isApplied}>
+                        {isApplied ? 'Ya aplicado' : 'Aplicar a Proyecto'}
                     </button>
                 </div>
             </div>
