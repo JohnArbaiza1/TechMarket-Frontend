@@ -59,6 +59,9 @@ export const ModalPublication = ({ isOpen, title, description, onClose, onApply,
                     <button className='btnAplicar-proyecto' onClick={onApply} disabled={isApplied}>
                         {isApplied ? 'Ya aplicado' : 'Aplicar a Proyecto'}
                     </button>
+                    <button className="btnCancelar-proyecto">
+                        Quitar solicitud
+                    </button>
                 </div>
             </div>
         </div>       

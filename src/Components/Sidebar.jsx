@@ -23,7 +23,8 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     ];
 
     // Función que maneja el logout, cierra sesión y navega a la página de login
-    const handleLogout = () => {
+    const handleLogout = (e) => {
+        e.preventDefault();
         logout();
         navigate("/login");
     };

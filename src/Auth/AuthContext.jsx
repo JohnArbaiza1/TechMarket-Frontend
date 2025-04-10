@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import authservice from '../Services/authservice';
+import {toast} from 'sonner';
+
 
 //Definimos el contexto
 const AuthContext = createContext();
@@ -27,8 +29,10 @@ export const AuthProvider = ({ children }) => {
                 setIsAuth(true);// Actualiza estado de autenticación
             }
 
+            return data;
         }catch(error){
-            console.error("Error al iniciar sesión:", error);      
+            console.log(error);
+            throw error;    
         }
     }
 
@@ -37,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         try {
             // Usamos el servicio para hacer la solicitud de registro
             const data = await authservice.register(username, email, password);
-            alert('Usuario registrado Correctamente')
+            toast.success('Usuario registrado Correctamente', {position:'top-center'})
 
             //Si el registro es exitoso, iniciamos sesión automaticamente
             if (data){

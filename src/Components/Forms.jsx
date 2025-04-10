@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {Card ,Form }from 'react-bootstrap';
 import { createProfile } from "../Services/profileService";
+import {toast } from "sonner";
 
 const FormularioPerfil = ({ userId, onProfileSave}) => {
     const [formData, setFormData] = useState({
@@ -97,21 +98,21 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         e.preventDefault();
 
         if (!validacionesForm()) {
-            alert("Por favor, complete los campos obligatorios.");
+            toast.error("Por favor, complete los campos obligatorios.", {position:'top-center'});
             return;
         }
 
         try {
             const response = await createProfile(formData);
             console.log("Perfil guardado:", response.data);
-            alert("Perfil guardado exitosamente");
+            toast.success("Perfil guardado exitosamente", {position:'top-center'});
 
             if (onProfileSave) {
                 onProfileSave();
             }
         } catch (error) {
             console.error("Error al guardar el perfil:", error.response?.data || error.message);
-            alert("Error al guardar el perfil");
+            toast.error("Error al guardar el perfil", {position:'top-center'});
         }
     };
 
@@ -160,7 +161,6 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                 </button>
 
                 </Form>
-
             </Card>
         </>
     );

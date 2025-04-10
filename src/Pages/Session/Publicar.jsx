@@ -29,6 +29,7 @@ const Publicaciones = () =>{
     //Estados para trabajar la cantidad de publicaciones segun el plan
     const [maxPublications, setMaxPublications] = useState(0);  // Maximo de publicaciones según el plan
     const [currentPublications, setCurrentPublications] = useState(0); // Publicaciones actuales
+    const now = new Date();
 
     // Usamos el hook useModalState para manejar los estados y funciones de los modales
     const{
@@ -226,19 +227,20 @@ const Publicaciones = () =>{
                                 </button>
                             </form>
                         </Col>
-                        <Col>
-                            <h2 className="title-input text-center">Vista Previa</h2>
-                            <div className="imgPrevia">
+                        
+                        <Col className="d-flex flex-column align-items-center">
+                            <div className="text-center mb-3">
+                                <h2 className="title-input">Vista Previa</h2>
+                            </div>
+                            <br />
+                            <div className="cardPublicationPrevia">
                                 {preview && (
-                                    <div>
                                         <img
                                             src={preview}
                                             alt="Vista previa"
-                                            style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}
+                                            className="card-imagePublication"
                                         />
-                                    </div>
                                 )}
-                            </div>
 
                             <div className="contenidoPrevia">
                                 {/* Mostrar etiquetas con el color seleccionado */}
@@ -267,7 +269,7 @@ const Publicaciones = () =>{
                                     <br />
                                     {title && (
                                         <div>
-                                            <p>{title}</p>
+                                            <p className='card-titlePublication'>{title}</p>
                                         </div>
                                     )}
                                     <br />
@@ -276,8 +278,9 @@ const Publicaciones = () =>{
                                             <p>{description}</p>
                                         </div>
                                     )}
+                                    <p className="card-date">{now.toLocaleDateString()}</p>
                             </div>                          
-                            
+                            </div>
                         </Col>
                     </Row>
                 </div>

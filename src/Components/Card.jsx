@@ -55,7 +55,7 @@ CardProject.defaultProps = {
     description: null,
 };
 
-//Componente Card para las punlicaciones
+//Componente Card para las publicaciones
 export const CardPublication = ({ image, tags, title, description, date, quota, rating, id_publication, isApplied}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAppliedCard, setIsApplied] = useState(isApplied); // Estado para verificar si el usuario ya aplicó al proyecto
