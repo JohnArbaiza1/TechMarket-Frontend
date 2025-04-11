@@ -44,7 +44,7 @@ const ModalComponent = ({ show, onHide, title, message, variant, onAction}) => {
     );
 };
 
-export const ModalPublication = ({ isOpen, title, description, onClose, onApply, isApplied}) =>{
+export const ModalPublication = ({ isOpen, title, description, onClose, onApply, onCancel,isApplied}) =>{
     if (!isOpen) return null;
 
     return(
@@ -56,12 +56,13 @@ export const ModalPublication = ({ isOpen, title, description, onClose, onApply,
                     <button className='close-Modal' onClick={onClose}>
                         Cerrar
                     </button>
-                    <button className='btnAplicar-proyecto' onClick={onApply} disabled={isApplied}>
-                        {isApplied ? 'Ya aplicado' : 'Aplicar a Proyecto'}
-                    </button>
-                    <button className="btnCancelar-proyecto">
+                    {isApplied? null : <button className='btnAplicar-proyecto' onClick={onApply} disabled={isApplied}>
+                        Aplicar a Proyecto
+                    </button> }
+                    
+                    {isApplied ? <button className="btnCancelar-proyecto" onClick={onCancel}>
                         Quitar solicitud
-                    </button>
+                    </button> : null}
                 </div>
             </div>
         </div>       

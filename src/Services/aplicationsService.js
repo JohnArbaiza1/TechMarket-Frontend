@@ -45,6 +45,27 @@ export const getPulicationsByidUser = async (id_user) => {
         throw error;
     }
 }
+export const delApplicantUserPublication = async (id_publication) => {
+    try {
+        const token = localStorage.getItem("token");
+        const id_user = localStorage.getItem("user_id");
+        if (!token) throw new Error("Faltan datos de autenticación");
+
+        const response = await axios.delete(`${API_URL}applicants/user/${id_user}/publication/${id_publication}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+            params: {
+                id_publication: id_publication, // Agregar el ID de la publicación como parámetro
+            },
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Error al eliminar la solicitud:", error.response?.data || error.message);
+        throw error;
+    }
+}
 
 
 

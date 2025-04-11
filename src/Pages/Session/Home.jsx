@@ -33,26 +33,28 @@ const Home = () => {
     return (
         <div className="grid-container">
             {publications.map((publication) => {
-                const isApplied = userApplications.some(application => application.id_publication === publication.id); // Verificar si el usuario ya aplicó a la publicación
-
-
+                const isApplied = userApplications.some(
+                    (application) => application.id_publication === publication.id
+                );
+    
                 return (
                     <CardPublication
                         key={publication.id}
                         image=""
-                        tags={publication.tags.split(", ")} // Convertir la cadena de tags en un array
+                        tags={publication.tags.split(", ")}
                         title={publication.title}
-                        date={new Date(publication.created_at).toLocaleDateString()} // Formatear la fecha
+                        date={new Date(publication.created_at).toLocaleDateString()}
                         quota={publication.quota}
                         rating={publication.publication_rating}
                         description={publication.publication_description}
                         id_publication={publication.id}
-                        isApplied={isApplied} // Pasar el estado de aplicación
+                        isApplied={isApplied}
                     />
                 );
             })}
         </div>
     );
+    
 };
 
 export default Home;

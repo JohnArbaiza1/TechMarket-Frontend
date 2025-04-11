@@ -1,4 +1,4 @@
-import { postAplicationProyect } from '../Services/aplicationsService';
+import { postAplicationProyect, delApplicantUserPublication} from '../Services/aplicationsService';
 import '../Styles/Componentes/card.css';
 import { ModalPublication } from './Modal';
 import { useState } from 'react';
@@ -94,6 +94,25 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
             alert('Ocurrió un error al procesar tu solicitud. Inténtalo más tarde.');
         }
     };
+    // Función para manejar el evento de cancelar la solicitud
+    const handleCancel = async () => {
+        try {
+           const response = await delApplicantUserPublication(
+                id_publication // ID de la publicación
+            ); 
+            if (response.status === 200) {
+                alert('Aplicación cancelada exitosamente');
+                setIsApplied(false); // Cambiar el estado a "aplicado"
+            } else if (response.status === 203) {
+                alert('No se puede cancelar la solicitud porque no existe');
+            } else {
+                alert('Ocurrió un error inesperado. Inténtalo nuevamente.');
+            }
+        } catch (error) {
+            console.error('Error al cancelar la solicitud:', error.response?.data || error.message);
+            alert('Ocurrió un error al cancelar la solicitud. Inténtalo más tarde.');
+        }
+    };
 
     return (
         <>
@@ -124,6 +143,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     <p className="card-date">{date}</p>
 
                     <div className="cardButtonContainer">
+                        <p style={{paddingRight: '35%', paddingTop: '1.5vh' ,fontSize: '14px', color: '#8B5DFF' }}> {isApplied ? "Ya aplicado" : ""}</p>
                             <button onClick={handleModalToggle} className="card-button">
                                 Leer más
                             </button>
@@ -135,6 +155,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     description={description}
                     onClose={handleModalToggle}
                     onApply={handleApply}
+                    onCancel={handleCancel}
                     isApplied={isAppliedCard}
                 />
             </div>
