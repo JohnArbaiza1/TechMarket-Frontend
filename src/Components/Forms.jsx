@@ -102,9 +102,23 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
             return;
         }
 
+        let imageUrl = "";
+        if (formData.github.trim() !== "") {
+            imageUrl = `https://unavatar.io/github/${formData.github.trim()}`;
+        }
+
+        const dataToSend = {
+            ...formData,
+            image_url: imageUrl 
+        };
+
         try {
-            const response = await createProfile(formData);
+            const response = await createProfile(dataToSend);
             console.log("Perfil guardado:", response.data);
+
+            if (imageUrl) {
+                localStorage.setItem("image_url", imageUrl);
+            } 
             toast.success("Perfil guardado exitosamente", {position:'top-center'});
 
             if (onProfileSave) {

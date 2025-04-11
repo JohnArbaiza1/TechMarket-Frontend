@@ -42,19 +42,27 @@ const login = async (userLogin, password) => {
         console.log("Respuesta del backend en login:", response.data);
 
         //Guardamos el token en el storage si el login es exitoso
-        if (response.data.token) {
-            localStorage.setItem("token", response.data.token);
-            if (response.data.user && response.data.user.id) {
-                localStorage.setItem("user_id", response.data.user.id);
+        if (response.data && response.data.token) {
+            const user = response.data.user;
+            try {
+                localStorage.setItem("token", response.data.token);
+
+                // Guardar datos del usuario con validación
+                if (user.user_name) localStorage.setItem("user_name", user.user_name);
+                if (user.email) localStorage.setItem("email", user.email);
+                if (user.id) localStorage.setItem("user_id", user.id);
+                
+            } catch (storageError) {
+                console.error("Error al guardar en localStorage:", storageError);
             }
         }
-
         return response.data;
-
     }catch(e){
         if (e.response) {
             throw e.response.data.message || "Error al iniciar sesión";
-        } else {
+        }else if (e.request) {
+            throw "No se recibió respuesta del servidor";
+        }else {
             throw "Error al conectar con el servidor";
         }
     }

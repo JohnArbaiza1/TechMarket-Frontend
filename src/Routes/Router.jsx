@@ -59,11 +59,6 @@ const router = createBrowserRouter([
             },
         ],
     },
-    {
-        path: "config-profile",
-        element: <ConfigProfile />
-    },
-
     // Rutas protegidas
     {
         element: <ProtectedRoutes />,  // Envuelve las rutas a proteger
@@ -73,8 +68,13 @@ const router = createBrowserRouter([
                 children: [
                     { path: "/home", element: <Home /> },
                     { path: "/publicar", element: <Publicaciones /> },
+                    { path: "/profile", element: <PerfilUser /> },
                 ],
             },
+            {
+                path: "config-profile",
+                element: <ConfigProfile />
+            }
         ],
     }
 

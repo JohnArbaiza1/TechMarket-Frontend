@@ -53,6 +53,7 @@ const Navbar = () => {
 };
 
 const NavHome = ({ onToggleSidebar }) =>{
+    const imageUrl = localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser";
     return(
         <>
         <div className="nav-logueado">
@@ -72,17 +73,18 @@ const NavHome = ({ onToggleSidebar }) =>{
                 <div className='dropdown text-end profile-menu'>
                     <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https:/unavatar.io/JohnArbaiza1" alt="mdo" width="32" height="32"
+                        <img src={imageUrl} alt="mdo" width="32" height="32"
                             className="rounded-circle"/>
                     </a>
 
                     <ul className="dropdown-menu text-small">
-                        <li><a className="dropdown-item" href="#">Settings</a></li>
-                        <li><a className="dropdown-item" href="#">Profile</a></li>
+                        <li><a className="dropdown-item" href="#"><i className="fa-solid fa-gear"></i> Configuración</a></li>
+                        <li><a className="dropdown-item" href="#"><i className="fa-solid fa-money-check-dollar"></i> Tu Plan</a></li>
+                        <li><a className="dropdown-item" href="/profile"><i className="fa-solid fa-user"></i> Tu Perfil</a></li>
                         <li>
                             <hr className="dropdown-divider"/>
                         </li>
-                        <li><a className="dropdown-item" href="#">Sign out</a></li>
+                        <li><a className="dropdown-item" href="#"><i className="fa-solid fa-right-to-bracket"></i> Sign out</a></li>
                     </ul>
                 </div>
             </div>
