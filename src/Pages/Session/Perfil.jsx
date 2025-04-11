@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, ProgressBar, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { FaPhoneAlt, FaEnvelope, FaLinkedin, FaFacebook, FaTwitter, FaGithub, FaDownload, FaGraduationCap, FaBriefcase, FaTools  } from "react-icons/fa";
 import { toast } from "sonner";
 import '../../Styles/Logueado/perfil.css' 
@@ -91,25 +91,27 @@ const PerfilUser = () =>{
                             <div>
                                 <h4 className="title-Profile"><FaGraduationCap/> Educación</h4>
                                 <ul>
-                                    <li>1998 - 2005 : Highschool</li>
-                                    <li>2005 - 2008 : University</li>
+                                    {profile.education.split(",").map((education, index) => (
+                                            <li key={index}>{education.trim()}</li>
+                                    ))}
                                 </ul>
                             </div>
 
                             <div>
                                 <h4 className="title-Profile"><FaBriefcase/> Experiencia</h4>
                                 <ul>
-                                    <li>2011 - 2013 : UI/UX Designer </li>
-                                    <li>2013 - 2015 : Senior Developer</li>
+                                    {profile.work_experience.split(",").map((work_experience, index) => (
+                                            <li key={index}>{work_experience.trim()}</li>
+                                    ))}
                                 </ul>
                             </div>
 
                             <div>
                                 <h4 className="title-Profile"><FaTools /> Skills</h4>
                                 <ul>
-                                    <li>HTML5 & CSS3</li>
-                                    <li>Web Design</li>
-                                    <li>UI/UX Design</li>
+                                    {profile.skills.split(",").map((skill, index) => (
+                                            <li key={index}>{skill.trim()}</li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>

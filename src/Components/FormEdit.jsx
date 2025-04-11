@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, Form, Button } from "react-bootstrap";
+import { Card, Form, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; 
 import {getProfile, updateProfile} from "../Services/profileService";
 import {toast } from "sonner";
@@ -11,6 +11,10 @@ const FormularioEditPerfil = ({ userId, mode }) => {
         phone_number: "",
         address: "",
         description: "",
+        education: "",
+        work_experience:"",
+        skills:"",
+        social_media_links:"",
         github: "",
         image: null,
     });
@@ -30,6 +34,10 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                         phone_number: data.phone_number || "",
                         address: data.address || "",
                         description: data.description || "",
+                        education: data.education || "",
+                        work_experience: data.work_experience || "",
+                        skills: data.skills || "",
+                        social_media_links: data.social_media_links || "",
                         github: data.github || "",
                         image: null,
                     });
@@ -59,7 +67,7 @@ const FormularioEditPerfil = ({ userId, mode }) => {
 
     const validarCampos = () => {
         const newErrors = {};
-        const requiredFields = ["first_name", "last_name", "description", "phone_number", "address"];
+        const requiredFields = ["first_name", "last_name", "description", "phone_number", "address", "education"];
 
         requiredFields.forEach((field) => {
             if (!formData[field]?.trim()) {
@@ -137,11 +145,19 @@ const FormularioEditPerfil = ({ userId, mode }) => {
         <Card className="w-100 p-4">
             <h2 className="mb-4">Configura tu perfil</h2>
             <Form onSubmit={handleSubmit}>
-                {renderInput("Nombre", "first_name")}
-                {renderInput("Apellido", "last_name")}
+                <Row>
+                    <Col>{renderInput("Nombre", "first_name")}</Col>
+                    <Col>{renderInput("Apellido", "last_name")}</Col>
+                </Row>
                 {renderInput("Biografía", "description", "text", "textarea")}
                 {renderInput("Dirección", "address")}
                 {renderInput("Teléfono", "phone_number")}
+                {renderInput("Educación", "education")}
+                {renderInput("Experiencia", "work_experience")}
+                <Row>
+                    <Col>{renderInput("Habilidades", "skills", "text", "textarea")}</Col>
+                    <Col>{renderInput("Enlaces de redes sociales", "social_media_links", "text", "textarea")}</Col>
+                </Row>
                 {renderInput("GitHub (opcional)", "github")}
 
                 <Form.Group className="mb-3">

@@ -50,6 +50,7 @@ const login = async (userLogin, password) => {
                 // Guardar datos del usuario con validación
                 if (user.user_name) localStorage.setItem("user_name", user.user_name);
                 if (user.email) localStorage.setItem("email", user.email);
+                if (user.id_membership) localStorage.setItem("id_membership", user.id_membership);
                 if (user.id) localStorage.setItem("user_id", user.id);
                 
             } catch (storageError) {
@@ -82,8 +83,11 @@ const logout = async (authorization) => {
             }
         );
 
-        //eliminamos el token del localstorage
+        //eliminamos el token y los otros datos del localstorage
         localStorage.removeItem("token");
+        localStorage.removeItem("user_name");
+        localStorage.removeItem("email");
+        localStorage.removeItem("id_membership");
 
         return response.data;
     }catch(e){
