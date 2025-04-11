@@ -14,7 +14,7 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         github: ""
     });
 
-    //Evnto para los errores
+    //Evento para los errores
     const [errors, setErrors] = useState({
         first_name: "",
         last_name: "",

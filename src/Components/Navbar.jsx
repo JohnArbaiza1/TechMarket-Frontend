@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import '../Styles/Componentes/navbar.css';
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
     const location = useLocation(); // Obtener la ubicación actual
@@ -53,7 +54,20 @@ const Navbar = () => {
 };
 
 const NavHome = ({ onToggleSidebar }) =>{
-    const imageUrl = localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser";
+    const [imageUrl, setImageUrl] = useState(localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser");
+    useEffect(() => {
+        const handleStorageChange = () => {
+            setImageUrl(localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser");
+        };
+
+        // Escucha el evento 'storage' cuando se cambian los valores en localStorage
+        window.addEventListener("storage", handleStorageChange);
+
+        // Limpiar el listener cuando el componente se desmonte
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
     return(
         <>
         <div className="nav-logueado">
@@ -78,13 +92,21 @@ const NavHome = ({ onToggleSidebar }) =>{
                     </a>
 
                     <ul className="dropdown-menu text-small">
-                        <li><a className="dropdown-item" href="#"><i className="fa-solid fa-gear"></i> Configuración</a></li>
-                        <li><a className="dropdown-item" href="#"><i className="fa-solid fa-money-check-dollar"></i> Tu Plan</a></li>
-                        <li><a className="dropdown-item" href="/profile"><i className="fa-solid fa-user"></i> Tu Perfil</a></li>
                         <li>
-                            <hr className="dropdown-divider"/>
+                            <Link className="dropdown-item" to="/settings"> <i className="fa-solid fa-gear"></i> Configuración </Link>
                         </li>
-                        <li><a className="dropdown-item" href="#"><i className="fa-solid fa-right-to-bracket"></i> Sign out</a></li>
+                        <li>
+                            <Link className="dropdown-item" to="#"> <i className="fa-solid fa-money-check-dollar"></i> Tu Plan </Link>
+                        </li>
+                        <li>
+                            <Link className="dropdown-item" to="/profile"> <i className="fa-solid fa-user"></i> Tu Perfil </Link>
+                        </li>
+                        <li>
+                            <hr className="dropdown-divider" />
+                        </li>
+                        <li>
+                            <Link className="dropdown-item" to="#"> <i className="fa-solid fa-right-to-bracket"></i> Sign out </Link>
+                        </li>
                     </ul>
                 </div>
             </div>
