@@ -15,6 +15,8 @@ import PerfilUser from "../Pages/Session/Perfil";
 import Publicaciones from "../Pages/Session/Publicar";
 import ConfigProfile from "../Pages/Session/ConfigPerfil";
 import SettingsPage from "../Pages/Session/SettingsPage";
+import MisProyectos from "../Pages/Session/MyProjects";
+import RegisteredUsers from "../Pages/Session/Colegas";
 
 //importamos los layouts
 import Layout from "../Layouts/layout";
@@ -71,6 +73,10 @@ const router = createBrowserRouter([
                     { path: "/publicar", element: <Publicaciones /> },
                     { path: "/profile", element: <PerfilUser /> },
                     { path: "/settings", element: <SettingsPage /> },
+                    { path: "/myprojects", element: <MisProyectos /> },
+                    { path: "/proyectos-empresa", element: <MisProyectos /> },
+                    { path: "/colegas", element: <RegisteredUsers /> },
+                    { path: "/talento-empresas", element: <RegisteredUsers/> },
                 ],
             },
             {
