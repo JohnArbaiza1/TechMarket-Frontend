@@ -13,6 +13,7 @@ const Register = () =>{
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [membershipId, setMembershipId] = useState("");
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const { register } = useAuth(); // Usamos la función de registro del contexto
@@ -61,10 +62,15 @@ const Register = () =>{
             valid = false;
         }
 
+        if (membershipId === "") {
+            toast.error("Debes seleccionar un tipo de cuenta.", { position: 'top-center' });
+            return;
+        }
+
         if (!valid) return;
 
         try{
-            await register(username, email, password);
+            await register(username, email, password, membershipId);
 
             //Redirigimos a la página de configuración del perfil después del registro
             navigate('/config-profile');
@@ -138,6 +144,19 @@ const Register = () =>{
                                 </span>
                             </div>
                             {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
+                        </Form.Group>
+                        
+                        <Form.Group>
+                            <Form.Control
+                                as="select"
+                                value={membershipId}
+                                onChange={(e) => setMembershipId(parseInt(e.target.value))}
+                                className="custom-input"
+                            >
+                                <option value="">Selecciona tu tipo de cuenta</option>
+                                <option value="1">Profesional Tecnológico</option>
+                                <option value="3">Empresa</option>
+                            </Form.Control>
                         </Form.Group>
 
                     <button className="btn-login" type="submit">Registrarse</button>

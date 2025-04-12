@@ -1,6 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate  } from 'react-router-dom';
 import '../Styles/Componentes/navbar.css';
 import { useState, useEffect } from "react";
+import { getProfile } from '../Services/profileService';
+import { useAuth } from '../Auth/AuthContext';
 
 const Navbar = () => {
     const location = useLocation(); // Obtener la ubicación actual
@@ -54,20 +56,34 @@ const Navbar = () => {
 };
 
 const NavHome = ({ onToggleSidebar }) =>{
-    const [imageUrl, setImageUrl] = useState(localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser");
+    const [profile, setProfile] = useState(null);
+    const [error, setError] = useState(null);
+    const { logout } = useAuth(); 
+    const navigate = useNavigate(); 
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        logout();
+        navigate("/login");
+    };
+
     useEffect(() => {
-        const handleStorageChange = () => {
-            setImageUrl(localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser");
+        const fetchProfile = async () => {
+            try {
+                const userId = localStorage.getItem("user_id");
+                const response = await getProfile(userId);
+                setProfile(response.data);
+                
+            } catch (error) {
+                setError("Error al cargar el perfil");
+                
+                console.error(error);
+            }
         };
-
-        // Escucha el evento 'storage' cuando se cambian los valores en localStorage
-        window.addEventListener("storage", handleStorageChange);
-
-        // Limpiar el listener cuando el componente se desmonte
-        return () => {
-            window.removeEventListener("storage", handleStorageChange);
-        };
+    
+        fetchProfile();
     }, []);
+
     return(
         <>
         <div className="nav-logueado">
@@ -87,7 +103,7 @@ const NavHome = ({ onToggleSidebar }) =>{
                 <div className='dropdown text-end profile-menu'>
                     <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src={imageUrl} alt="mdo" width="32" height="32"
+                        <img src={profile?.image_url || "https://unavatar.io/github/defaultuser"}  alt="mdo" width="32" height="32"
                             className="rounded-circle"/>
                     </a>
 
@@ -105,7 +121,7 @@ const NavHome = ({ onToggleSidebar }) =>{
                             <hr className="dropdown-divider" />
                         </li>
                         <li>
-                            <Link className="dropdown-item" to="#"> <i className="fa-solid fa-right-to-bracket"></i> Sign out </Link>
+                            <Link className="dropdown-item" onClick={handleLogout}> <i className="fa-solid fa-right-to-bracket"></i> Sign out </Link>
                         </li>
                     </ul>
                 </div>

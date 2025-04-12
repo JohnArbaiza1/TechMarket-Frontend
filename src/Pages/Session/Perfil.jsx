@@ -10,11 +10,13 @@ const PerfilUser = () =>{
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const imageUrl = localStorage.getItem("image_url") || "https://unavatar.io/github/defaultuser";
 
     // Obtenemos los datos del usuario desde localStorage
     const userName = localStorage.getItem("user_name");
     const email = localStorage.getItem("email");
+    const membershipId = parseInt(localStorage.getItem("id_membership"));
+    const isCompany = membershipId === 3;
+
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -44,7 +46,7 @@ const PerfilUser = () =>{
         fetchProfile();
     }, []);
     
-    if (loading) return <div className="text-center p-5">Cargando perfil...</div>;
+    if (loading) return null;
     if (error) return <div>{error}</div>;
     if (!profile) return <div className="text-center p-5">No se pudo cargar la información del perfil</div>;
 
@@ -52,9 +54,9 @@ const PerfilUser = () =>{
         <>
             <Container>
                 <div className="Encabezado">
-                    <img src={imageUrl} alt="img profile" className="img-profile"/>
+                    <img src={profile.image_url} alt="img profile" className="img-profile"/>
                     <div className="data">
-                        <h3>{profile.first_name} {profile.last_name}</h3>
+                        <h3>{profile.first_name} {isCompany ? `(${profile.last_name})` : profile.last_name}</h3>
                         <p>{userName}</p>
                     </div>
 
@@ -77,7 +79,7 @@ const PerfilUser = () =>{
                     <section>
                         <Row>
                             <Col>
-                                <h4 className="title-Profile">Sobre mí</h4>
+                                <h4 className="title-Profile"> {isCompany ? "Sobre Nosotros" : "Sobre mí"}</h4>
                                 <p className="description-Profile">{profile.description}</p>
                             </Col>
                             <Col>
@@ -88,17 +90,18 @@ const PerfilUser = () =>{
 
                         <br />
                         <div className="more-info">
+                            {!isCompany && (
+                                <div>
+                                    <h4 className="title-Profile"><FaGraduationCap/> Educación</h4>
+                                    <ul>
+                                        {profile.education.split(",").map((education, index) => (
+                                                <li key={index}>{education.trim()}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                             <div>
-                                <h4 className="title-Profile"><FaGraduationCap/> Educación</h4>
-                                <ul>
-                                    {profile.education.split(",").map((education, index) => (
-                                            <li key={index}>{education.trim()}</li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h4 className="title-Profile"><FaBriefcase/> Experiencia</h4>
+                                <h4 className="title-Profile"><FaBriefcase/> {isCompany ? "Servicios ofrecidos" : "Experiencia"}</h4>
                                 <ul>
                                     {profile.work_experience.split(",").map((work_experience, index) => (
                                             <li key={index}>{work_experience.trim()}</li>
@@ -107,7 +110,7 @@ const PerfilUser = () =>{
                             </div>
 
                             <div>
-                                <h4 className="title-Profile"><FaTools /> Skills</h4>
+                                <h4 className="title-Profile"><FaTools /> {isCompany ? "Tecnologías utilizadas" : "Skills"}</h4>
                                 <ul>
                                     {profile.skills.split(",").map((skill, index) => (
                                             <li key={index}>{skill.trim()}</li>

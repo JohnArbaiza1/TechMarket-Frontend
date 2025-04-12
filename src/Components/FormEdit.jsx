@@ -22,6 +22,8 @@ const FormularioEditPerfil = ({ userId, mode }) => {
     const [imagePreview, setImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
     const navigate = useNavigate(); // Hook para redirigir
+    const membershipId = parseInt(localStorage.getItem("id_membership")); // 1 = Profesional, 3 = Empresa
+    const isCompany = membershipId === 3;
 
     useEffect(() => {
         if (mode === "edit" && userId) {
@@ -98,6 +100,7 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                 imageUrl = URL.createObjectURL(formData.image);
             } catch (err) {
                 toast.error("Error al subir la imagen.", { position: "top-center" });
+                console.log(err);       
             }
         } else if (formData.github) {
             imageUrl = `https://unavatar.io/github/${formData.github.trim()}`;
@@ -113,13 +116,11 @@ const FormularioEditPerfil = ({ userId, mode }) => {
         try {
             const response = await updateProfile(userId, payload);
             toast.success("Perfil actualizado exitosamente", { position: "top-center" });
-
             // Actualizar el localStorage con la nueva imagen
             localStorage.setItem("image_url", imageUrl);
-
             // Redirigir a la vista de perfil
             navigate("/profile"); // Redirige a la vista de perfil
-
+            return response;
         } catch (error) {
             console.error("Error al guardar el perfil:", error);
             toast.error("Error al guardar el perfil", { position: "top-center" });
@@ -146,16 +147,16 @@ const FormularioEditPerfil = ({ userId, mode }) => {
             <h2 className="mb-4">Configura tu perfil</h2>
             <Form onSubmit={handleSubmit}>
                 <Row>
-                    <Col>{renderInput("Nombre", "first_name")}</Col>
-                    <Col>{renderInput("Apellido", "last_name")}</Col>
+                    <Col>{renderInput(isCompany ? "Nombre de la empresa" : "Nombre", "first_name")}</Col>
+                    <Col>{renderInput(isCompany ? "Siglas de la empresa" : "Apellido", "last_name")}</Col>
                 </Row>
-                {renderInput("Biografía", "description", "text", "textarea")}
+                {renderInput(isCompany ? "Descripción de la empresa" : "Biografía", "description", "text", "textarea")}
                 {renderInput("Dirección", "address")}
                 {renderInput("Teléfono", "phone_number")}
-                {renderInput("Educación", "education")}
-                {renderInput("Experiencia", "work_experience")}
+                {!isCompany && renderInput("Educación", "education")}
+                {renderInput(isCompany ? "Servicios ofrecidos" : "Experiencia", "work_experience")}
                 <Row>
-                    <Col>{renderInput("Habilidades", "skills", "text", "textarea")}</Col>
+                    <Col>{renderInput(isCompany ? "Tecnologías utilizadas" : "Skills", "skills", "text", "textarea")}</Col>
                     <Col>{renderInput("Enlaces de redes sociales", "social_media_links", "text", "textarea")}</Col>
                 </Row>
                 {renderInput("GitHub (opcional)", "github")}
@@ -171,7 +172,6 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                         />
                     )}
                 </Form.Group>
-
                 <Button type="submit">Guardar</Button>
             </Form>
         </Card>

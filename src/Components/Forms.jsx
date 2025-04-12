@@ -31,6 +31,9 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         social_media_links:""
     });
 
+    const membershipId = parseInt(localStorage.getItem("id_membership")); // 1 = Profesional, 3 = Empresa
+    const isCompany = membershipId === 3;
+
     const styles = {
         titleForm: {
             fontFamily: '"Tektur", sans-serif',
@@ -80,7 +83,6 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                 validador: valor => !valor.trim() || /^\d+$/.test(valor) 
             },
             { campo: 'address', mensaje: 'La dirección es obligatoria.', validador: valor => !!valor.trim() },
-            { campo: 'education', mensaje: 'Ingresar datos de Educación es obligatorio', validador: valor => !!valor.trim() }
             ];
         
             const newErrors = {};
@@ -109,6 +111,12 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         let imageUrl = "";
         if (formData.github.trim() !== "") {
             imageUrl = `https://unavatar.io/github/${formData.github.trim()}`;
+        }
+        else {
+            // Si no hay GitHub, asignar imagen por defecto según tipo de cuenta
+            imageUrl = isCompany
+                ? "https://img.freepik.com/free-vector/project-life-cycle-abstract-concept-vector-illustration-successful-project-management-stages-project-completion-task-assignment-business-case-resource-requirements-abstract-metaphor_335657-2941.jpg" // ícono empresa
+                : "https://img.freepik.com/vector-gratis/generacion-ideas-negocio-desarrollo-plan-hombre-pensativo-personaje-dibujos-animados-bombilla-mentalidad-tecnica-mente-emprendedora-proceso-lluvia-ideas_335657-2104.jpg"; // ícono persona
         }
 
         const dataToSend = {
@@ -143,14 +151,14 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
-                                <Form.Label style={styles.labelForm}>Nombre</Form.Label>
+                                <Form.Label style={styles.labelForm}>{isCompany ? "Nombre de la empresa" : "Nombre"}</Form.Label>
                                 <Form.Control type="text" name="first_name" value={formData.first_name} onChange={handleChange} required />
                                 {errors.first_name && <div style={styles.errorMessage}>{errors.first_name}</div>}
                             </Form.Group>
                         </Col>
                         <Col>
                         <Form.Group className="mb-3">
-                            <Form.Label style={styles.labelForm}>Apellido</Form.Label>
+                            <Form.Label style={styles.labelForm}>{isCompany ? "Siglas de la empresa" : "Apellido"}</Form.Label>
                             <Form.Control type="text" name="last_name" value={formData.last_name} onChange={handleChange} required />
                             {errors.last_name && <div style={styles.errorMessage}>{errors.last_name}</div>}
                         </Form.Group>
@@ -158,7 +166,7 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                     </Row>
 
                     <Form.Group className="mb-3">
-                        <Form.Label style={styles.labelForm}>Biografía</Form.Label>
+                        <Form.Label style={styles.labelForm}> {isCompany ? "Descripción de la empresa" : "Biografía"}</Form.Label>
                         <Form.Control as="textarea" name="description" value={formData.description} onChange={handleChange} />
                         {errors.description && <div style={styles.errorMessage}>{errors.description}</div>}
                     </Form.Group>
@@ -176,14 +184,22 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                         {errors.phone_number && <div style={styles.errorMessage}>{errors.phone_number}</div>}
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label style={styles.labelForm}>Educación</Form.Label>
-                        <Form.Control type="text" name="education" value={formData.education} onChange={handleChange} required/>
-                        {errors.education && <div style={styles.errorMessage}>{errors.education}</div>}
-                    </Form.Group>
+                    {!isCompany && (
+                        <Form.Group className="mb-3">
+                            <Form.Label style={styles.labelForm}>Educación</Form.Label>
+                            <Form.Control
+                            type="text"
+                            name="education"
+                            value={formData.education}
+                            onChange={handleChange}
+                            required
+                            />
+                            {errors.education && <div style={styles.errorMessage}>{errors.education}</div>}
+                        </Form.Group>
+                    )}
 
                     <Form.Group className="mb-3">
-                        <Form.Label style={styles.labelForm}>Experiencia</Form.Label>
+                        <Form.Label style={styles.labelForm}> {isCompany ? "Servicios ofrecidos" : "Experiencia"}</Form.Label>
                         <Form.Control type="text" name="work_experience" value={formData.work_experience} onChange={handleChange}/>
                         {errors.experience && <div style={styles.errorMessage}>{errors.experience}</div>}
                     </Form.Group>
@@ -192,7 +208,7 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
-                                <Form.Label style={styles.labelForm}>skills</Form.Label>
+                                <Form.Label style={styles.labelForm}> {isCompany ? "Tecnologías utilizadas" : "Skills"}</Form.Label>
                                 <Form.Control as="textarea" name="skills" value={formData.skills} onChange={handleChange}/>
                                 {errors.skills && <div style={styles.errorMessage}>{errors.skills}</div>}
                             </Form.Group>
@@ -217,6 +233,5 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
         </>
     );
 };
-
 // Exportamos el componente correctamente
 export default FormularioPerfil;

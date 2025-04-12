@@ -6,13 +6,15 @@ import axios from "axios";
 //Definimos una constante para almacenar la URL
 const API_URL = 'http://localhost:8000/api/';
 
-const register = async(user_name, email, password ) =>{
+const register = async(user_name, email, password, id_membership ) =>{
+
     try{
         //Definimos la solicitud POST a la API para el registro del usuario
         const response = await axios.post(`${API_URL}register`,{
             user_name,
             email,
             user_pass: password,
+            id_membership,
         });
 
         //Si la respuesta es exitosa devolvemos los datos
@@ -52,7 +54,7 @@ const login = async (userLogin, password) => {
                 if (user.email) localStorage.setItem("email", user.email);
                 if (user.id_membership) localStorage.setItem("id_membership", user.id_membership);
                 if (user.id) localStorage.setItem("user_id", user.id);
-                
+
             } catch (storageError) {
                 console.error("Error al guardar en localStorage:", storageError);
             }
