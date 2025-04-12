@@ -1,5 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate  } from 'react-router-dom';
 import '../Styles/Componentes/navbar.css';
+import { useState, useEffect } from "react";
+import { getProfile } from '../Services/profileService';
+import { useAuth } from '../Auth/AuthContext';
 
 const Navbar = () => {
     const location = useLocation(); // Obtener la ubicación actual
@@ -53,6 +56,34 @@ const Navbar = () => {
 };
 
 const NavHome = ({ onToggleSidebar }) =>{
+    const [profile, setProfile] = useState(null);
+    const [error, setError] = useState(null);
+    const { logout } = useAuth(); 
+    const navigate = useNavigate(); 
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        logout();
+        navigate("/login");
+    };
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const userId = localStorage.getItem("user_id");
+                const response = await getProfile(userId);
+                setProfile(response.data);
+                
+            } catch (error) {
+                setError("Error al cargar el perfil");
+                
+                console.error(error);
+            }
+        };
+    
+        fetchProfile();
+    }, []);
+
     return(
         <>
         <div className="nav-logueado">
@@ -72,17 +103,26 @@ const NavHome = ({ onToggleSidebar }) =>{
                 <div className='dropdown text-end profile-menu'>
                     <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https:/unavatar.io/JohnArbaiza1" alt="mdo" width="32" height="32"
+                        <img src={profile?.image_url || "https://unavatar.io/github/defaultuser"}  alt="mdo" width="32" height="32"
                             className="rounded-circle"/>
                     </a>
 
                     <ul className="dropdown-menu text-small">
-                        <li><a className="dropdown-item" href="#">Settings</a></li>
-                        <li><a className="dropdown-item" href="#">Profile</a></li>
                         <li>
-                            <hr className="dropdown-divider"/>
+                            <Link className="dropdown-item" to="/settings"> <i className="fa-solid fa-gear"></i> Configuración </Link>
                         </li>
-                        <li><a className="dropdown-item" href="#">Sign out</a></li>
+                        <li>
+                            <Link className="dropdown-item" to="#"> <i className="fa-solid fa-money-check-dollar"></i> Tu Plan </Link>
+                        </li>
+                        <li>
+                            <Link className="dropdown-item" to="/profile"> <i className="fa-solid fa-user"></i> Tu Perfil </Link>
+                        </li>
+                        <li>
+                            <hr className="dropdown-divider" />
+                        </li>
+                        <li>
+                            <Link className="dropdown-item" onClick={handleLogout}> <i className="fa-solid fa-right-to-bracket"></i> Sign out </Link>
+                        </li>
                     </ul>
                 </div>
             </div>

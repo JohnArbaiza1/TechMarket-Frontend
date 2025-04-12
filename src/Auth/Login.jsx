@@ -5,6 +5,7 @@ import { Form } from 'react-bootstrap';
 import '../Styles/login.css';
 import Footer from "../Components/Footer";
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -22,8 +23,10 @@ const Login = () => {
             await login(username, password);
             navigate("/home");
             console.log("Inicio de sesión exitoso");
+            toast.success(`Bienvenido, ${username}`,{position:'top-center'})
         }catch(error){
             console.log("Error al iniciar sesión: ", error);
+            toast.error(error, { position: 'top-center' });
         }
 
     };

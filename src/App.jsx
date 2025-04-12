@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 import router from './Routes/Router' 
 import { AuthProvider } from './Auth/AuthContext'
 import LoaderPages from './Components/Loader'
+import { Toaster } from "sonner";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <AuthProvider> 
         <RouterProvider router={router} />
       </AuthProvider>
+      <Toaster />
     </>
     
   )

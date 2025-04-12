@@ -44,6 +44,20 @@ export const getUserPublicationLimit = async (userId) => {
     }
 };
 
+export const getPulications = async ()=>{
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Faltan datos de autenticación");
+
+        const response = await axios.get(`${API_URL}publications`, {});
+
+        return response.data;  // Regresa la información de las publicaciones
+    } catch (error) {
+        console.error("Error al obtener las publicaciones:", error.response?.data || error.message);
+        throw error;
+    }
+}
+
 
 
 

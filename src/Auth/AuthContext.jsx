@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import authservice from '../Services/authservice';
+import {toast} from 'sonner';
+
 
 //Definimos el contexto
 const AuthContext = createContext();
@@ -27,17 +29,19 @@ export const AuthProvider = ({ children }) => {
                 setIsAuth(true);// Actualiza estado de autenticación
             }
 
+            return data;
         }catch(error){
-            console.error("Error al iniciar sesión:", error);      
+            console.log(error);
+            throw error;    
         }
     }
 
     // Función para el registro de usuarios
-    const register = async (username, email, password) => {
+    const register = async (username, email, password, id_membership) => {
         try {
             // Usamos el servicio para hacer la solicitud de registro
-            const data = await authservice.register(username, email, password);
-            alert('Usuario registrado Correctamente')
+            const data = await authservice.register(username, email, password, id_membership);
+            toast.success('Usuario registrado Correctamente', {position:'top-center'})
 
             //Si el registro es exitoso, iniciamos sesión automaticamente
             if (data){
@@ -65,12 +69,11 @@ export const AuthProvider = ({ children }) => {
             // Llamamos a la función logout del authservice y le pasamos el token
             await authservice.logout(token);
             // Eliminamos el token del localStorage
-            localStorage.removeItem("token");
-            localStorage.removeItem("user_id");
-            localStorage.removeItem("needsProfileSetup");
+            localStorage.clear(); 
+
             // Actualiza el estado de autenticación en el contexto
-            setIsAuth(false);
             setNeedsProfileSetup(false); //Reiniciamos el estado al cerrar sesión
+            setIsAuth(false);
         }catch(error){
             console.log("Error al cerrar la sesión ", error);
         }

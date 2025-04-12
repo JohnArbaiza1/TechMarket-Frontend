@@ -151,6 +151,7 @@ Estilo de la card de la publicacion
 }
 
 .card-content {
+    flex: 1;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -180,6 +181,7 @@ Estilo de la card de la publicacion
 }
 
 .card-date {
+    margin: 0px;
     font-size: 14px;
     color: #888;
 }
@@ -187,6 +189,7 @@ Estilo de la card de la publicacion
 .cardButtonContainer{
     display: flex;
     justify-content: flex-end;
+    margin-top: auto; 
 }
 
 .card-button {

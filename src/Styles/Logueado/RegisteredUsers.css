@@ -1,0 +1,118 @@
+.users-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.followCard{
+    width: 500px;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    font-size: .8rem;
+    justify-content: space-between;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.followCard-Header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.followCard-Profile{
+    width: 48px;
+    height:48px;
+    border-radius: 1000px;
+}
+
+.followCard-info{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.followCard-name{
+    color: #5E308C;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.followCard-info-userName{
+    color: #5E308C;
+}
+
+.followCard-container-buttons{
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    width: 100%;
+}
+
+.btn-followCard{
+    background-color: #2E186A;
+    color: white;
+    margin-left: 16px;
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-followCard.is-following{
+    background-color: #BC522B;
+    transition: .3s ease all background-color;
+    color: #fff;
+}
+
+
+.btn-followCard.is-following:hover{
+    background-color: #CB6E5A;
+    transition: .3s ease all background-color;
+    color: #fff;
+}
+
+
+.btn-followCard:hover{
+    background-color: #8B5DFF;
+    transition: .3s ease all background-color;
+    color: #fff;
+}
+
+/*Responsive*/
+@media (max-width: 480px) {
+    .users-list {
+        gap: 8px; 
+        padding: 10px; 
+    }
+
+    .followCard {
+        width: 100%;
+        font-size: 0.7rem; 
+    }
+
+    .followCard-name {
+        font-size: 14px; 
+    }
+
+    .followCard-info-userName {
+        font-size: 12px; 
+    }
+
+    .followCard-container-buttons {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-followCard {
+        padding: 4px 10px; 
+        font-size: 12px; 
+
+    }
+}
