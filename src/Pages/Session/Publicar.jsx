@@ -15,15 +15,15 @@ const Publicaciones = () =>{
         description, setDescription,
         image, setImage,
         quota, setQuota,
-        rating, setRating,
+        rating,
         tags, setTags,
         preview, setPreview,
         loading, setLoading,
-        error, setError,
-        success, setSuccess,
+        setError,
+        setSuccess,
         handleImageChange,
         handleRemoveImage , 
-        tagColor, setTagColor
+        API_URL
     }= usePublicationState();
 
     //Estados para trabajar la cantidad de publicaciones segun el plan
@@ -36,7 +36,7 @@ const Publicaciones = () =>{
         showSuccessModal, setShowSuccessModal,
         showErrorModal, setShowErrorModal,
         showLimitModal, setShowLimitModal,
-        modalMessage, setModalMessage,
+        setModalMessage,
         handleCloseSuccessModal,
         handleCloseErrorModal,
         handleCloseLimitModal       
@@ -54,6 +54,8 @@ const Publicaciones = () =>{
                     setCurrentPublications(data.currentPublications);
                 } catch (error) {
                     setError("Error al obtener el límite de publicaciones.");
+                    console.log(error);
+                    
                 }
             };
 
@@ -96,6 +98,7 @@ const Publicaciones = () =>{
                 );
 
                 imageUrl = imageResponse.data.url;
+            // eslint-disable-next-line no-unused-vars
             } catch (error) {
                 setError("Error al subir la imagen. Usando imagen predeterminada.");
             }
@@ -124,6 +127,8 @@ const Publicaciones = () =>{
             setQuota(1);
             setImage(null);
             setPreview(null);
+            console.log(response);
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setShowErrorModal(true);
         } finally {
@@ -168,8 +173,7 @@ const Publicaciones = () =>{
                                     />
                                 </div>
 
-                                <div className="tags">
-                                    <div className="form-group">
+                                <div className="form-group">
                                         <label className="title-input" htmlFor="tags">Etiquetas</label>
                                         <input
                                             type="text"
@@ -180,18 +184,19 @@ const Publicaciones = () =>{
                                             placeholder="Comas separadas"
                                             required
                                         />
-                                    </div>
+                                </div>
 
-                                    <div className="form-group">
-                                        <label className="title-input" htmlFor="tagColor">Color Tag</label>
-                                        <input
-                                            type="color"
-                                            className="form-control form-Tag"
-                                            id="tagColor"
-                                            value={tagColor}
-                                            onChange={(e) => setTagColor(e.target.value)}
-                                        />
-                                    </div>
+                                <div className="form-group">
+                                    <label className="title-input" htmlFor="quota">Ingrese el número de Cupos</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        id="quota"
+                                        value={quota}
+                                        min="1"
+                                        onChange={(e) => setQuota(Number(e.target.value))}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="form-group">
@@ -251,7 +256,7 @@ const Publicaciones = () =>{
                                                 <span
                                                     key={index}
                                                     style={{
-                                                        backgroundColor: tagColor, // Color de fondo de la etiqueta
+                                                        backgroundColor: '#169976', // Color de fondo de la etiqueta
                                                         color: '#fff',  // Color del texto de la etiqueta
                                                         padding: '5px 10px',
                                                         borderRadius: '15px',
@@ -290,23 +295,23 @@ const Publicaciones = () =>{
                 show={showSuccessModal}
                 onHide={handleCloseSuccessModal}
                 title="Publicación Exitosa"
-                message={modalMessage}
+                message={"¡Listo! Tu proyecto ya está publicado y listo para recibir postulaciones."}
                 variant="success"
             />
             {/* Modal de Error */}
             <ModalComponent
                 show={showErrorModal}
                 onHide={handleCloseErrorModal}
-                title="Error"
-                message={modalMessage}
-                variant="danger"
+                title="Oops..."
+                message={"¡Algo salió mal!"}
+                variant="error"
             />
             {/* Modal de Límite alcanzado */}
             <ModalComponent
                 show={showLimitModal}
                 onHide={handleCloseLimitModal}
                 title="Límite de Publicaciones"
-                message={modalMessage}
+                message={"No puedes crear más publicaciones. Te recomendamos actualizar tu plan para continuar publicando."}
                 variant="warning"
                 onAction={() => {
                 

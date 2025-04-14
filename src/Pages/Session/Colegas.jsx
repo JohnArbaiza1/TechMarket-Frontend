@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import userServices from '../../Services/userServices';
 import { getProfile } from "../../Services/profileService";
 import { toast } from 'sonner'; 
+import { UserCard } from '../../Components/Card';
 import '../../Styles/Logueado/RegisteredUsers.css' 
 
 const RegisteredUsers = () =>{
     //Definimos los estados a emplear
     const [users, setUsers] = useState([]);
     const [profiles, setProfiles] = useState({});
-    const [error, setError] = useState(null);
+    const [error] = useState(null);
     const [loading, setLoading] = useState(true); 
     // Estado que mantiene el estado de seguimiento de cada usuario
     const [followingStatus, setFollowingStatus] = useState({});
@@ -19,15 +20,6 @@ const RegisteredUsers = () =>{
             ...prevStatus,
             [userId]: !prevStatus[userId], // Cambia el estado solo para ese usuario
         }));
-    };
-
-    //hacemos un renderizado condicional
-    const getButtonText = (userId) => {
-        return followingStatus[userId] ? "Siguiendo" : "Seguir";
-    };
-
-    const getButtonClass = (userId) => {
-        return followingStatus[userId] ? 'btn-followCard is-following' : 'btn-followCard';
     };
 
     useEffect(() => {
@@ -74,35 +66,20 @@ const RegisteredUsers = () =>{
         <>
             <h2 className="title text-center">Usuarios que Hacen Parte de Nuestra Comunidad</h2>
             <div className="users-list">
-                {users.map(user => {
-                    const profile = profiles[user.id];
-                    if (!profile) return null;
+            {users.map(user => {
+                const profile = profiles[user.id];
+                if (!profile) return null;
 
-                    return (
-                        <section key={user.id} className='followCard'>
-                            <header className='followCard-Header'>
-                                <img src={profile.image_url} alt="img-profile" className='followCard-Profile' />
-                                <div className="followCard-info">
-                                    <span className='followCard-name'>{profile.first_name} {profile.last_name}</span>
-                                    <span className="followCard-info-userName">@{user.user_name}</span>
-                                </div>
-
-                                <div className='followCard-container-buttons'>
-                                    <button
-                                        className={getButtonClass(user.id)}
-                                        onClick={() => handleClick(user.id)} // Pasar el id del usuario
-                                    >
-                                        {getButtonText(user.id)}
-                                    </button>
-
-                                    <button className="btn-followCard">
-                                        Mensaje
-                                    </button>
-                                </div>
-                            </header>
-                        </section>
-                    );
-                })}
+                return (
+                    <UserCard
+                        key={user.id}
+                        user={user}
+                        profile={profile}
+                        isFollowing={followingStatus[user.id]}
+                        onFollowToggle={handleClick}
+                    />
+                );
+            })}
             </div>
         </>
     );

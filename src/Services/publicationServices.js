@@ -58,6 +58,24 @@ export const getPulications = async ()=>{
     }
 }
 
+//Para las publicaciones de un usuario 
+export const getPublicationsUser = async (userId) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Faltan datos de autenticación");
+
+        const response = await axios.get(`${API_URL}publications/${userId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener las publicaciones del usuario:", error.response?.data || error.message);
+        throw error;
+    }
+};
 
 
 

@@ -56,7 +56,7 @@ CardProject.defaultProps = {
 };
 
 //Componente Card para las publicaciones
-export const CardPublication = ({ image, tags, title, description, date, quota, rating, id_publication, isApplied}) => {
+export const CardPublication = ({ image, tags, title, description, date, quota, rating, id_publication, isApplied,isOwner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAppliedCard, setIsApplied] = useState(isApplied); // Estado para verificar si el usuario ya aplicó al proyecto
 
@@ -97,7 +97,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
     // Función para manejar el evento de cancelar la solicitud
     const handleCancel = async () => {
         try {
-           const response = await delApplicantUserPublication(
+            const response = await delApplicantUserPublication(
                 id_publication // ID de la publicación
             ); 
             if (response.status === 200) {
@@ -113,6 +113,13 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
             alert('Ocurrió un error al cancelar la solicitud. Inténtalo más tarde.');
         }
     };
+
+    // Función para ver las solicitudes 
+    const handleViewApplications = () => {
+
+        alert('Mostrando solicitudes...');
+    };
+    
 
     return (
         <>
@@ -141,12 +148,29 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     <p className="card-date">Cupos disponibles: {quota}</p>
                     <p className='card-date'>Rating: {rating}</p>
                     <p className="card-date">{date}</p>
-
                     <div className="cardButtonContainer">
-                        <p style={{paddingRight: '35%', paddingTop: '1.5vh' ,fontSize: '14px', color: '#8B5DFF' }}> {isApplied ? "Ya aplicado" : ""}</p>
-                            <button onClick={handleModalToggle} className="card-button">
-                                Leer más
-                            </button>
+                        {isOwner ? (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                <button 
+                                    onClick={handleViewApplications} 
+                                    className="card-button"
+                                >
+                                    Ver solicitudes
+                                </button>
+                                <button onClick={handleModalToggle} className="card-button">
+                                    Leer más
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <p style={{paddingRight: '35%', paddingTop: '1.5vh', fontSize: '14px', color: '#8B5DFF' }}>
+                                    {isApplied ? "Ya aplicado" : ""}
+                                </p>
+                                <button onClick={handleModalToggle} className="card-button">
+                                    Leer más
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
                 <ModalPublication
@@ -157,6 +181,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     onApply={handleApply}
                     onCancel={handleCancel}
                     isApplied={isAppliedCard}
+                    isOwner={isOwner}
                 />
             </div>
         </>
@@ -166,5 +191,42 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
 CardPublication.defaultProps = {
     image: null
 };
+
+export const UserCard = ({ user, profile, isFollowing, onFollowToggle }) => {
+
+    if (!profile) return null;
+
+    const getButtonText = () => (isFollowing ? "Siguiendo" : "Seguir");
+    const getButtonClass = () =>
+        isFollowing ? 'btn-followCard is-following' : 'btn-followCard';
+
+    return(
+        <>
+            <section className='followCard'>
+                <header className='followCard-Header'>
+                    <img src={profile.image_url} alt="img-profile" className='followCard-Profile' />
+                    <div className="followCard-info">
+                        <span className='followCard-name'>{profile.first_name} {profile.last_name}</span>
+                        <span className="followCard-info-userName">@{user.user_name}</span>
+                    </div>
+
+                    <div className='followCard-container-buttons'>
+                        <button
+                            className={getButtonClass()}
+                            onClick={() => onFollowToggle(user.id)}
+                        >
+                            {getButtonText()}
+                        </button>
+
+                        <button className="btn-followCard">
+                            Mensaje
+                        </button>
+                    </div>
+                </header>
+            </section>
+        </>
+    );
+
+}
 
 export default CardProject;

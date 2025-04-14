@@ -211,7 +211,6 @@ Estilo de la card de la publicacion
 }
 
 /*-----------------------------------------------*/
-
 @media (max-width: 768px) {
     .card {
         width: 90%; 
@@ -258,4 +257,3 @@ Estilo de la card de la publicacion
         padding: 3px 0; 
     }
 }
-

@@ -3,16 +3,16 @@ import { Modal, Button } from 'react-bootstrap';
 import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa'; // Importamos los iconos
 import '../Styles/Componentes/Modals.css';
 
-const ModalComponent = ({ show, onHide, title, message, variant, onAction}) => {
+const ModalComponent = ({ show, onHide, title,message, variant, onAction}) => {
     // Función para renderizar el icono según el tipo de acción
     const renderIcon = () => {
         switch (variant) {
             case 'success':
-                return <FaCheckCircle style={{ color: 'white', fontSize: '24px', marginLeft: '10px' }} />;
+                return <FaCheckCircle style={{ color: '#8B5DFF', fontSize: '94px'}} />;
             case 'error':
-                return <FaTimesCircle style={{ color: 'white', fontSize: '24px', marginLeft: '10px' }} />;
+                return <FaTimesCircle style={{ color: 'BC522B', fontSize: '94px' }} />;
             case 'warning':
-                return <FaExclamationCircle style={{ color: 'white', fontSize: '24px', marginLeft: '10px' }} />;
+                return <FaExclamationCircle style={{ color: '#CB6E5A', fontSize: '94px'}} />;
             default:
                 return null;
         }
@@ -20,20 +20,15 @@ const ModalComponent = ({ show, onHide, title, message, variant, onAction}) => {
 
     return (
         <Modal show={show} onHide={onHide} centered>
-            <Modal.Header closeButton style={{ backgroundColor: variant === 'success' ? '#5E308C' : variant === 'error' ? '#BC522B' : '#CB6E5A', color: 'white' }}>
-                <Modal.Title>
-                    {title}
-                    {/* Aquí se muestra el icono al lado del título */}
-                    {renderIcon()}
-                </Modal.Title>
+            <Modal.Header closeButton style={{ color: 'white' }}>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body style={{ textAlign:'center', padding:'20px'}}>
+                {renderIcon()}
+                <br /> <br />
+                <h3>{title}</h3>
                 <p>{message}</p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant={variant} onClick={onHide}>
-                    Cerrar
-                </Button>
                 {onAction && (
                     <Button variant="warning" onClick={onAction}>
                         Actualizar Plan
@@ -44,9 +39,8 @@ const ModalComponent = ({ show, onHide, title, message, variant, onAction}) => {
     );
 };
 
-export const ModalPublication = ({ isOpen, title, description, onClose, onApply, onCancel,isApplied}) =>{
+export const ModalPublication = ({ isOpen, title, description, onClose, onApply, onCancel,isApplied,isOwner}) =>{
     if (!isOpen) return null;
-
     return(
         <div className="modal-overlay">
             <div className="modal-content">
@@ -56,18 +50,26 @@ export const ModalPublication = ({ isOpen, title, description, onClose, onApply,
                     <button className='close-Modal' onClick={onClose}>
                         Cerrar
                     </button>
-                    {isApplied? null : <button className='btnAplicar-proyecto' onClick={onApply} disabled={isApplied}>
-                        Aplicar a Proyecto
-                    </button> }
-                    
-                    {isApplied ? <button className="btnCancelar-proyecto" onClick={onCancel}>
-                        Quitar solicitud
-                    </button> : null}
+                    {/* Mostramos los botones solo si el usuario no es el propietario */}
+                    {!isOwner && (
+                        <>
+                            {!isApplied && (
+                                <button className='btnAplicar-proyecto' onClick={onApply} disabled={isApplied}>
+                                    Aplicar a Proyecto
+                                </button>
+                            )}
+                            
+                            {isApplied && (
+                                <button className="btnCancelar-proyecto" onClick={onCancel}>
+                                    Quitar solicitud
+                                </button>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </div>       
     );
-
 }
 
 export default ModalComponent;
