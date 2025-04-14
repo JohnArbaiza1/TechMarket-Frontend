@@ -1,6 +1,6 @@
-import { postAplicationProyect, delApplicantUserPublication} from '../Services/aplicationsService';
+import { postAplicationProyect, delApplicantUserPublication, getApplicantByPublication} from '../Services/aplicationsService';
 import '../Styles/Componentes/card.css';
-import { ModalPublication } from './Modal';
+import { ModalAplicants, ModalPublication } from './Modal';
 import { useState } from 'react';
 
 // Componente funcional Card para mostrar los planes y sus precios
@@ -58,7 +58,10 @@ CardProject.defaultProps = {
 //Componente Card para las publicaciones
 export const CardPublication = ({ image, tags, title, description, date, quota, rating, id_publication, isApplied,isOwner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpenApplicants, setIsModalOpenApplicants] = useState(false);
     const [isAppliedCard, setIsApplied] = useState(isApplied); // Estado para verificar si el usuario ya aplicó al proyecto
+    const [dataApplicants, setDataApplicants] = useState([]); // Estado para almacenar los datos de los solicitantes
+    const [isLoading, setIsLoading] = useState(false); // Estado para manejar la carga de datos
 
     // Función para generar un color HEX aleatorio
     const getRandomColor = () => {
@@ -115,9 +118,24 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
     };
 
     // Función para ver las solicitudes 
-    const handleViewApplications = () => {
-
-        alert('Mostrando solicitudes...');
+    const handleViewApplications = async () => {
+        setIsLoading(true); // Inicia el estado de carga
+        try {
+            const response = await getApplicantByPublication(id_publication);
+            if (response.status === 200) {
+                setDataApplicants(response.data); // Guardar los datos de los solicitantes en el estado
+                setIsModalOpenApplicants(true); // Abrir el modal solo después de cargar los datos
+            } else if (response.status === 203) {
+                alert('No hay solicitudes para este proyecto');
+            } else {
+                alert('Ocurrió un error inesperado. Inténtalo nuevamente.');
+            }
+        } catch (error) {
+            console.error('Error al cargar las solicitudes:', error.response?.data || error.message);
+            alert('Ocurrió un error al cargar las solicitudes. Inténtalo más tarde.');
+        } finally {
+            setIsLoading(false); // Finaliza el estado de carga
+        }
     };
     
 
@@ -183,6 +201,16 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     isApplied={isAppliedCard}
                     isOwner={isOwner}
                 />
+                
+                {isLoading ? (
+                    <div className="loading-indicator">Cargando solicitudes...</div>
+                ) : (
+                    <ModalAplicants
+                        isOpen={isModalOpenApplicants}
+                        isClose={() => setIsModalOpenApplicants(false)}
+                        applicants={dataApplicants}
+                    />
+                )}
             </div>
         </>
     );
@@ -192,41 +220,46 @@ CardPublication.defaultProps = {
     image: null
 };
 
-export const UserCard = ({ user, profile, isFollowing, onFollowToggle }) => {
+export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants }) => {
 
     if (!profile) return null;
 
-    const getButtonText = () => (isFollowing ? "Siguiendo" : "Seguir");
-    const getButtonClass = () =>
-        isFollowing ? 'btn-followCard is-following' : 'btn-followCard';
+    const getButtonText = () => {
+        return applicants ? 'Ver perfil' : (isFollowing ? "Siguiendo" : "Seguir");
+    };
 
-    return(
-        <>
-            <section className='followCard'>
-                <header className='followCard-Header'>
-                    <img src={profile.image_url} alt="img-profile" className='followCard-Profile' />
-                    <div className="followCard-info">
-                        <span className='followCard-name'>{profile.first_name} {profile.last_name}</span>
-                        <span className="followCard-info-userName">@{user.user_name}</span>
-                    </div>
+    const getButtonClass = () => {
+        return applicants ? 'btn-followCard is-following' :
+            (isFollowing ? 'btn-followCard is-following' : 'btn-followCard');
+    };
 
-                    <div className='followCard-container-buttons'>
-                        <button
-                            className={getButtonClass()}
-                            onClick={() => onFollowToggle(user.id)}
-                        >
-                            {getButtonText()}
-                        </button>
+    return (
+        <section className='followCard'>
+            <header className='followCard-Header'>
+                <img src={profile.image_url} alt="img-profile" className='followCard-Profile' />
+                <div className="followCard-info">
+                    <span className='followCard-name'>{profile.first_name} {profile.last_name}</span>
+                    <span className="followCard-info-userName">@{user.user_name}</span>
+                </div>
 
-                        <button className="btn-followCard">
-                            Mensaje
-                        </button>
-                    </div>
-                </header>
-            </section>
-        </>
+                <div className='followCard-container-buttons'>
+                    <button
+                        className={getButtonClass()}
+                        onClick={applicants
+                            ? () => viewProfile(user.user_name)
+                            : () => onFollowToggle(user.id)
+                        }
+                    >
+                        {getButtonText()}
+                    </button>
+
+                    <button className="btn-followCard">
+                        Mensaje
+                    </button>
+                </div>
+            </header>
+        </section>
     );
-
-}
+};
 
 export default CardProject;

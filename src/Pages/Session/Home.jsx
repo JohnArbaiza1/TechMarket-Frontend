@@ -49,6 +49,7 @@ const Home = () => {
                         description={publication.publication_description}
                         id_publication={publication.id}
                         isApplied={isApplied}
+                        isOwner={publication.id_user == localStorage.getItem("user_id")}
                     />
                 );
             })}

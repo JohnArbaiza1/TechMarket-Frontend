@@ -67,6 +67,24 @@ export const delApplicantUserPublication = async (id_publication) => {
     }
 }
 
+    //Obtiene las solicitudes que tiene un proyecto por id
+    export const getApplicantByPublication = async (id_publication) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Faltan datos de autenticación");
+
+            const response = await axios.get(`${API_URL}applicants/publication/${id_publication}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return response;
+        } catch (error) {
+            console.error("Error al obtener las solicitudes:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+
 
 
 

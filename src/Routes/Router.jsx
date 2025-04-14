@@ -72,6 +72,7 @@ const router = createBrowserRouter([
                     { path: "/home", element: <Home /> },
                     { path: "/publicar", element: <Publicaciones /> },
                     { path: "/profile", element: <PerfilUser /> },
+                    { path: "/profile/:username", element: <PerfilUser /> },
                     { path: "/settings", element: <SettingsPage /> },
                     { path: "/myprojects", element: <MisProyectos /> },
                     { path: "/proyectos-empresa", element: <MisProyectos /> },

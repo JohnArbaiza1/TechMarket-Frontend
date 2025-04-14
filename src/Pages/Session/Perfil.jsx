@@ -3,19 +3,24 @@ import { Container, Row, Col } from "react-bootstrap";
 import { FaPhoneAlt, FaEnvelope, FaLinkedin, FaFacebook, FaTwitter, FaGithub, FaDownload, FaGraduationCap, FaBriefcase, FaTools  } from "react-icons/fa";
 import { toast } from "sonner";
 import '../../Styles/Logueado/perfil.css' 
-import { getProfile } from "../../Services/profileService";
+import { getProfile, getProfileByUsername } from "../../Services/profileService";
+import { useParams } from "react-router-dom";
 
 const PerfilUser = () =>{
+    const { username } = useParams(); // Obtenemos el username de la URL
     //Definimos los estados a emplear
     const [profile, setProfile] = useState(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isCompany, setIsCompany] = useState(false);
 
-    // Obtenemos los datos del usuario desde localStorage
+    // Obtenemos los datos del usuario desde localStorage    
     const userName = localStorage.getItem("user_name");
     const email = localStorage.getItem("email");
-    const membershipId = parseInt(localStorage.getItem("id_membership"));
-    const isCompany = membershipId === 3;
+
+    
+    
 
 
     useEffect(() => {
@@ -24,13 +29,29 @@ const PerfilUser = () =>{
             const loadingToastId = toast.loading("Cargando perfil...");
             
             try {
-                const userId = localStorage.getItem("user_id");
-                const response = await getProfile(userId);
-                setProfile(response.data);
-                
-                // Cerramos el toast de carga y mostramos éxito
-                toast.dismiss(loadingToastId);
-                toast.success("Perfil cargado correctamente");
+                if(!username) {
+                    const userId = localStorage.getItem("user_id");
+                    const response = await getProfile(userId);
+                    const membershipId = parseInt(localStorage.getItem("id_membership"));
+                    setIsCompany(membershipId === 3);
+                    setProfile(response.data);
+                    
+                    
+                    // Cerramos el toast de carga y mostramos éxito
+                    toast.dismiss(loadingToastId);
+                    toast.success("Perfil cargado correctamente");
+                }
+                else {
+                    const response = await getProfileByUsername(username);
+                    setProfile(response.data.profile);
+                    setUser(response.data);
+
+                    setIsCompany(response.data.id_membership === 3); // Verificamos si es una empresa
+
+                    // Cerramos el toast de carga y mostramos éxito
+                    toast.dismiss(loadingToastId);
+                    toast.success("Perfil cargado correctamente");
+                }
             } catch (err) {
                 setError("Error al cargar el perfil");
                 
@@ -57,14 +78,14 @@ const PerfilUser = () =>{
                     <img src={profile.image_url} alt="img profile" className="img-profile"/>
                     <div className="data">
                         <h3>{profile.first_name} {isCompany ? `(${profile.last_name})` : profile.last_name}</h3>
-                        <p>{userName}</p>
+                        <p>{user? user.user_name:userName}</p>
                     </div>
 
                     <div className="myData">
                         <p>
                         <FaPhoneAlt className="me-2" />{profile.phone_number}</p>
                         <p>
-                        <FaEnvelope className="me-2" /> {email}</p>
+                        <FaEnvelope className="me-2" /> {user? user.email: email}</p>
 
                         <div className="mt-2 d-flex justify-content-end gap-3">
                             <FaFacebook size={20} />
@@ -94,27 +115,27 @@ const PerfilUser = () =>{
                                 <div>
                                     <h4 className="title-Profile"><FaGraduationCap/> Educación</h4>
                                     <ul>
-                                        {profile.education.split(",").map((education, index) => (
+                                        {profile.education? profile.education.split(",").map((education, index) => (
                                                 <li key={index}>{education.trim()}</li>
-                                        ))}
+                                        )) : <li> No hay</li>}
                                     </ul>
                                 </div>
                             )}
                             <div>
                                 <h4 className="title-Profile"><FaBriefcase/> {isCompany ? "Servicios ofrecidos" : "Experiencia"}</h4>
                                 <ul>
-                                    {profile.work_experience.split(",").map((work_experience, index) => (
+                                    {profile.work_experience? profile.work_experience.split(",").map((work_experience, index) => (
                                             <li key={index}>{work_experience.trim()}</li>
-                                    ))}
+                                    )): <li> No hay</li>}
                                 </ul>
                             </div>
 
                             <div>
                                 <h4 className="title-Profile"><FaTools /> {isCompany ? "Tecnologías utilizadas" : "Skills"}</h4>
                                 <ul>
-                                    {profile.skills.split(",").map((skill, index) => (
+                                    {profile.skills? profile.skills.split(",").map((skill, index) => (
                                             <li key={index}>{skill.trim()}</li>
-                                    ))}
+                                    )) : <li> No hay</li>}
                                 </ul>
                             </div>
                         </div>

@@ -1,0 +1,29 @@
+.modal-content {
+    max-height: 80vh; /* Limitar la altura del modal */
+    overflow: hidden; /* Evitar que el contenido desborde */
+    display: flex;
+    flex-direction: column;
+}
+
+.applicants-list {
+    display: flex;
+    flex-wrap: wrap; /* Para que pasen a otra línea si hay muchas */
+    justify-content: center; /* Esto centra horizontalmente */
+    gap: 20px; /* Espacio entre las cards, opcional */
+    max-height: 60vh; /* Limitar la altura del contenedor de tarjetas */
+    overflow-y: auto; /* Habilitar el scroll vertical */
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc; /* Opcional: agregar un borde */
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Fondo opcional */
+}
+
+.applicants-list::-webkit-scrollbar {
+    width: 8px; /* Ancho del scroll */
+}
+
+.applicants-list::-webkit-scrollbar-thumb {
+    background-color: #8B5DFF; /* Color del scroll */
+    border-radius: 4px;
+}
