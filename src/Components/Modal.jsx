@@ -97,6 +97,7 @@ export const ModalAplicants = ({ isOpen, isClose, applicants }) => {
                                 onFollowToggle={() => {}}
                                 viewProfile={(username) => navigate(`/profile/${username}`)}
                                 applicants={true}
+                                sendMessage={(userId) => navigate(`/Pruebas/${userId}`)}
                             />
                         ))
                     )}

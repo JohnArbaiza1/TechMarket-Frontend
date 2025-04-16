@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import echo from '../../Services/laravel-echo.client';
+import React, { useEffect, useState, useRef } from 'react';
+import Echo from '../../Services/laravel-echo.client';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -7,6 +7,17 @@ const ChatPage = () => {
     const { user } = useParams();
     const [mensajes, setMensajes] = useState([]);
     const [nuevoMensaje, setNuevoMensaje] = useState('');
+    const [nombreReceptor, setNombreReceptor] = useState('');
+
+    const mensajesRef = useRef(null);
+
+    //Función para hacer scroll al fondo
+    const scrollToBottom = () => {
+        const chatContainer = mensajesRef.current;
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    };
 
     // 🔹 Obtener token
     const token = localStorage.getItem('token');
@@ -22,45 +33,60 @@ const ChatPage = () => {
                         Accept: 'application/json'
                     }
                 });
+                const userReceiver = await axios.get(`http://localhost:8000/api/user/${user}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json'
+                    }
+                });
+                setNombreReceptor(userReceiver.data.user_name || 'Desconocido');
                 setMensajes(res.data);
+
+                const otro = res.data.find(msg => msg.sender?.id !== currentUser);
+                if (otro) {
+                    setNombreReceptor(otro.sender?.user_name || 'Desconocido');
+                }
             } catch (error) {
                 console.error('Error al cargar mensajes:', error);
             }
         };
 
         obtenerMensajes();
+        
     }, [user]);
 
     // 🔹 Suscribirse al canal privado
     useEffect(() => {
-        
         const idCanal = ordenarMayorMenor(user, currentUser); 
         const channelName = `chat.${idCanal}`;
-        const canal = echo.private(channelName);
     
-        canal.listen('MessageSend', (e) => {
-            console.log('Mensaje recibido via WebSocket:', e); // Log para diferenciar
-            // Solo añade si el mensaje no es propio (opcional, si no quieres duplicados si cambias broadcast)
-            // if (e.message.id_user_one !== currentUser) {
-               setMensajes(prev => [...prev, e.message]);
-            // }
+        Echo.private(channelName).listen('.MessageSend', (e) => {
+            console.log('Mensaje recibido via WebSocket:', e); 
+            if (e.message.id_user_one !== currentUser) {
+                scrollToBottom();
+                setMensajes(prev => [...prev, e.message]);
+            }
         });
-    
+        console.log(window.Echo.connector.pusher.channels);
+        window.Echo.connector.pusher.bind_global((eventName, data) => {
+            console.log('🌐 Evento recibido:', eventName, data);
+        });
         // Asegúrate de que la autorización esté completa antes de escuchar
-         canal.subscribed(() => {
+        Echo.private(channelName).subscribed(() => {
             console.log(`Suscrito correctamente al canal ${channelName}`);
         });
     
-        canal.error((error) => {
+        Echo.private(channelName).error((error) => {
             console.error(`Error de suscripción al canal ${channelName}:`, error);
         });
     
     
         return () => {
             console.log(`Dejando el canal ${channelName}`);
-            echo.leave(channelName); // <-- CORREGIDO: Usa currentUser
+            Echo.leave(channelName); // <-- CORREGIDO: Usa currentUser
         };
-    }, [user]); // Depende
+        
+    }, [currentUser]); // Depende
 
     // 🔹 Enviar mensaje
     const enviarMensaje = async () => {
@@ -89,26 +115,63 @@ const ChatPage = () => {
 
     return (
         <div style={{ padding: 20 }}>
-            <h2>Chat en Tiempo Real</h2>
-            <div style={{ border: '1px solid #ccc', height: 300, overflowY: 'scroll', padding: 10 }}>
-                {mensajes.map((msg, index) => (
-                    <div key={index}>
-                        <strong>{msg.sender?.user_name ?? 'Yo'}:</strong> {msg.message}
-                    </div>
-                ))}
+            <h2>Chat en Tiempo Real con <span style={{ color: '#007bff' }}>{nombreReceptor || '...'}</span></h2>
+            
+            <div
+                ref={mensajesRef} // 🟡 Añadimos la referencia aquí
+                style={{
+                    border: '1px solid #ccc',
+                    height: 300,
+                    overflowY: 'scroll',
+                    padding: 10,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px'
+                }}
+            >
+                {mensajes.map((msg, index) => {
+                    const esMio = msg.id_user_one === currentUser;
+                    return (
+                        <div
+                            key={index}
+                            style={{
+                                display: 'flex',
+                                justifyContent: esMio ? 'flex-end' : 'flex-start'
+                            }}
+                        >
+                            <div
+                                style={{
+                                    backgroundColor: esMio ? '#DCF8C6' : '#F1F0F0',
+                                    color: 'black',
+                                    padding: '10px 15px',
+                                    borderRadius: '15px',
+                                    maxWidth: '60%',
+                                    wordWrap: 'break-word',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                {msg.message}
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-            <input
-                type="text"
-                value={nuevoMensaje}
-                onChange={(e) => setNuevoMensaje(e.target.value)}
-                placeholder="Escribe un mensaje..."
-                style={{ width: '80%', marginTop: 10 }}
-            />
-            <button onClick={enviarMensaje} style={{ marginLeft: 10 }}>
-                Enviar
-            </button>
+
+            <div style={{ marginTop: 10 }}>
+                <input
+                    type="text"
+                    value={nuevoMensaje}
+                    onChange={(e) => setNuevoMensaje(e.target.value)}
+                    placeholder="Escribe un mensaje..."
+                    style={{ width: '70%', padding: '10px', fontSize: 16 }}
+                />
+                <button onClick={enviarMensaje} style={{ marginLeft: 10, padding: '10px 20px', fontSize: 16 }}>
+                    Enviar
+                </button>
+            </div>
         </div>
     );
+    
 };
 function ordenarMayorMenor(a, b) {
     let resultado;

@@ -220,7 +220,7 @@ CardPublication.defaultProps = {
     image: null
 };
 
-export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants }) => {
+export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants, sendMessage }) => {
 
     if (!profile) return null;
 
@@ -253,7 +253,7 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
                         {getButtonText()}
                     </button>
 
-                    <button className="btn-followCard">
+                    <button onClick={() => sendMessage(user.id)} className="btn-followCard">
                         Mensaje
                     </button>
                 </div>

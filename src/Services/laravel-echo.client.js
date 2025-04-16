@@ -5,13 +5,13 @@ import axios from 'axios';
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
-    broadcaster: 'reverb',  // Esto debería estar correcto si estás usando Reverb como broadcaster
-    wsHost: "localhost",
-    key: 'h3sqchfut0tiu8cexujr',    // Dirección de tu servidor WebSocket (si está en local)
-    wsPort: 8080,           // Puerto donde el WebSocket está corriendo
-    wssPort: 8080,          // Puerto seguro (en caso de que estés usando WSS)
-    forceTLS: false,        // En producción puede ser true si usas HTTPS
-    enabledTransports: ['ws', 'wss'], // Transportes habilitados
+    broadcaster: 'reverb',  
+    wsHost: window.location.hostname,
+    key: 'h3sqchfut0tiu8cexujr',    
+    wsPort: 8080,           
+    wssPort: 8080,          
+    forceTLS: false,        
+    enabledTransports: ['ws', 'wss'], 
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
