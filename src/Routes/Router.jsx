@@ -21,6 +21,7 @@ import RegisteredUsers from "../Pages/Session/Colegas";
 //importamos los layouts
 import Layout from "../Layouts/layout";
 import SessionLayout from "../Layouts/layout_session";
+import ChatPage from "../Pages/Session/PruebaMensajes";
 
 const router = createBrowserRouter([
     {
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
                     { path: "/proyectos-empresa", element: <MisProyectos /> },
                     { path: "/colegas", element: <RegisteredUsers /> },
                     { path: "/talento-empresas", element: <RegisteredUsers/> },
+                    { path: "/Pruebas/:user", element:<ChatPage/> },
                 ],
             },
             {
