@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import Echo from '../../Services/laravel-echo.client';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { FaPaperPlane } from 'react-icons/fa';
+import '../../Styles/Logueado/ChatLayout.css' 
 
 const ChatPage = () => {
     const { user } = useParams();
@@ -114,64 +116,69 @@ const ChatPage = () => {
     };
 
     return (
-        <div style={{ padding: 20 }}>
-            <h2>Chat en Tiempo Real con <span style={{ color: '#007bff' }}>{nombreReceptor || '...'}</span></h2>
-            
-            <div
-                ref={mensajesRef} // 🟡 Añadimos la referencia aquí
-                style={{
-                    border: '1px solid #ccc',
-                    height: 300,
-                    overflowY: 'scroll',
-                    padding: 10,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px'
-                }}
-            >
-                {mensajes.map((msg, index) => {
-                    const esMio = msg.id_user_one === currentUser;
-                    return (
-                        <div
-                            key={index}
-                            style={{
-                                display: 'flex',
-                                justifyContent: esMio ? 'flex-end' : 'flex-start'
-                            }}
-                        >
-                            <div
-                                style={{
-                                    backgroundColor: esMio ? '#DCF8C6' : '#F1F0F0',
-                                    color: 'black',
-                                    padding: '10px 15px',
-                                    borderRadius: '15px',
-                                    maxWidth: '60%',
-                                    wordWrap: 'break-word',
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                                }}
-                            >
-                                {msg.message}
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+        <section style={{display:'flex', justifyContent:'center'}}>
+            <div className="container-chatReal">
+                <div style={{ padding: 20 }}>
+                    <h2 style={{color:'#2E186A'}}>Chat en Tiempo Real con <span style={{ color: '#007bff' }}>{nombreReceptor || '...'}</span></h2>
+                    <br />
+                    <div
+                        ref={mensajesRef} // 🟡 Añadimos la referencia aquí
+                        style={{
+                            border: '1px solid #ccc',
+                            height: 300,
+                            overflowY: 'scroll',
+                            padding: 10,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '10px'
+                        }}
+                    >
+                        {mensajes.map((msg, index) => {
+                            const esMio = msg.id_user_one === currentUser;
+                            return (
+                                <div
+                                    key={index}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: esMio ? 'flex-end' : 'flex-start'
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            backgroundColor: esMio ? '#DCF8C6' : '#F1F0F0',
+                                            color: 'black',
+                                            padding: '10px 15px',
+                                            borderRadius: '15px',
+                                            maxWidth: '60%',
+                                            wordWrap: 'break-word',
+                                            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                                        }}
+                                    >
+                                        {msg.message}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
 
-            <div style={{ marginTop: 10 }}>
-                <input
-                    type="text"
-                    value={nuevoMensaje}
-                    onChange={(e) => setNuevoMensaje(e.target.value)}
-                    placeholder="Escribe un mensaje..."
-                    style={{ width: '70%', padding: '10px', fontSize: 16 }}
-                />
-                <button onClick={enviarMensaje} style={{ marginLeft: 10, padding: '10px 20px', fontSize: 16 }}>
-                    Enviar
-                </button>
+                    <div className='container-envio' >
+                        <div className='input-group'>
+                            <input
+                                type="text"
+                                value={nuevoMensaje}
+                                onChange={(e) => setNuevoMensaje(e.target.value)}
+                                placeholder="Escribe un mensaje..."
+                                className="form-control" 
+                            />
+                            <button className='btn-envio' onClick={enviarMensaje} style={{ fontSize: 16 }}>
+                                <FaPaperPlane /> Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     );
-    
 };
 function ordenarMayorMenor(a, b) {
     let resultado;

@@ -57,7 +57,9 @@ const Navbar = () => {
 
 const NavHome = ({ onToggleSidebar }) =>{
     const [profile, setProfile] = useState(null);
-    const [error, setError] = useState(null);
+    const [error,setError] = useState(null);
+    const [notifications, setNotifications] = useState([]);
+
     const { logout } = useAuth(); 
     const navigate = useNavigate(); 
 
@@ -73,10 +75,11 @@ const NavHome = ({ onToggleSidebar }) =>{
                 const userId = localStorage.getItem("user_id");
                 const response = await getProfile(userId);
                 setProfile(response.data);
+
+                setNotifications(response.data.notifications || []);
                 
             } catch (error) {
                 setError("Error al cargar el perfil");
-                
                 console.error(error);
             }
         };
@@ -93,12 +96,17 @@ const NavHome = ({ onToggleSidebar }) =>{
             </button>
             <div className="nav-icons">
 
-                <div className="notification-icon">
+            {notifications.length > 0 && (
+                <div className="notification-icon show">
+                    <span className="notification-text show">
+                        Tienes mensajes
+                    </span>
                     <a href="#" className="notifications">
-                        <i className="fas fa-bell"></i> 
-                        <span className="badge">3</span> 
+                        <i className="fas fa-bell"></i>
                     </a>
                 </div>
+            )}
+
 
                 <div className='dropdown text-end profile-menu'>
                     <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle"

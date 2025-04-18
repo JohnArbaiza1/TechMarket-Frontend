@@ -262,4 +262,28 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
     );
 };
 
+export const MessageCard = ({image, user, message,notification,onClick}) =>{
+
+    return(
+        <section className="chatCard" onClick={onClick}>
+            <div className="chatCard-header">
+                <img src={image} alt="Profile" className="chatCard-avatar" />
+
+                <div className="chatCard-body">
+                    <div className="chatCard-username">@{user}</div>
+                    <div className="chatCard-message">{message}</div>
+                </div>
+
+                {notification && (
+                    <div className="content-noti">
+                        <div className="chatCard-notification">
+                            <span>{notification}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </section>
+
+    );
+}
 export default CardProject;

@@ -8,6 +8,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     const location = useLocation(); // Hook para obtener la ubicación actual del navegador (ruta actual)
     const { logout } = useAuth(); // Extraemos la función logout del contexto de autenticación
     const navigate = useNavigate(); // Hook para navegar a otras rutas
+    const isMessagesRoute = location.pathname === '/techMarket-Chat'; //Para hacer que el sidebar este collapsado en esta ruta
 
     // Estado para manejar si la barra lateral está colapsada o expandida
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -21,7 +22,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     //Definimos enlaces comunes
     const commonLinks = [
         { icon: "fas fa-home", text: "Inicio", href: "/home" },
-        { icon: "fas fa-envelope", text: "Mensajes", href: "/mensajes" },
+        { icon: "fas fa-envelope", text: "Mensajes", href: "/techMarket-Chat" },
         { icon: "fas fa-upload", text: "Publicar", href: "/publicar" },
     ];
 
@@ -72,7 +73,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     };
 
     return (
-        <div className={`sidebar ${isOpen ? "open" : ""} ${isCollapsed ? "collapsed" : ""}`}>
+        <div className={`sidebar ${isOpen ? "open" : ""} ${(isCollapsed || isMessagesRoute) ? "collapsed" : ""}`}>
             <button className="close-btn" onClick={onClose}>
                 <i className="fa-solid fa-xmark"></i>
             </button>
@@ -84,7 +85,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
                     <li key={link.href} className={`item ${location.pathname === link.href ? "active" : ""}`}>
                         <Link to={link.href}>
                             <i className={link.icon}></i> 
-                            {!isCollapsed && <span>{link.text}</span>}
+                            {!(isCollapsed || isMessagesRoute) && <span>{link.text}</span>}
                         </Link>
                     </li>
                 ))}
@@ -92,7 +93,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
                 <li className="item logout">
                     <Link onClick={handleLogout}>
                         <i className="fas fa-sign-out-alt"></i>
-                        {!isCollapsed && <span>Cerrar sesión</span>}
+                        {!(isCollapsed || isMessagesRoute) && <span>Cerrar sesión</span>}
                     </Link>
                 </li>
             </ul>

@@ -17,6 +17,7 @@ import ConfigProfile from "../Pages/Session/ConfigPerfil";
 import SettingsPage from "../Pages/Session/SettingsPage";
 import MisProyectos from "../Pages/Session/MyProjects";
 import RegisteredUsers from "../Pages/Session/Colegas";
+import ChatsUsers from "../Pages/Session/Chats";
 
 //importamos los layouts
 import Layout from "../Layouts/layout";
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
                     { path: "/proyectos-empresa", element: <MisProyectos /> },
                     { path: "/colegas", element: <RegisteredUsers /> },
                     { path: "/talento-empresas", element: <RegisteredUsers/> },
+                    { path: "/techMarket-Chat", element: <ChatsUsers/> },
                     { path: "/Pruebas/:user", element:<ChatPage/> },
                 ],
             },
