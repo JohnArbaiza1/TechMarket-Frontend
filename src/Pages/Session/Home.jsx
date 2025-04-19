@@ -3,10 +3,14 @@ import { CardPublication } from "../../Components/Card";
 import { getPulications } from "../../Services/publicationServices";
 import { getPulicationsByidUser } from "../../Services/aplicationsService";
 import "../../Styles/Home.css";
+import Echo from "../../Services/laravel-echo.client";
+import { getChatIds } from "../../Services/chatService";
+import { messageListener } from "../../Components/MessageListener";
 
 const Home = () => {
     const [publications, setPublications] = useState([]);
     const [userApplications, setUserApplications] = useState([]);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,7 +32,8 @@ const Home = () => {
     
         fetchData();
     }, []);
-    
+
+    messageListener(false); // Llamar a la función para escuchar mensajes
 
     return (
         <div className="grid-container">
