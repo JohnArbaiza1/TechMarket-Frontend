@@ -77,7 +77,7 @@ export const ModalPublication = ({ isOpen, title, description, onClose, onApply,
     );
 }
 
-export const ModalAplicants = ({ isOpen, isClose, applicants }) => {
+export const ModalAplicants = ({ isOpen, isClose, applicants, publication }) => {
     const navigate = useNavigate();
     if (!isOpen) return null;
 
@@ -99,6 +99,7 @@ export const ModalAplicants = ({ isOpen, isClose, applicants }) => {
                                 viewProfile={(username) => navigate(`/profile/${username}`)}
                                 applicants={true}
                                 sendMessage={(userId) => navigate(`/Pruebas/${userId}`)}
+                                publication={publication}
                             />
                         ))
                     )}

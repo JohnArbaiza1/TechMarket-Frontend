@@ -57,7 +57,7 @@ const MisProyectos = () => {
                         quota={publication.quota}
                         rating={publication.publication_rating}
                         description={publication.publication_description}
-                        id_publication={publication.id}
+                        publication={publication}
                         isApplied={false}
                         isOwner={true}
                     />

@@ -5,7 +5,6 @@ import { getPulicationsByidUser } from "../../Services/aplicationsService";
 import "../../Styles/Home.css";
 import Echo from "../../Services/laravel-echo.client";
 import { getChatIds } from "../../Services/chatService";
-import { messageListener } from "../../Components/MessageListener";
 
 const Home = () => {
     const [publications, setPublications] = useState([]);
@@ -33,7 +32,7 @@ const Home = () => {
         fetchData();
     }, []);
 
-    messageListener(false); // Llamar a la función para escuchar mensajes
+
 
     return (
         <div className="grid-container">
@@ -52,7 +51,7 @@ const Home = () => {
                         quota={publication.quota}
                         rating={publication.publication_rating}
                         description={publication.publication_description}
-                        id_publication={publication.id}
+                        publication={publication}
                         isApplied={isApplied}
                         isOwner={publication.id_user == localStorage.getItem("user_id")}
                     />

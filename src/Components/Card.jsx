@@ -57,7 +57,7 @@ CardProject.defaultProps = {
 };
 
 //Componente Card para las publicaciones
-export const CardPublication = ({ image, tags, title, description, date, quota, rating, id_publication, isApplied,isOwner}) => {
+export const CardPublication = ({ image, tags, title, description, date, quota, rating, publication, isApplied,isOwner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpenApplicants, setIsModalOpenApplicants] = useState(false);
     const [isAppliedCard, setIsApplied] = useState(isApplied); // Estado para verificar si el usuario ya aplicó al proyecto
@@ -82,7 +82,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
     const handleApply = async () => {
         try {
             const response = await postAplicationProyect({
-                id_publication: id_publication, // ID de la publicación
+                id_publication: publication.id, // ID de la publicación
             });
 
             if (response.status === 201) {
@@ -102,7 +102,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
     const handleCancel = async () => {
         try {
             const response = await delApplicantUserPublication(
-                id_publication // ID de la publicación
+                publication.id // ID de la publicación
             ); 
             if (response.status === 200) {
                 alert('Aplicación cancelada exitosamente');
@@ -122,7 +122,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
     const handleViewApplications = async () => {
         setIsLoading(true); // Inicia el estado de carga
         try {
-            const response = await getApplicantByPublication(id_publication);
+            const response = await getApplicantByPublication(publication.id);
             if (response.status === 200) {
                 setDataApplicants(response.data); // Guardar los datos de los solicitantes en el estado
                 setIsModalOpenApplicants(true); // Abrir el modal solo después de cargar los datos
@@ -210,6 +210,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                         isOpen={isModalOpenApplicants}
                         isClose={() => setIsModalOpenApplicants(false)}
                         applicants={dataApplicants}
+                        publication={publication}
                     />
                 )}
             </div>
@@ -221,7 +222,7 @@ CardPublication.defaultProps = {
     image: null
 };
 
-export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants }) => {
+export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants, publication }) => {
     const navigate = useNavigate();
 
     if (!profile) return null;
@@ -233,7 +234,12 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
         : (isFollowing ? 'btn-followCard is-following' : 'btn-followCard');
 
     const handleSendMessage = () => {
-        navigate("/techMarket-Chat", { state: { userId: user.id, userName: user.user_name, userImage: profile.image_url } });
+        if(applicants){
+            navigate("/techMarket-Chat", { state: { userId: user.id, userName: user.user_name, userImage: profile.image_url, publication: publication } });
+        }else{
+            navigate("/techMarket-Chat", { state: { userId: user.id, userName: user.user_name, userImage: profile.image_url } });
+        }
+        
     };
 
     return (

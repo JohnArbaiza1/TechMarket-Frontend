@@ -1,10 +1,11 @@
 import { Link, useLocation, useNavigate  } from 'react-router-dom';
 import '../Styles/Componentes/navbar.css';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getProfile } from '../Services/profileService';
 import { useAuth } from '../Auth/AuthContext';
 import {viewPlanes} from '../Services/planesService';
 import { MyMembership  } from './Modal';
+import { useChatContext } from "../GlobalMessageListener";
 
 const Navbar = () => {
     const location = useLocation(); // Obtener la ubicación actual
@@ -57,17 +58,23 @@ const Navbar = () => {
     );
 };
 
-const NavHome = ({ onToggleSidebar }) =>{
-    const [profile, setProfile] = useState(null);
-    const [error,setError] = useState(null);
-    const [notifications, setNotifications] = useState([]);
 
-    //Eventos para el plan
+
+const NavHome = ({ onToggleSidebar }) => {
+    const [profile, setProfile] = useState(null);
+    const [error, setError] = useState(null);
+    const [notifications, setNotifications] = useState([]); // Notificaciones de mensajes no leídos
+    const [unreadCount, setUnreadCount] = useState(0); // Contador de mensajes no leídos
+
+    const { lastMessage } = useChatContext(); // Obtener el último mensaje desde el contexto
+    const { logout } = useAuth();
+    const location = useLocation(); // Obtener la ruta actual
+
+    const processedMessages = useRef(new Set()); // Almacenar IDs de mensajes procesados
+
     const [modalPlanVisible, setModalPlanVisible] = useState(false);
     const [currentPlan, setCurrentPlan] = useState(null);
-
-    const { logout } = useAuth(); 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleLogout = (e) => {
         e.preventDefault();
@@ -80,26 +87,23 @@ const NavHome = ({ onToggleSidebar }) =>{
             const planes = await viewPlanes();
             const userPlanId = parseInt(localStorage.getItem("id_membership"));
 
-            //para obtener el plan
-            const plan = planes.data.find(p => parseInt(p.id) === userPlanId);
+            const plan = planes.data.find((p) => parseInt(p.id) === userPlanId);
 
             if (plan) {
                 setCurrentPlan(plan);
-                setModalPlanVisible(true); // Mostrar el modal solo si encuentra el plan
+                setModalPlanVisible(true);
             } else {
                 console.warn("Plan del usuario no encontrado");
             }
-
         } catch (error) {
             console.error("Error al obtener el plan:", error);
         }
     };
-    
+
     const handleUpdatePlan = () => {
         setModalPlanVisible(false);
-        navigate("#"); 
+        navigate("#");
     };
-    
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -109,70 +113,104 @@ const NavHome = ({ onToggleSidebar }) =>{
                 setProfile(response.data);
 
                 setNotifications(response.data.notifications || []);
-                
             } catch (error) {
                 setError("Error al cargar el perfil");
                 console.error(error);
             }
         };
-    
+
         fetchProfile();
     }, []);
 
-    return(
+    // Actualizar el contador de mensajes no leídos cuando llega un nuevo mensaje
+    useEffect(() => {
+        if (lastMessage) {
+            console.log("NavHome: Nuevo mensaje recibido:", lastMessage);
+
+            // Verificar si el usuario NO está en la ruta /techMarket-Chat
+            if (location.pathname !== "/techMarket-Chat") {
+                const currentUserId = parseInt(localStorage.getItem("user_id"));
+
+                // Verificar si el mensaje ya fue procesado
+                if (lastMessage.id_user !== currentUserId && !processedMessages.current.has(lastMessage.id)) {
+                    processedMessages.current.add(lastMessage.id); // Marcar el mensaje como procesado
+                    setUnreadCount((prevCount) => prevCount + 1); // Incrementar el contador
+                }
+            }
+        }
+    }, [lastMessage, location.pathname]);
+
+    // Reiniciar el contador cuando el usuario esté en /techMarket-Chat
+    useEffect(() => {
+        if (location.pathname === "/techMarket-Chat") {
+            console.log("NavHome: Usuario está en /techMarket-Chat. Reiniciando contador de mensajes no leídos.");
+            setUnreadCount(0); // Reiniciar el contador
+        }
+    }, [location.pathname]);
+
+    return (
         <>
-        <div className="nav-logueado">
-            <h3 className="title-home">TechMarket</h3>
-            <button className="menu-btn" onClick={onToggleSidebar}>
-                <i className="fa-solid fa-bars"></i>
-            </button>
-            <div className="nav-icons">
+            <div className="nav-logueado">
+                <h3 className="title-home">TechMarket</h3>
+                <button className="menu-btn" onClick={onToggleSidebar}>
+                    <i className="fa-solid fa-bars"></i>
+                </button>
+                <div className="nav-icons">
+                    {unreadCount > 0 && (
+                        <div className="notification-icon show">
+                            <span className="notification-text show">
+                                Tienes {unreadCount} mensaje{unreadCount > 1 ? "s" : ""}
+                            </span>
+                            <a href="#" className="notifications">
+                                <i className="fas fa-bell"></i>
+                            </a>
+                        </div>
+                    )}
 
-            {notifications.length > 0 && (
-                <div className="notification-icon show">
-                    <span className="notification-text show">
-                        Tienes mensajes
-                    </span>
-                    <a href="#" className="notifications">
-                        <i className="fas fa-bell"></i>
-                    </a>
-                </div>
-            )}
+                    <div className="dropdown text-end profile-menu">
+                        <a
+                            href="#"
+                            className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <img
+                                src={profile?.image_url || "https://unavatar.io/github/defaultuser"}
+                                alt="mdo"
+                                width="32"
+                                height="32"
+                                className="rounded-circle"
+                            />
+                        </a>
 
-
-                <div className='dropdown text-end profile-menu'>
-                    <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src={profile?.image_url || "https://unavatar.io/github/defaultuser"}  alt="mdo" width="32" height="32"
-                            className="rounded-circle"/>
-                    </a>
-
-                    <ul className="dropdown-menu text-small">
-                        <li>
-                            <Link className="dropdown-item" to="/settings"> <i className="fa-solid fa-gear"></i> Configuración </Link>
-                        </li>
-                        <li>
-
-                        <li>
-                            <button className="dropdown-item" onClick={handleShowPlan}>
-                                <i className="fa-solid fa-money-check-dollar"></i> Tu Plan
-                            </button>
-                        </li>
-
-                        </li>
-                        <li>
-                            <Link className="dropdown-item" to="/profile"> <i className="fa-solid fa-user"></i> Tu Perfil </Link>
-                        </li>
-                        <li>
-                            <hr className="dropdown-divider" />
-                        </li>
-                        <li>
-                            <Link className="dropdown-item" onClick={handleLogout}> <i className="fa-solid fa-right-to-bracket"></i> Sign out </Link>
-                        </li>
-                    </ul>
+                        <ul className="dropdown-menu text-small">
+                            <li>
+                                <Link className="dropdown-item" to="/settings">
+                                    <i className="fa-solid fa-gear"></i> Configuración
+                                </Link>
+                            </li>
+                            <li>
+                                <button className="dropdown-item" onClick={handleShowPlan}>
+                                    <i className="fa-solid fa-money-check-dollar"></i> Tu Plan
+                                </button>
+                            </li>
+                            <li>
+                                <Link className="dropdown-item" to="/profile">
+                                    <i className="fa-solid fa-user"></i> Tu Perfil
+                                </Link>
+                            </li>
+                            <li>
+                                <hr className="dropdown-divider" />
+                            </li>
+                            <li>
+                                <Link className="dropdown-item" onClick={handleLogout}>
+                                    <i className="fa-solid fa-right-to-bracket"></i> Sign out
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
             <MyMembership
                 show={modalPlanVisible}
@@ -182,8 +220,8 @@ const NavHome = ({ onToggleSidebar }) =>{
             />
         </>
     );
-}
-
+};
+    
 export default Navbar;
 export {
     NavHome
