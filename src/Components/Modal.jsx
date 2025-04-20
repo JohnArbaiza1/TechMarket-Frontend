@@ -3,9 +3,10 @@ import { Modal, Button } from 'react-bootstrap';
 import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa'; // Importamos los iconos
 import '../Styles/Componentes/Modals.css';
 import '../Styles/Componentes/ModalAplicants.css';
-import { First, Last } from 'react-bootstrap/esm/PageItem';
+import { First, Last} from 'react-bootstrap/esm/PageItem';
 import { UserCard } from './Card';
 import { useNavigate } from "react-router-dom";
+
 
 const ModalComponent = ({ show, onHide, title,message, variant, onAction}) => {
     // Función para renderizar el icono según el tipo de acción
@@ -107,6 +108,26 @@ export const ModalAplicants = ({ isOpen, isClose, applicants }) => {
                 </button>
             </div>
         </div>
+    );
+};
+
+export const MyMembership = ({ show, onHide, currentPlan, onUpdatePlan }) =>{
+    return (
+        <Modal show={show} onHide={onHide} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Tu Plan Actual</Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{ textAlign: 'center' }}>
+                <h4>{currentPlan?.membership_name || "Plan Desconocido"}</h4>
+                <p><strong>Precio:</strong> {currentPlan?.price ? `$${currentPlan.price}` : "N/A"}</p>
+                <p><strong>Descripción:</strong> <br /> {currentPlan?.membership_description || "Sin descripción"}</p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="warning" onClick={onUpdatePlan}>
+                    Actualizar Plan
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 };
 

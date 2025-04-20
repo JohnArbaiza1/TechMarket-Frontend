@@ -3,6 +3,8 @@ import '../Styles/Componentes/navbar.css';
 import { useState, useEffect } from "react";
 import { getProfile } from '../Services/profileService';
 import { useAuth } from '../Auth/AuthContext';
+import {viewPlanes} from '../Services/planesService';
+import { MyMembership  } from './Modal';
 
 const Navbar = () => {
     const location = useLocation(); // Obtener la ubicación actual
@@ -60,6 +62,10 @@ const NavHome = ({ onToggleSidebar }) =>{
     const [error,setError] = useState(null);
     const [notifications, setNotifications] = useState([]);
 
+    //Eventos para el plan
+    const [modalPlanVisible, setModalPlanVisible] = useState(false);
+    const [currentPlan, setCurrentPlan] = useState(null);
+
     const { logout } = useAuth(); 
     const navigate = useNavigate(); 
 
@@ -68,6 +74,32 @@ const NavHome = ({ onToggleSidebar }) =>{
         logout();
         navigate("/login");
     };
+
+    const handleShowPlan = async () => {
+        try {
+            const planes = await viewPlanes();
+            const userPlanId = parseInt(localStorage.getItem("id_membership"));
+
+            //para obtener el plan
+            const plan = planes.data.find(p => parseInt(p.id) === userPlanId);
+
+            if (plan) {
+                setCurrentPlan(plan);
+                setModalPlanVisible(true); // Mostrar el modal solo si encuentra el plan
+            } else {
+                console.warn("Plan del usuario no encontrado");
+            }
+
+        } catch (error) {
+            console.error("Error al obtener el plan:", error);
+        }
+    };
+    
+    const handleUpdatePlan = () => {
+        setModalPlanVisible(false);
+        navigate("#"); 
+    };
+    
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -120,7 +152,13 @@ const NavHome = ({ onToggleSidebar }) =>{
                             <Link className="dropdown-item" to="/settings"> <i className="fa-solid fa-gear"></i> Configuración </Link>
                         </li>
                         <li>
-                            <Link className="dropdown-item" to="#"> <i className="fa-solid fa-money-check-dollar"></i> Tu Plan </Link>
+
+                        <li>
+                            <button className="dropdown-item" onClick={handleShowPlan}>
+                                <i className="fa-solid fa-money-check-dollar"></i> Tu Plan
+                            </button>
+                        </li>
+
                         </li>
                         <li>
                             <Link className="dropdown-item" to="/profile"> <i className="fa-solid fa-user"></i> Tu Perfil </Link>
@@ -135,6 +173,13 @@ const NavHome = ({ onToggleSidebar }) =>{
                 </div>
             </div>
         </div>
+
+            <MyMembership
+                show={modalPlanVisible}
+                onHide={() => setModalPlanVisible(false)}
+                currentPlan={currentPlan}
+                onUpdatePlan={handleUpdatePlan}
+            />
         </>
     );
 }
