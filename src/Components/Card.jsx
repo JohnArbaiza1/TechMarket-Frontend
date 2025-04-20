@@ -2,6 +2,7 @@ import { postAplicationProyect, delApplicantUserPublication, getApplicantByPubli
 import '../Styles/Componentes/card.css';
 import { ModalAplicants, ModalPublication } from './Modal';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Componente funcional Card para mostrar los planes y sus precios
 export function CardPrice ({title,subtitle,texto,description}){
@@ -220,17 +221,19 @@ CardPublication.defaultProps = {
     image: null
 };
 
-export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants, sendMessage }) => {
+export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants }) => {
+    const navigate = useNavigate();
 
     if (!profile) return null;
 
-    const getButtonText = () => {
-        return applicants ? 'Ver perfil' : (isFollowing ? "Siguiendo" : "Seguir");
-    };
+    const getButtonText = () => applicants ? 'Ver perfil' : (isFollowing ? "Siguiendo" : "Seguir");
 
-    const getButtonClass = () => {
-        return applicants ? 'btn-followCard is-following' :
-            (isFollowing ? 'btn-followCard is-following' : 'btn-followCard');
+    const getButtonClass = () => applicants
+        ? 'btn-followCard is-following'
+        : (isFollowing ? 'btn-followCard is-following' : 'btn-followCard');
+
+    const handleSendMessage = () => {
+        navigate("/techMarket-Chat", { state: { userId: user.id, userName: user.user_name, userImage: profile.image_url } });
     };
 
     return (
@@ -247,13 +250,12 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
                         className={getButtonClass()}
                         onClick={applicants
                             ? () => viewProfile(user.user_name)
-                            : () => onFollowToggle(user.id)
-                        }
+                            : () => onFollowToggle(user.id)}
                     >
                         {getButtonText()}
                     </button>
 
-                    <button onClick={() => sendMessage(user.id)} className="btn-followCard">
+                    <button onClick={handleSendMessage} className="btn-followCard">
                         Mensaje
                     </button>
                 </div>

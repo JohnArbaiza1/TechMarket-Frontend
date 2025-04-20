@@ -100,3 +100,25 @@ export const changeStateMessage = async (id_message) => {
         throw error;
     }
 };
+
+export const getChatDetails = async (id_chat) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${API_URL}chats/${id_chat}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al obtener los detalles del chat");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener los detalles del chat:", error);
+        throw error;
+    }
+};

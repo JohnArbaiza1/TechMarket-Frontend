@@ -1,55 +1,47 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Echo from "../Services/laravel-echo.client";
-import { getChatIds } from "../Services/chatService";
 
-export const messageListener = () => {
-    const [idChats, setIdChats] = useState([]);
+export const messageListener = (onNewChat) => {
     const [messages, setMessages] = useState(null);
     const subscribedChannels = useRef(new Set()); // Persistente entre renders
+    const isSubscribedToUserChannel = useRef(false); // Evitar múltiples suscripciones al canal del usuario
 
-    // Obtener los IDs de los chats al cargar
+    // Suscribirse al canal del usuario para escuchar nuevos chats
     useEffect(() => {
-        const fetchIdChats = async () => {
-            try {
-                const response = await getChatIds();
-                setIdChats(response);
-                console.log("IDs de chats:", response);
-            } catch (error) {
-                console.error("Error al obtener los IDs de chats:", error.message);
-            }
-        };
+        const userId = localStorage.getItem("user_id");
+        if (!userId || isSubscribedToUserChannel.current) return;
 
-        fetchIdChats();
+        Echo.private(`user.${userId}`)
+            .listen(".ChatCreated", (e) => {
+                console.log("Nuevo chat creado:", e.chat);
+
+                // Llamar a la función de callback para manejar el nuevo chat
+                if (onNewChat) {
+                    onNewChat(e.chat);
+                }
+            })
+            .error((err) => console.error("Error al suscribirse al canal del usuario:", err));
+
+        isSubscribedToUserChannel.current = true; // Marcar como suscrito
+    }, [onNewChat]);
+
+    // Memorizar la función `subscribeToChannel`
+    const subscribeToChannel = useCallback((idChat) => {
+        const channelName = `chat.${idChat}`;
+
+        if (!subscribedChannels.current.has(channelName)) {
+            Echo.private(channelName)
+                .listen(".MessageSend", (e) => {
+                    console.log("Mensaje recibido en canal nuevo:", e);
+                    setMessages(e.message);
+                })
+                .subscribed(() => {
+                    console.log(`Suscrito dinámicamente al nuevo canal: ${channelName}`);
+                    subscribedChannels.current.add(channelName);
+                })
+                .error((err) => console.error(`Error suscribiendo al nuevo canal ${channelName}`, err));
+        }
     }, []);
 
-    // Suscribirse a los canales de chat
-    useEffect(() => {
-        if (idChats.length > 0) {
-            idChats.forEach((idCanal) => {
-                const channelName = `chat.${idCanal}`;
-
-                // Verificar si ya estamos suscritos al canal
-                if (subscribedChannels.current.has(channelName)) {
-                    console.log(`Ya suscrito al canal ${channelName}, omitiendo...`);
-                    return; // Saltar este canal
-                }
-
-                // Suscribirse al canal y agregarlo al Set
-                Echo.private(channelName)
-                    .listen(".MessageSend", (e) => {
-                        console.log("Mensaje recibido via WebSocket:", e);
-                        setMessages(e.message); // Actualizar el estado con el mensaje recibido
-                    })
-                    .subscribed(() => {
-                        console.log(`Suscrito correctamente al canal ${channelName}`);
-                        subscribedChannels.current.add(channelName); // Agregar al Set
-                    })
-                    .error((error) => {
-                        console.error(`Error de suscripción al canal ${channelName}:`, error);
-                    });
-            });
-        }
-    }, [idChats]);
-
-    return messages; // Retornar los mensajes recibidos
+    return { messages, subscribeToChannel };
 };
