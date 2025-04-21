@@ -193,6 +193,7 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                             value={formData.education}
                             onChange={handleChange}
                             required
+                            placeholder="Separar con comas"
                             />
                             {errors.education && <div style={styles.errorMessage}>{errors.education}</div>}
                         </Form.Group>
@@ -200,7 +201,7 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
 
                     <Form.Group className="mb-3">
                         <Form.Label style={styles.labelForm}> {isCompany ? "Servicios ofrecidos" : "Experiencia"}</Form.Label>
-                        <Form.Control type="text" name="work_experience" value={formData.work_experience} onChange={handleChange}/>
+                        <Form.Control type="text" name="work_experience" value={formData.work_experience} onChange={handleChange}  placeholder="Separar con comas"/>
                         {errors.experience && <div style={styles.errorMessage}>{errors.experience}</div>}
                     </Form.Group>
 
@@ -209,14 +210,14 @@ const FormularioPerfil = ({ userId, onProfileSave}) => {
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label style={styles.labelForm}> {isCompany ? "Tecnologías utilizadas" : "Skills"}</Form.Label>
-                                <Form.Control as="textarea" name="skills" value={formData.skills} onChange={handleChange}/>
+                                <Form.Control as="textarea" name="skills" value={formData.skills} onChange={handleChange}  placeholder="Separar con comas"/>
                                 {errors.skills && <div style={styles.errorMessage}>{errors.skills}</div>}
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label style={styles.labelForm}>Enlace de Redes Sociales</Form.Label>
-                                <Form.Control  as="textarea" name="social_media_links" value={formData.social_media_links} onChange={handleChange}/>
+                                <Form.Control  as="textarea" name="social_media_links" value={formData.social_media_links} onChange={handleChange} placeholder="Separar con comas"/>
                                 {errors.social_media_links&& <div style={styles.errorMessage}>{errors.social_media_links}</div>}
                             </Form.Group>
                         </Col>

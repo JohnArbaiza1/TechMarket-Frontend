@@ -1,0 +1,134 @@
+.credit-form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px;
+    padding: 40px;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+
+.card-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card-front {
+    width: 320px;
+    height: 200px;
+    border-radius: 16px;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(45deg, #2A1447, #e100ff);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card-back {
+    width: 320px;
+    height: 200px;
+    border-radius: 16px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(45deg, #2A1447, #e100ff);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.linea{
+    width: 100%;
+    height: 30px;
+    margin-top: 30px;
+    background-color: #e100ff;
+}
+
+.card-circle {
+    width: 41px;
+    height: 41px;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.img-profile{
+    width: 38px;
+    height: 38px;
+}
+
+.card-number {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+}
+
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.card-back {
+    background: linear-gradient(45deg, #5E308C, #0f0f2d);
+    position: relative;
+}
+
+.cvv-box {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    background: #f3f3f3;
+    padding: 5px 10px;
+    border-radius: 8px;
+    color: #5E308C;
+}
+
+.credit-form {
+    width: 300px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    display: block;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-plan{
+    width: 100%;
+    padding: 10px;
+    background: #2E186A;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn-plan:hover {
+    background: #5E308C;
+}
