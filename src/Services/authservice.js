@@ -1,5 +1,6 @@
 //Importación la librería axios para hacer solicitudes HTTP
 import axios from "axios";
+import {toast } from "sonner";
 
 //Parte donde se trabaja el registro de usuario con la API
 
@@ -22,12 +23,30 @@ const register = async(user_name, email, password, id_membership ) =>{
     
     }catch(e){
         // Si ocurre un error en la solicitud hacemos lo siguiente
-        if (e.response) {
-            //mostramos un mensaje de error que envía la API
-            throw e.response.data.message ||'Error al registrar el usuario';
-        } else {
-            // Si no hay respuesta del servidor mostramos el mensaje siguiente
-            throw 'Error al conectar con el servidor';
+        if (e.response && e.response.data) {
+            const errorData = e.response.data;
+            // Errores de validación
+            if (errorData.errors) {
+                const errors = errorData.errors;
+        
+                if (errors.email) {
+                    toast.error(errors.email[0], { position: 'top-center' });
+                    console.log("Error de email:", errors.email[0]);
+                }
+                if (errors.user_name) {
+                    toast.error(errors.user_name[0], { position: 'top-center' });
+                    console.log("Error de username:", errors.user_name[0]);
+                }
+        
+                // Lanzamos un mensaje más específico sobre qué campo falló
+                if (errors.email) {
+                    throw errors.email[0];
+                } else if (errors.user_name) {
+                    throw errors.user_name[0];
+                } else {
+                    throw 'Error de validación al registrar el usuario';
+                }
+            }
         }
     }
 }

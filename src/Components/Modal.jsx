@@ -6,6 +6,7 @@ import '../Styles/Componentes/ModalAplicants.css';
 import { First, Last} from 'react-bootstrap/esm/PageItem';
 import { UserCard } from './Card';
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 
 const ModalComponent = ({ show, onHide, title,message, variant, onAction}) => {
@@ -125,7 +126,9 @@ export const MyMembership = ({ show, onHide, currentPlan, onUpdatePlan }) =>{
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="warning" onClick={onUpdatePlan}>
-                    Actualizar Plan
+                    <Link to="/update-membership" style={{color:'white', textDecoration:'none'}}>
+                        Actualizar Plan
+                    </Link>
                 </Button>
             </Modal.Footer>
         </Modal>
