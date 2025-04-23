@@ -36,7 +36,7 @@ const CreditCard = () =>{
                     <img
                         src={profile?.image_url || 'https://unavatar.io/github/defaultuser'}
                         alt="img profile"
-                        className="img-profile"
+                        className="img-profileCard"
                     />
                 </div>
                 <div className="card-number">{number || '1234 4125 1231 2132'}</div>

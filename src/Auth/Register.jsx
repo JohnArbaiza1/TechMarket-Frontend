@@ -14,8 +14,8 @@ const Register = () =>{
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [membershipId, setMembershipId] = useState("");
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    // const [errorMessage, setErrorMessage] = useState('');
+    // const [successMessage, setSuccessMessage] = useState('');
     const { register } = useAuth(); // Usamos la función de registro del contexto
     const navigate = useNavigate(); // Usamos useNavigate para redirigir después del registro
     const [passwordError, setPasswordError] = useState('');
@@ -71,14 +71,11 @@ const Register = () =>{
 
         try{
             await register(username, email, password, membershipId);
-
             //Redirigimos a la página de configuración del perfil después del registro
             navigate('/config-profile');
-
         }catch(e){
             // Si hay un error, mostramos el mensaje de error
-            setErrorMessage(e || 'Error al registrar el usuario.');
-            setSuccessMessage('');
+            toast.error(e || 'Error al registrar el usuario.', { position: 'top-center' });
         }
     };
 

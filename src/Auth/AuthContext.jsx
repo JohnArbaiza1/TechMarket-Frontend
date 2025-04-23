@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             // Si hay un error, lo mostramos
             console.error('Error al registrar el usuario:', error);
+            throw error;
         }
     };
     
