@@ -222,14 +222,14 @@ const ChatsUsers = () => {
             if (!selectedChat?.id) {
                 // Crear nuevo chat
                 console.log("ChatsUsers: Creando nuevo chat y enviando primer mensaje...");
-                CreateChatMessage(userIdFromNavigation, messageInput, publicationFromNavigation.id)
+                CreateChatMessage(userIdFromNavigation, messageInput, publicationFromNavigation?.id || null)
                     .then((response) => {
                         const newChat = {
                             id: response.id_chat,
                             user_one: { id: parseInt(localStorage.getItem("user_id")) },
                             user_two: { id: userIdFromNavigation, user_name: userNameFromNavigation, profile: { image_url: userImageFromNavigation } },
                             messages: [{ ...response, message: messageInput }],
-                            publication:{ id: publicationFromNavigation.id, title: publicationFromNavigation.title },
+                            publication: publicationFromNavigation ? { id: publicationFromNavigation.id, title: publicationFromNavigation.title } : null,
                         };
 
                         // Agregar el nuevo chat a la lista de chats y moverlo al inicio
