@@ -69,7 +69,7 @@ const ChatsUsers = () => {
 
     // Crear un nuevo chat si no existe uno ya creado 
     useEffect(() => {
-         if (!userIdFromNavigation || chats.length === 0 || chatInitializedFromNavigation) return;
+         if (!userIdFromNavigation || chatInitializedFromNavigation) return;
             const currentUserId = parseInt(localStorage.getItem("user_id"));
 
             const existingChat = chats.find(chat =>
@@ -98,7 +98,7 @@ const ChatsUsers = () => {
 
                 setSelectedChat({
                     id: newChat.id,
-                name: (userNameFromNavigation +" ° "+ publicationFromNavigation.title) || "Nuevo Chat",
+                name: userNameFromNavigation + (publicationFromNavigation? " ° " + publicationFromNavigation.title : ""),
                     image: userImageFromNavigation || "https://via.placeholder.com/150",
                     messages: [],
                 });
