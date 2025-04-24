@@ -5,6 +5,7 @@ import { AuthProvider } from './Auth/AuthContext';
 import LoaderPages from './Components/Loader';
 import { Toaster } from "sonner";
 import { ChatProvider } from './GlobalMessageListener'; 
+import { ProfileProvider } from './Contexts/ProfileContext';
 
 function App() {
 
@@ -13,10 +14,11 @@ function App() {
     <>
       <LoaderPages delay={3000} />
       <AuthProvider>
-        <ChatProvider>
-          <RouterProvider router={router} />
-
-        </ChatProvider> 
+        <ProfileProvider> 
+            <ChatProvider>
+              <RouterProvider router={router} />
+            </ChatProvider> 
+        </ProfileProvider>
       </AuthProvider> 
       <Toaster />
     </>
