@@ -2,7 +2,6 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import authservice from '../Services/authservice';
 import {toast} from 'sonner';
 
-
 //Definimos el contexto
 const AuthContext = createContext();
 
@@ -27,6 +26,9 @@ export const AuthProvider = ({ children }) => {
                     localStorage.setItem("user_id", data.user.id);
                 }
                 setIsAuth(true);// Actualiza estado de autenticación
+                
+                // Disparar evento personalizado para notificar el cambio de autenticación
+                window.dispatchEvent(new Event('authChanged'));
             }
 
             return data;
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }) => {
             if (data){
                 setNeedsProfileSetup(true); //Indicamos que necesita configurar su perfil
                 await login(username, password)
+                // No necesitamos disparar el evento aquí porque login() ya lo hace
             }
             return data; 
             
@@ -60,7 +63,6 @@ export const AuthProvider = ({ children }) => {
     //Función para cuando se cierra la sesión
     const logout = async () =>{
         try{
-
             const token = localStorage.getItem("token"); // Obtenemos el token almacenado
             if (!token) {
                 console.warn("No hay token para cerrar sesión");
@@ -75,15 +77,18 @@ export const AuthProvider = ({ children }) => {
             // Actualiza el estado de autenticación en el contexto
             setNeedsProfileSetup(false); //Reiniciamos el estado al cerrar sesión
             setIsAuth(false);
+            
+            // Disparar evento personalizado para notificar el cambio de autenticación
+            window.dispatchEvent(new Event('authChanged'));
         }catch(error){
             console.log("Error al cerrar la sesión ", error);
         }
     }
 
-        // Guardar needsProfileSetup en localStorage cuando cambie
-        useEffect(() => {
-            localStorage.setItem("needsProfileSetup", JSON.stringify(needsProfileSetup));
-        }, [needsProfileSetup]);
+    // Guardar needsProfileSetup en localStorage cuando cambie
+    useEffect(() => {
+        localStorage.setItem("needsProfileSetup", JSON.stringify(needsProfileSetup));
+    }, [needsProfileSetup]);
     
     return(
         <AuthContext.Provider value={{ isAuth, needsProfileSetup, setNeedsProfileSetup, login, logout, register}}>

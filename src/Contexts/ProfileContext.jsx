@@ -3,7 +3,6 @@ import { createContext, useState, useEffect, useContext } from 'react';
 // Importa la función para obtener el perfil desde el servicio correspondiente
 import { getProfile } from '../Services/profileService';
 
-// Crea el contexto de perfil
 const ProfileContext = createContext();
 
 export const ProfileProvider = ({ children }) => {
@@ -13,54 +12,70 @@ export const ProfileProvider = ({ children }) => {
     const [error, setError] = useState(null);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
+    
+    // Agregamos un estado para rastrear el estado de autenticación
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("user_id"));
 
-    // Hook que se ejecuta al montar el componente
+    // Efecto para monitorear cambios en el estado de inicio de sesión
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                // Obtiene el ID del usuario desde localStorage
-                const userId = localStorage.getItem("user_id");
-                if (!userId) {
-                    console.log("No hay usuario logueado o ID no encontrado");
-                    setLoading(false);
-                    return;
-                }
-        
-                // Llama al servicio para obtener el perfil
-                const response = await getProfile(userId);
-                console.log("Perfil cargado en contexto:", response.data);
-                setProfile(response.data); // Almacena el perfil en el estado
-            } catch (error) {
-                console.error("Error al cargar el perfil:", error);
-                setError("Error al cargar el perfil"); // Guarda el error
-            } finally {
-                setLoading(false);// Finaliza la carga, sin importar si hubo error o no
-            }
+        const checkAuthStatus = () => {
+            // Obtiene el ID del usuario desde localStorage
+            const userId = localStorage.getItem("user_id");
+            setIsAuthenticated(!!userId);
         };
-            fetchProfile();// Ejecuta la función
-    }, []);// Solo se ejecuta una vez al montar el componente
 
-    // Función para actualizar manualmente el perfil
-    const refreshProfile = async () => {
-    setLoading(true);
+        // Verificar inmediatamente
+        checkAuthStatus();
+
+        // Configurar un listener de eventos para cambios en el almacenamiento
+        window.addEventListener('storage', checkAuthStatus);
+        
+        // Evento personalizado para cambios de autenticación en la misma ventana
+        window.addEventListener('authChanged', checkAuthStatus);
+
+        return () => {
+            window.removeEventListener('storage', checkAuthStatus);
+            window.removeEventListener('authChanged', checkAuthStatus);
+        };
+    }, []);
+
+    // Obtener perfil cuando cambie el estado de autenticación
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchProfile();
+        } else {
+            setProfile(null);
+        }
+    }, [isAuthenticated]);
+
+    const fetchProfile = async () => {
+        setLoading(true);
         try {
             const userId = localStorage.getItem("user_id");
-            if (!userId) return;
-            
+            if (!userId) {
+                console.log("No hay usuario logueado o ID no encontrado");
+                setLoading(false);
+                return;
+            }
+    
             const response = await getProfile(userId);
+            console.log("Perfil cargado en contexto:", response.data);
             setProfile(response.data);
-            // Resetear estados de imagen cuando se actualiza el perfil
+            // Reiniciar estados de imagen cuando se actualiza el perfil
             setImageLoaded(false);
             setImageError(false);
         } catch (error) {
-            setError("Error al actualizar el perfil");
-            console.error("Error al actualizar el perfil:", error);
+            console.error("Error al cargar el perfil:", error);
+            setError("Error al cargar el perfil");
         } finally {
             setLoading(false);
         }
     };
 
-    // Maneja el error al cargar la imagen del perfil
+    const refreshProfile = async () => {
+        await fetchProfile();
+    };
+
     const handleImageError = () => {
         setImageError(true);
     };
@@ -73,9 +88,9 @@ export const ProfileProvider = ({ children }) => {
     // Devuelve la URL de la imagen del perfil o una por defecto si hay error
     const getProfileImage = () => {
         if (imageError || !profile?.image_url) {
-        return "https://unavatar.io/github/defaultuser"; // Imagen por defecto
+            return "https://unavatar.io/github/defaultuser";
         }
-        return profile.image_url; // Imagen del usuario
+        return profile.image_url;
     };
 
     // Retorna el proveedor del contexto con todos los valores necesarios
@@ -90,12 +105,14 @@ export const ProfileProvider = ({ children }) => {
                 imageError,
                 handleImageError,
                 handleImageLoad,
-                getProfileImage
+                getProfileImage,
+                isAuthenticated
             }}
         >
-        {children}
+            {children}
         </ProfileContext.Provider>
     );
 };
+
 // Hook personalizado para consumir el contexto más fácilmente
 export const useProfile = () => useContext(ProfileContext);
