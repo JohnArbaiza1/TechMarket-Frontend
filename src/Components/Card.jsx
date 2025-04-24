@@ -3,6 +3,7 @@ import '../Styles/Componentes/card.css';
 import { ModalAplicants, ModalPublication } from './Modal';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 // Componente funcional Card para mostrar los planes y sus precios
 export function CardPrice ({title,subtitle,texto,description}){
@@ -86,16 +87,18 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
             });
 
             if (response.status === 201) {
-                alert('Aplicado al proyecto exitosamente');
+                toast.success("Aplicación enviada exitosamente", { position: 'top-center', duration: 3000 });
                 setIsApplied(true); // Cambiar el estado a "aplicado"
+            } else if( response.status === 203) {
+                toast.error("No puedes aplicar a este proyecto porque ya superaste el límite de aplicaciones de tu plan", { position: 'top-center', duration: 3000 });
             } else if (response.status === 400) {
-                alert('Ya estás aplicado a este proyecto');
+                toast.info("Ya has aplicado a este proyecto", { position: 'top-center', duration: 3000 });
             } else {
-                alert('Ocurrió un error inesperado. Inténtalo nuevamente.');
+                toast.error("Ocurrió un error inesperado. Inténtalo nuevamente.", { position: 'top-center', duration: 3000 });
             }
         } catch (error) {
             console.error('Error al aplicar al proyecto:', error.response?.data || error.message);
-            alert('Ocurrió un error al procesar tu solicitud. Inténtalo más tarde.');
+            toast.error("Ocurrió un error al aplicar al proyecto. Inténtalo más tarde.", { position: 'top-center', duration: 3000 });
         }
     };
     // Función para manejar el evento de cancelar la solicitud
@@ -127,13 +130,13 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                 setDataApplicants(response.data); // Guardar los datos de los solicitantes en el estado
                 setIsModalOpenApplicants(true); // Abrir el modal solo después de cargar los datos
             } else if (response.status === 203) {
-                alert('No hay solicitudes para este proyecto');
+                toast.info("No hay solicitudes para mostrar", { position: 'top-center', duration: 3000 });
             } else {
-                alert('Ocurrió un error inesperado. Inténtalo nuevamente.');
+                toast.error("Ocurrió un error inesperado. Inténtalo nuevamente.", { position: 'top-center', duration: 3000 });
             }
         } catch (error) {
             console.error('Error al cargar las solicitudes:', error.response?.data || error.message);
-            alert('Ocurrió un error al cargar las solicitudes. Inténtalo más tarde.');
+            toast.error("Ocurrió un error al cargar las solicitudes. Inténtalo más tarde.", { position: 'top-center', duration: 3000 });
         } finally {
             setIsLoading(false); // Finaliza el estado de carga
         }

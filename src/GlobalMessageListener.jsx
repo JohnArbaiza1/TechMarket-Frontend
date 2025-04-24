@@ -20,13 +20,13 @@ export const ChatProvider = ({ children }) => {
     const unsubscribeAll = useCallback(() => {
         // Desuscribirse del canal de usuario si existe
         if (userChannelName.current) {
-            console.log(`ChatContext: Dejando canal de usuario ${userChannelName.current}`);
+            //console.log(`ChatContext: Dejando canal de usuario ${userChannelName.current}`);
             Echo.leave(userChannelName.current);
             userChannelName.current = null; // Resetear
         }
         // Desuscribirse de todos los canales de chat
         if (subscribedChannels.current.size > 0) {
-            console.log("ChatContext: Dejando canales de chat:", Array.from(subscribedChannels.current));
+            //console.log("ChatContext: Dejando canales de chat:", Array.from(subscribedChannels.current));
             subscribedChannels.current.forEach(channelName => {
                 Echo.leave(channelName);
             });
@@ -43,14 +43,15 @@ export const ChatProvider = ({ children }) => {
         const channelName = `chat.${idChat}`;
 
         if (!subscribedChannels.current.has(channelName)) {
-             console.log(`ChatContext: Intentando suscribir a ${channelName}`);
+             //console.log(`ChatContext: Intentando suscribir a ${channelName}`);
             Echo.private(channelName)
                 .listen(".MessageSend", (e) => {
-                    console.log(`ChatContext [${channelName}]: Mensaje recibido:`, e.message);
+                    //console.log(`ChatContext [${channelName}]: Mensaje recibido:`, e.message);
                     setLastMessage({ ...e.message, receivedAt: Date.now() });
+                    
                 })
                 .subscribed(() => {
-                    console.log(`ChatContext: Suscrito exitosamente a ${channelName}`);
+                    //console.log(`ChatContext: Suscrito exitosamente a ${channelName}`);
                     subscribedChannels.current.add(channelName); // Añadir al set al suscribirse
                 })
                 .error((err) => console.error(`ChatContext: Error en ${channelName}`, err));
@@ -72,15 +73,15 @@ export const ChatProvider = ({ children }) => {
             // 1. Suscribirse al canal del usuario
             const currentUserChannel = `user.${userId}`;
             if (!userChannelName.current) { // Solo si no estamos ya suscritos
-                 console.log(`ChatContext: Intentando suscribir al canal de usuario ${currentUserChannel}`);
+                 //console.log(`ChatContext: Intentando suscribir al canal de usuario ${currentUserChannel}`);
                 Echo.private(currentUserChannel)
                     .listen(".ChatCreated", (e) => {
-                        console.log(`ChatContext [${currentUserChannel}]: Nuevo chat creado:`, e.chat);
+                        //console.log(`ChatContext [${currentUserChannel}]: Nuevo chat creado:`, e.chat);
                         setNewChatInfo({ ...e.chat, receivedAt: Date.now() });
                         subscribeToChatChannel(e.chat.id); // Suscribirse al nuevo chat
                     })
                      .subscribed(() => {
-                         console.log(`ChatContext: Suscrito exitosamente a ${currentUserChannel}`);
+                        // console.log(`ChatContext: Suscrito exitosamente a ${currentUserChannel}`);
                          userChannelName.current = currentUserChannel; // Guardar nombre del canal suscrito
                      })
                     .error((err) => console.error(`ChatContext: Error en ${currentUserChannel}`, err));
@@ -91,29 +92,29 @@ export const ChatProvider = ({ children }) => {
                 // Solo obtener y suscribir si el set está vacío (primera vez en esta sesión auth)
                  if (subscribedChannels.current.size === 0) {
                     try {
-                        console.log("ChatContext: Obteniendo IDs de chats existentes...");
+                        //console.log("ChatContext: Obteniendo IDs de chats existentes...");
                         const chatIds = await getChatIds(); // Asume que usa el ID correcto implícitamente
-                        console.log("ChatContext: IDs obtenidos:", chatIds);
+                        //console.log("ChatContext: IDs obtenidos:", chatIds);
                         chatIds.forEach(id => subscribeToChatChannel(id));
                     } catch (error) {
                         console.error("ChatContext: Error obteniendo/suscribiendo a chats existentes", error);
                     }
                 } else {
-                     console.log("ChatContext: Ya suscrito a los chats existentes previamente.");
+                     //console.log("ChatContext: Ya suscrito a los chats existentes previamente.");
                 }
             };
             fetchAndSubscribe();
 
         } else {
             // --- Lógica de Desuscripción ---
-            console.log("ChatContext: isAuth es false. Desuscribiendo de todos los canales...");
+            //console.log("ChatContext: isAuth es false. Desuscribiendo de todos los canales...");
             unsubscribeAll();
         }
 
         // La función de cleanup de este efecto principal también llama a unsubscribeAll
         // para manejar el caso de que el ChatProvider se desmonte por completo.
         return () => {
-            console.log("ChatContext: Cleanup del efecto principal (isAuth cambió o desmontaje). Desuscribiendo...");
+           // console.log("ChatContext: Cleanup del efecto principal (isAuth cambió o desmontaje). Desuscribiendo...");
             unsubscribeAll();
         };
 

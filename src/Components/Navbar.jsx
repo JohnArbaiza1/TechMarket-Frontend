@@ -124,7 +124,7 @@ const NavHome = ({ onToggleSidebar }) => {
     // Actualizar el contador de mensajes no leídos cuando llega un nuevo mensaje
     useEffect(() => {
         if (lastMessage) {
-            console.log("NavHome: Nuevo mensaje recibido:", lastMessage);
+            //console.log("NavHome: Nuevo mensaje recibido:", lastMessage);
 
             // Verificar si el usuario NO está en la ruta /techMarket-Chat
             if (location.pathname !== "/techMarket-Chat") {
@@ -142,7 +142,7 @@ const NavHome = ({ onToggleSidebar }) => {
     // Reiniciar el contador cuando el usuario esté en /techMarket-Chat
     useEffect(() => {
         if (location.pathname === "/techMarket-Chat") {
-            console.log("NavHome: Usuario está en /techMarket-Chat. Reiniciando contador de mensajes no leídos.");
+            //console.log("NavHome: Usuario está en /techMarket-Chat. Reiniciando contador de mensajes no leídos.");
             setUnreadCount(0); // Reiniciar el contador
         }
     }, [location.pathname]);
