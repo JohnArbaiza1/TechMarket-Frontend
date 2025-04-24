@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate  } from 'react-router-dom';
 import '../Styles/Componentes/navbar.css';
 import { useState, useEffect, useRef } from "react";
-import { getProfile } from '../Services/profileService';
+import { useProfile } from '../Contexts/ProfileContext';
 import { useAuth } from '../Auth/AuthContext';
 import {viewPlanes} from '../Services/planesService';
 import { MyMembership  } from './Modal';
@@ -61,8 +61,18 @@ const Navbar = () => {
 
 
 const NavHome = ({ onToggleSidebar }) => {
-    const [profile, setProfile] = useState(null);
-    const [error, setError] = useState(null);
+    // Usar el contexto de perfil en lugar del estado local
+    const { 
+        profile, 
+        loading: profileLoading, 
+        error: profileError,
+        getProfileImage,
+        handleImageError,
+        handleImageLoad,
+        imageLoaded,
+        imageError
+    } = useProfile();
+    
     const [notifications, setNotifications] = useState([]); // Notificaciones de mensajes no leídos
     const [unreadCount, setUnreadCount] = useState(0); // Contador de mensajes no leídos
 
@@ -75,6 +85,13 @@ const NavHome = ({ onToggleSidebar }) => {
     const [modalPlanVisible, setModalPlanVisible] = useState(false);
     const [currentPlan, setCurrentPlan] = useState(null);
     const navigate = useNavigate();
+
+    // Cargar notificaciones cuando el perfil está disponible
+    useEffect(() => {
+        if (profile && profile.notifications) {
+            setNotifications(profile.notifications);
+        }
+    }, [profile]);
 
     const handleLogout = (e) => {
         e.preventDefault();
@@ -104,24 +121,6 @@ const NavHome = ({ onToggleSidebar }) => {
         setModalPlanVisible(false);
         navigate("#");
     };
-
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const userId = localStorage.getItem("user_id");
-                const response = await getProfile(userId);
-                setProfile(response.data);
-
-                setNotifications(response.data.notifications || []);
-            } catch (error) {
-                setError("Error al cargar el perfil");
-                console.error(error);
-            }
-        };
-
-        fetchProfile();
-    }, []);
-
     // Actualizar el contador de mensajes no leídos cuando llega un nuevo mensaje
     useEffect(() => {
         if (lastMessage) {
@@ -174,13 +173,21 @@ const NavHome = ({ onToggleSidebar }) => {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                         >
-                            <img
-                                src={profile?.image_url || "https://unavatar.io/github/defaultuser"}
-                                alt="mdo"
-                                width="32"
-                                height="32"
-                                className="rounded-circle"
-                            />
+                            {profile && (
+                                <img
+                                    src={getProfileImage()}
+                                    alt={profile.first_name || "Usuario"}
+                                    width="32"
+                                    height="32"
+                                    className={`rounded-circle ${!imageLoaded && !imageError ? 'loading' : ''}`}
+                                    onError={handleImageError}
+                                    onLoad={handleImageLoad}
+                                    loading="lazy"
+                                />
+                            )}
+                            {(profileLoading || !profile) && (
+                                <div className="profile-loading-placeholder rounded-circle"></div>
+                            )}
                         </a>
 
                         <ul className="dropdown-menu text-small">

@@ -17,6 +17,7 @@ const FormularioEditPerfil = ({ userId, mode }) => {
         social_media_links:"",
         github: "",
         image: null,
+        image_url_manual: "",
     });
 
     const [imagePreview, setImagePreview] = useState(null);
@@ -102,6 +103,8 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                 toast.error("Error al subir la imagen.", { position: "top-center" });
                 console.log(err);       
             }
+        } else if (formData.image_url_manual?.trim()) {
+            imageUrl = formData.image_url_manual.trim();
         } else if (formData.github) {
             imageUrl = `https://unavatar.io/github/${formData.github.trim()}`;
         } else if (imagePreview) {
@@ -160,6 +163,17 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                     <Col>{renderInput("Enlaces de redes sociales", "social_media_links", "text", "textarea")}</Col>
                 </Row>
                 {renderInput("GitHub (opcional)", "github")}
+
+                <Form.Group className="mb-3">
+                    <Form.Label>O pega una URL de imagen</Form.Label>
+                    <Form.Control
+                        type="text"
+                        name="image_url_manual"
+                        value={formData.image_url_manual}
+                        onChange={handleChange}
+                        placeholder="https://ejemplo.com/mi-imagen.jpg"
+                    />
+                </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Imagen de perfil</Form.Label>
