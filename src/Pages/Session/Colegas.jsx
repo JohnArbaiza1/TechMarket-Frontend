@@ -23,38 +23,39 @@ const RegisteredUsers = () =>{
     };
 
     useEffect(() => {
-        const fetchUsersAndProfiles = async () => {
-        const loadingToastId = toast.loading("Cargando usuarios...",{position:'top-center'});
+        const fetchUsersWithProfiles = async () => {
+            const loadingToastId = toast.loading("Cargando usuarios...", { position: 'top-center' });
+    
             try {
                 const token = localStorage.getItem("token");
+                const loggedUserId = parseInt(localStorage.getItem("user_id")); // Obtén el ID del usuario logueado
+    
                 const usersData = await userServices.getAllUsers(token);
-                setUsers(usersData);
-
-                // Obtener todos los perfiles en paralelo
-                const profilePromises = usersData.map(user => getProfile(user.id));
-                const profilesData = await Promise.all(profilePromises);
-
-                // Asociar cada perfil a su user.id
+    
+                // Filtrar al usuario logueado
+                const filteredUsers = usersData.filter(user => user.id !== loggedUserId);
+    
+                setUsers(filteredUsers);
+    
+                // Crear un objeto de perfiles directamente del JSON recibido
                 const profilesMap = {};
-                usersData.forEach((user, index) => {
-                    profilesMap[user.id] = profilesData[index].data;
+                filteredUsers.forEach(user => {
+                    profilesMap[user.id] = user.profile; // Ya viene incluido en la respuesta
                 });
-
+    
                 setProfiles(profilesMap);
                 toast.dismiss(loadingToastId);
-                toast.success("Usuarios cargados correctamente",{position:'top-center',duration: 3000});
-
+                toast.success("Usuarios cargados correctamente", { position: 'top-center', duration: 3000 });
             } catch (err) {
-                console.error("Error cargando usuarios o perfiles:", err);
-                // Cerramos el toast de carga y mostramos error
+                console.error("Error cargando usuarios:", err);
                 toast.dismiss(loadingToastId);
                 toast.error("No se pudieron cargar los usuarios. Intenta nuevamente.");
-            }finally {
-                setLoading(false);  // Al finalizar la carga, cambiamos el estado
+            } finally {
+                setLoading(false);
             }
         };
-
-        fetchUsersAndProfiles();
+    
+        fetchUsersWithProfiles();
     }, []);
 
     if (loading) {
