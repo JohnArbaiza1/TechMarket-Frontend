@@ -120,8 +120,31 @@ const logout = async (authorization) => {
     }
 }
 
+const updateMembership = async (id_membership) => {
+    try {
+        const authorization = localStorage.getItem("token");
+        const response = await axios.post(
+            `${API_URL}membershipsUpdate`, 
+            { id_membership },
+            {
+                headers: {
+                    Authorization: `Bearer ${authorization}`
+                }
+            }
+        );
+        return response;
+    } catch (e) {
+        if (e.response) {
+            throw e.response.data.message || "Error al actualizar la membresía";
+        } else {
+            throw "Error de servidor";
+        }
+    }
+}
+
 export default {
     register,
     login,
-    logout
+    logout,
+    updateMembership
 }
