@@ -212,12 +212,12 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     <p className="card-date">{date}</p>
                     <div className="cardButtonContainer">
                         {isOwner ? (
-                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                            <div className='btn-container'>
                                 <button 
                                     onClick={handleViewApplications} 
                                     className="card-button"
                                 >
-                                    Ver solicitudes
+                                    Solicitudes
                                 </button>
                                 <button onClick={handleViewAcceptedApplicants} className="card-button">
                                     Ver aceptados

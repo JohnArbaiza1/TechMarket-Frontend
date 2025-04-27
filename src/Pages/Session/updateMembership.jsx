@@ -40,6 +40,7 @@ const CreditCard = () => {
         try {
             // Llamar a la función para actualizar la membresía
             await authService.updateMembership(plan);
+            localStorage.setItem("id_membership", plan);
             toast.success("Plan actualizado con éxito.");
             navigate("/home");
         } catch (error) {

@@ -26,7 +26,7 @@
     color: #2E186A;
     font-family: "Raleway", sans-serif;
     font-weight: 600;
-    text-align: left;
+    text-align: center;
     margin-top: 20px;
 }
 
@@ -38,22 +38,29 @@
 
 .planes{
     display: grid;
+    place-items: center;
     grid-template-columns: repeat(2, 1fr); /* Crea tres columnas de tamaño igual */
-    gap: 20px; /* Ajusta el espacio entre los elementos */
+    gap: 30px; /* Ajusta el espacio entre los elementos */
     padding: 20px;
 }
 
 
 /* Para pantallas medianas (tabletas) */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .planes {
-      grid-template-columns: repeat(2, 1fr); 
+        grid-template-columns: repeat(2, 1fr);
     }
 }
-  
-  /* Para pantallas pequeñas (móviles) */
-@media (max-width: 480px) {
+
+/* Responsive móviles */
+@media (max-width: 600px) {
     .planes {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .item-plan {
+        padding: 15px;
     }
 }

@@ -35,10 +35,10 @@ export function Planes(){
     }
 
     const userPlans = memberships.filter(membership => 
-        membership.membership_name === "Inicial" || membership.membership_name === "Pro"
+        membership.membership_name === "Debug" || membership.membership_name === "DeployPro"
     );
     const enterprisePlans = memberships.filter(membership => membership.membership_name.includes("Enterprise"));
-    const planesTodos = memberships.filter(membership => membership.membership_name.includes("Todo en Uno"));
+    const planesTodos = memberships.filter(membership => membership.membership_name.includes("TechStack Max"));
 
     return(
         <>

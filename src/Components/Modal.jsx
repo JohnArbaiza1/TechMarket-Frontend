@@ -156,6 +156,13 @@ export const ModalAcceptedApplicants = ({ isOpen, onClose, acceptedApplicants, p
 };
 
 export const MyMembership = ({ show, onHide, currentPlan, onUpdatePlan }) =>{
+    const navigate = useNavigate();
+
+    const handleGoToUpdate = () => {
+        onHide(); 
+        navigate("/update-membership");
+    };
+
     return (
         <Modal show={show} onHide={onHide} centered>
             <Modal.Header closeButton>
@@ -167,10 +174,8 @@ export const MyMembership = ({ show, onHide, currentPlan, onUpdatePlan }) =>{
                 <p><strong>Descripción:</strong> <br /> {currentPlan?.membership_description || "Sin descripción"}</p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="warning" onClick={onUpdatePlan}>
-                    <Link to="/update-membership" style={{color:'white', textDecoration:'none'}}>
-                        Actualizar Plan
-                    </Link>
+                <Button onClick={handleGoToUpdate}>
+                    Actualizar Plan
                 </Button>
             </Modal.Footer>
         </Modal>

@@ -135,7 +135,7 @@
 Estilo de la card de la publicacion
 */
 .cardPublication{
-    width: 280px;
+    width: 320px;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -192,18 +192,23 @@ Estilo de la card de la publicacion
     margin-top: auto; 
 }
 
+.btn-container{
+    width: 100%;
+}
+
 .card-button {
+    padding: 13px 9px;
+    margin: 4px;
     display: inline-block;
     text-decoration: none;
     background-color: #6c4ed6;
     color: white;
-    padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
     text-align: center;
     transition: background-color 0.3s;
     width: fit-content;
-    
+    border: none;
 }
 
 .card-button:hover {
@@ -326,5 +331,11 @@ Estilo de la card de la publicacion
     }
     .card-benefits li {
         padding: 3px 0; 
+    }
+}
+
+@media (max-width: 468px) {
+    .cardPrice {
+        width: 235px;
     }
 }
