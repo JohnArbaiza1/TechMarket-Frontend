@@ -85,6 +85,51 @@ export const delApplicantUserPublication = async (id_publication) => {
         }
     }
 
+    //Cambia el estado de la solicitud
+    export const updateApplicant = async (id_publicacion, id_user, status) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Faltan datos de autenticación");
+    
+            // Configurar la solicitud correctamente
+            const response = await axios.put(
+                `${API_URL}applicant`,
+                {
+                    id_publication: id_publicacion, // Datos del cuerpo de la solicitud
+                    id_user: id_user,
+                    status: status,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Encabezado de autenticación
+                    },
+                }
+            );
+    
+            return response;
+        } catch (error) {
+            console.error("Error al actualizar la solicitud:", error.response?.data || error.message);
+            throw error.response?.data || error.message || "Error al actualizar la solicitud.";
+        }
+    };
+    //Obtiene las solicitudes las cuales su estado es true
+    export const getApplicantByStatus = async (id_publication) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Faltan datos de autenticación");
+
+            const response = await axios.get(`${API_URL}applicant/${id_publication}/accepted`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return response;
+        } catch (error) {
+            console.error("Error al obtener las solicitudes:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+
 
 
 

@@ -78,34 +78,76 @@ export const ModalPublication = ({ isOpen, title, description, onClose, onApply,
     );
 }
 
-export const ModalAplicants = ({ isOpen, isClose, applicants, publication }) => {
+export const ModalAplicants = ({ isOpen, isClose, applicants, publication, viewApplicants }) => {
     const navigate = useNavigate();
     if (!isOpen) return null;
 
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>Datos del Solicitante</h2>
+                { viewApplicants ? (
+                    <h2>Solicitudes Aceptadas</h2> ): (
+                    <h2>Solicitudes Pendientes</h2>)}
                 <div className="applicants-list">
                     {applicants.length == 0 ? (
-                        <h4 className='no-applicants'>Aun no ha solicitantes</h4>
+                        {viewApplicants} ? (
+                            <h4 className='no-applicants'>Aun no ha aceptado solicitudes</h4>
+                        ) : (
+                            <h4 className='no-applicants'>Aun no hay solicitantes</h4>
+                        )
                     ) : (
-                        applicants.map((applicant) => (
+                        applicants.map((applicant) =>
+                            !applicant.is_selected ? ( 
+                                <UserCard
+                                    key={applicant.users.id}
+                                    user={applicant.users}
+                                    profile={applicant.users.profile}
+                                    isFollowing={false} // O alguna lógica si tienes eso
+                                    onFollowToggle={() => {}}
+                                    viewProfile={(username) => navigate(`/profile/${username}`)}
+                                    applicants={true}
+                                    sendMessage={(userId) => navigate(`/Pruebas/${userId}`)}
+                                    publication={publication}
+                                />
+                            ) : null 
+                        )
+                    )}
+                </div>
+                <button className='close-Modal' onClick={isClose}>
+                    Cerrar
+                </button>
+                
+            </div>
+        </div>
+    );
+};
+export const ModalAcceptedApplicants = ({ isOpen, onClose, acceptedApplicants, publication }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <h2>Solicitantes Aceptados</h2>
+                <div className="applicants-list">
+                    {acceptedApplicants.length === 0 ? (
+                        <h4 className="no-applicants">Aún no hay solicitantes aceptados</h4>
+                    ) : (
+                        acceptedApplicants.map((applicant) => (
                             <UserCard
                                 key={applicant.users.id}
                                 user={applicant.users}
                                 profile={applicant.users.profile}
-                                isFollowing={false} // O alguna lógica si tenés eso
+                                isFollowing={false}
                                 onFollowToggle={() => {}}
-                                viewProfile={(username) => navigate(`/profile/${username}`)}
-                                applicants={true}
-                                sendMessage={(userId) => navigate(`/Pruebas/${userId}`)}
+                                viewProfile={(username) => console.log(`Ver perfil de ${username}`)}
                                 publication={publication}
+                                applicants={true}
+                                inAcceptedView={true}
                             />
                         ))
                     )}
                 </div>
-                <button className='close-Modal' onClick={isClose}>
+                <button className="close-Modal" onClick={onClose}>
                     Cerrar
                 </button>
             </div>

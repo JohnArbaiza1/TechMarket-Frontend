@@ -4,8 +4,12 @@ import { FaSearch, FaPaperPlane, FaArrowLeft } from 'react-icons/fa';
 import { MessageCard } from '../../Components/Card';
 import { getChats, sendMessage, changeStateMessage, CreateChatMessage, getChatDetails } from '../../Services/chatService';
 import images from "../../JS/images";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useChatContext } from '../../GlobalMessageListener'; 
+import { toast } from "sonner";
+import { updateApplicant } from '../../Services/aplicationsService'
+import "../../App.css"
+
 
 const ChatsUsers = () => {
     const [selectedChat, setSelectedChat] = useState(null);
@@ -17,6 +21,7 @@ const ChatsUsers = () => {
     const [chatInitializedFromNavigation, setChatInitializedFromNavigation] = useState(false);
     const processedMessageIds = useRef(new Set()); // Para evitar doble procesamiento de mensajes
     const processedChatIds = useRef(new Set()); // Para evitar doble procesamiento de chats nuevos
+    const navigate = useNavigate();
 
 
     //Obtener datos del contexto
@@ -86,6 +91,10 @@ const ChatsUsers = () => {
                     name: otherUser.user_name,
                     image: otherUser.profile?.image_url || "https://via.placeholder.com/150",
                     messages: existingChat.messages,
+                    publication: publicationFromNavigation?.id || null,
+                    transmitter: existingChat.user_one.id === currentUserId,
+                    name_user2: otherUser.user_name,
+                    id_user2: otherUser.id,
                 });
             } else {
                 const newChat = {
@@ -98,9 +107,13 @@ const ChatsUsers = () => {
 
                 setSelectedChat({
                     id: newChat.id,
-                name: userNameFromNavigation + (publicationFromNavigation? " ° " + publicationFromNavigation.title : ""),
+                    name: userNameFromNavigation + (publicationFromNavigation? " ° " + publicationFromNavigation.title : ""),
                     image: userImageFromNavigation || "https://via.placeholder.com/150",
                     messages: [],
+                    publication: publicationFromNavigation?.id || null,
+                    transmitter: publicationFromNavigation.id? true : false,
+                    name_user2: userNameFromNavigation,
+                    id_user2: userIdFromNavigation,
                 });
             }
 
@@ -241,6 +254,10 @@ const ChatsUsers = () => {
                             name: userNameFromNavigation + (publicationFromNavigation? " ° " + publicationFromNavigation.title : ""),
                             image: userImageFromNavigation || "https://via.placeholder.com/150",
                             messages: [{ ...response, message: messageInput }],
+                            publication: publicationFromNavigation?.id || null,
+                            transmitter: publicationFromNavigation.id? true : false,
+                            name_user2: userNameFromNavigation,
+                            id_user2: userIdFromNavigation,
                         });
 
                         // Suscribirse al canal del nuevo chat
@@ -267,6 +284,7 @@ const ChatsUsers = () => {
 
      // handleSelectChat 
      const handleSelectChat = async (chat) => {
+
         console.log(`ChatsUsers: Seleccionando chat ${chat.id}`);
         const currentUserId = parseInt(localStorage.getItem("user_id"));
         const otherUser = chat.user_one.id === currentUserId ? chat.user_two : chat.user_one;
@@ -276,6 +294,10 @@ const ChatsUsers = () => {
             name: otherUser.user_name + (chat.publication? " ° " + chat.publication.title : ""),
             image: otherUser.profile?.image_url || "https://via.placeholder.com/150",
             messages: chat.messages || [],
+            publication: chat.publication?.id || null,
+            transmitter: chat.user_one.id === currentUserId,
+            name_user2: otherUser.user_name,
+            id_user2: otherUser.id,
         };
 
          try {
@@ -291,6 +313,76 @@ const ChatsUsers = () => {
          }
         setSelectedChat(chatToSelect);
      };
+     //Toast para manejar la aceptación de solicitud
+     const handleAcceptRequest = () => {
+        
+        const appContainer = document.getElementsByClassName("home-layout")[0]; 
+        if (appContainer) {
+            appContainer.classList.add("blur-background"); 
+        }
+    
+        toast(
+            <div style={{ textAlign: "center", zIndex: 1051 }}> {/* Asegurar que el toast esté encima */}
+                <p>¿Estás seguro de que deseas aceptar esta solicitud?</p>
+                <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
+                    <button
+                        className="btn btn-success"
+                        style={{ padding: "5px 10px", fontSize: "14px" }}
+                        onClick={async () => {
+                            toast.dismiss(); 
+                            if (appContainer) {
+                                appContainer.classList.remove("blur-background"); 
+                            }
+                            const response = await updateApplicant(selectedChat.publication, selectedChat.id_user2, true);
+                            if (response.status === 200) {
+                                toast.success("Solicitud aceptada con éxito.");
+                                const btnAccept = document.getElementById('btn-accept');
+                                if (btnAccept) {
+                                    btnAccept.style.display = 'none'; // Ocultar el botón de aceptar
+                                }
+                                //setSelectedChat(null);
+                            }else if(response.status === 205) {
+                                toast.error("Error al aceptar la solicitud. La publicacion no tiene cupo.");
+                            }
+                             else {
+                                toast.error("Error al aceptar la solicitud. Inténtalo más tarde.");
+                            }
+                            
+                        }}
+                    >
+                        Sí
+                    </button>
+                    <button
+                        className="btn btn-danger"
+                        style={{ padding: "5px 10px", fontSize: "14px" }}
+                        onClick={() => {
+                            toast.dismiss(); 
+                            if (appContainer) {
+                                appContainer.classList.remove("blur-background");
+                            }
+                        }}
+                    >
+                        No
+                    </button>
+                </div>
+            </div>,
+            {
+                duration: Infinity, 
+                style: {
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 2000,
+                    backgroundColor: "white",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "8px",
+                    padding: "20px",
+                    width: "300px",
+                },
+            }
+        );
+    };
 
 
     
@@ -378,9 +470,27 @@ const ChatsUsers = () => {
                                                 className="rounded-circle me-2"
                                                 style={{ width: "40px", height: "40px" }}
                                             />
-                                            <strong>{selectedChat.name}</strong>
+                                            <strong className="me-auto">{selectedChat.name}</strong>
+                                            <div className="d-flex ms-auto align-items-center"> {}
+                                                <button
+                                                    className="btn btn-primary w-auto me-2"
+                                                    style={{ padding: "5px 10px", fontSize: "14px" }}
+                                                    onClick={() => navigate(`/profile/${selectedChat.name_user2}`)}
+                                                >
+                                                    Ver perfil
+                                                </button>
+                                                {selectedChat.transmitter && selectedChat.publication && (
+                                                    <button
+                                                        id='btn-accept'
+                                                        className="btn btn-secondary w-auto"
+                                                        style={{ padding: "5px 10px", fontSize: "14px" }}
+                                                        onClick={handleAcceptRequest}
+                                                    >
+                                                        Aceptar solicitud
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
-        
                                         <div className="flex-grow-1 p-3 overflow-auto">
                                             {selectedChat.messages.map((message, index) => {
                                                 const isMine = message.id_user === parseInt(localStorage.getItem("user_id"));
