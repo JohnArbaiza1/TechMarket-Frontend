@@ -1,89 +1,98 @@
 import { useEffect, useState } from 'react';
-import userServices from '../../Services/userServices';
-import { getProfile } from "../../Services/profileService";
-import { toast } from 'sonner'; 
+import { getFollowers, getFollowing } from '../../Services/followersService';
+import { toast } from 'sonner';
 import { UserCard } from '../../Components/Card';
-import '../../Styles/Logueado/RegisteredUsers.css' 
+import '../../Styles/Logueado/misColegas.css';
+import { Row, Col, Accordion } from 'react-bootstrap';
+import { FaUsers} from 'react-icons/fa'; 
+import { RiUserFollowFill } from 'react-icons/ri';
 
-const RegisteredUsers = () =>{
-    //Definimos los estados a emplear
-    const [users, setUsers] = useState([]);
-    const [profiles, setProfiles] = useState({});
-    const [error] = useState(null);
-    const [loading, setLoading] = useState(true); 
-    // Estado que mantiene el estado de seguimiento de cada usuario
-    const [followingStatus, setFollowingStatus] = useState({});
+const MisColegas = () => {
+    //Definimos los Estados a emplear
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Función que cambia el estado isFollowing de un usuario específico
-    const handleClick = (userId) => {
-        setFollowingStatus((prevStatus) => ({
-            ...prevStatus,
-            [userId]: !prevStatus[userId], // Cambia el estado solo para ese usuario
-        }));
-    };
+    useEffect(() =>{
+        const token = localStorage.getItem('token')
 
-    useEffect(() => {
-        const fetchUsersWithProfiles = async () => {
-            const loadingToastId = toast.loading("Cargando usuarios...", { position: 'top-center' });
-    
+        const fetchData = async () =>{
             try {
-                const token = localStorage.getItem("token");
-                const loggedUserId = parseInt(localStorage.getItem("user_id")); // Obtén el ID del usuario logueado
-    
-                const usersData = await userServices.getAllUsers(token);
-    
-                // Filtrar al usuario logueado
-                const filteredUsers = usersData.filter(user => user.id !== loggedUserId);
-    
-                setUsers(filteredUsers);
-    
-                // Crear un objeto de perfiles directamente del JSON recibido
-                const profilesMap = {};
-                filteredUsers.forEach(user => {
-                    profilesMap[user.id] = user.profile; // Ya viene incluido en la respuesta
-                });
-    
-                setProfiles(profilesMap);
-                toast.dismiss(loadingToastId);
-                toast.success("Usuarios cargados correctamente", { position: 'top-center', duration: 3000 });
-            } catch (err) {
-                console.error("Error cargando usuarios:", err);
-                toast.dismiss(loadingToastId);
-                toast.error("No se pudieron cargar los usuarios. Intenta nuevamente.");
+                const [followersData, followingData] = await Promise.all([
+                    getFollowers(token),
+                    getFollowing(token),
+                ]);
+
+                setFollowers(followersData);
+                setFollowing(followingData);
+            } catch (error) {
+                setError("Error al cargar tus colegas");
+                toast.error("No se pudo cargar la información de tus colegas.");
+                console.error(error);
             } finally {
                 setLoading(false);
             }
         };
-    
-        fetchUsersWithProfiles();
+        fetchData();
     }, []);
 
-    if (loading) {
-        return null; // Mientras cargan los datos no mostramos nada, el toast se encargará de la retroalimentación
-    }
+    if(loading) return  toast.dismiss("Cargando Colegas");
 
-    if (error) return <div>{error}</div>;
     return(
         <>
-            <h2 className="title text-center">Usuarios que Hacen Parte de Nuestra Comunidad</h2>
-            <div className="users-list">
-            {users.map(user => {
-                const profile = profiles[user.id];
-                if (!profile) return null;
+            <section className="container-colegas">
+                <h2 className="title text-center">Mis Colegas</h2><br />
+                <div className="mis-colegas">
+                    <Row>
+                        <Col> 
+                            <h3 className='subtitle-colegas text-center'>Usuarios que sigues</h3>
+                            <Accordion>
+                                <Accordion.Item eventKey="0">
+                                    <Accordion.Header> <FaUsers  className='icon-colegas'/> Ver más</Accordion.Header> 
+                                        <Accordion.Body>
+                                            <div className="users-list">
+                                                {following.length > 0 ? (
+                                                    following.map((user) => (
+                                                    <UserCard key={user.id} user={user} profile={user.profile} />
+                                                    ))
+                                                ) : (
+                                                    <p>No sigues a ningún usuario aún.</p>
+                                                )}
+                                            </div>
+                                        </Accordion.Body>
+                                    
+                                </Accordion.Item>
+                            </Accordion>
+                        </Col>
+                        <Col>
+                            <h3 className='subtitle-colegas text-center'>Usuarios que te siguen</h3>
+                            <Accordion>
+                                <Accordion.Item eventKey="0">
+                                    <Accordion.Header> <RiUserFollowFill className='icon-colegas' /> Ver más</Accordion.Header> 
+                                        <Accordion.Body>
+                                            <div className="users-list">
+                                                {followers.length > 0 ? (
+                                                    followers.map((user) => (
+                                                    <UserCard key={user.id} user={user} profile={user.profile} />
+                                                    ))
+                                                ) : (
+                                                    <p>Nadie te sigue todavía.</p>
+                                                )}
+                                            </div>
 
-                return (
-                    <UserCard
-                        key={user.id}
-                        user={user}
-                        profile={profile}
-                        isFollowing={followingStatus[user.id]}
-                        onFollowToggle={handleClick}
-                    />
-                );
-            })}
-            </div>
+                                        </Accordion.Body>                               
+                                </Accordion.Item>
+                            </Accordion>
+                        </Col>
+                    </Row>
+
+                </div>
+
+            </section>
         </>
     );
-}
 
-export default RegisteredUsers;
+};
+
+export default MisColegas;

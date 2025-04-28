@@ -22,6 +22,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     //Definimos enlaces comunes
     const commonLinks = [
         { icon: "fas fa-home", text: "Inicio", href: "/home" },
+        { icon: "fas fa-search", text: "Descubrir", href: "/descubrir" },
         { icon: "fas fa-envelope", text: "Mensajes", href: "/techMarket-Chat" },
         { icon: "fas fa-upload", text: "Publicar", href: "/publicar" },
     ];
@@ -29,27 +30,24 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     //Definimos los enlaces que veran los profesionales 
     const professionalLinks = [
         { icon: "fas fa-folder-open", text: "Mis Proyectos", href: "/myprojects" },
-        { icon: "fas fa-search", text: "Descubrir", href: "/descubrir" },
         { icon: "fas fa-users", text: "Colegas", href: "/colegas" },
     ];
 
     //Definimos los enlaces que veran las empresas
     const companyLinks = [
         { icon: "fa-solid fa-share-from-square", text: "Proyectos Publicados", href: "/proyectos-empresa" },
-        { icon: "fas fa-search", text: "Buscar Talento", href: "/buscar-talento" },
-        { icon: "fas fa-users", text: "talento y más", href: "/talento-empresas" },
+        { icon: "fas fa-users", text: "Explorar talento", href: "/talento-empresas" },
     ];
 
+    const techStackMaxLinks = [
+    { icon: "fas fa-compass", text: "Proyectos en el Radar", href: "/home" }, 
+    { icon: "fas fa-search", text: "Descubrir", href: "/descubrir" },
+    { icon: "fas fa-satellite", text: "Proyectos Lanzados", href: "/myprojects" }, 
+    { icon: "fas fa-rocket", text: "Lanzar Proyecto", href: "/publicar" }, 
+    { icon: "fas fa-people-arrows", text: "Mis Conexiones", href: "/colegas" }, 
+    { icon: "fas fa-envelope", text: "Mensajes", href: "/techMarket-Chat" },
+];
 
-    // Definimos los enlaces de la barra lateral, con un icono, texto y la ruta a la que apuntan
-    // const links_sidebar = [
-    //     { icon: "fas fa-home", text: "Inicio", href: "/home" },
-    //     { icon: "fas fa-folder-open", text: "Mis Proyectos", href: "/myprojects" },
-    //     { icon: "fas fa-search", text: "Descubrir", href: "/descubrir" },
-    //     { icon: "fas fa-upload", text: "Publicar", href: "/publicar" },
-    //     { icon: "fas fa-users", text: "Colegas", href: "/colegas" },
-    //     { icon: "fas fa-envelope", text: "Mensajes", href: "/mensajes" }
-    // ];
 
     // Combinamos links según membresía
     let links_sidebar = [...commonLinks];
@@ -57,6 +55,8 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
         links_sidebar = [...commonLinks, ...professionalLinks];
     } else if (membershipId === 3 || membershipId === 4) {
         links_sidebar = [...commonLinks, ...companyLinks];
+    }else if (membershipId === 5) {
+        links_sidebar = [ ...techStackMaxLinks];
     }
 
     // Función que maneja el logout, cierra sesión y navega a la página de login

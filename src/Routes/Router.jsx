@@ -16,7 +16,8 @@ import Publicaciones from "../Pages/Session/Publicar";
 import ConfigProfile from "../Pages/Session/ConfigPerfil";
 import SettingsPage from "../Pages/Session/SettingsPage";
 import MisProyectos from "../Pages/Session/MyProjects";
-import RegisteredUsers from "../Pages/Session/Colegas";
+import RegisteredUsers from "../Pages/Session/Discover";
+import MisColegas from "../Pages/Session/Colegas";
 import ChatsUsers from "../Pages/Session/Chats";
 import CreditCard from "../Pages/Session/updateMembership";
 
@@ -79,7 +80,8 @@ const router = createBrowserRouter([
                     { path: "/settings", element: <SettingsPage /> },
                     { path: "/myprojects", element: <MisProyectos /> },
                     { path: "/proyectos-empresa", element: <MisProyectos /> },
-                    { path: "/colegas", element: <RegisteredUsers /> },
+                    { path: "/descubrir", element: <RegisteredUsers /> },
+                    { path: "/colegas", element: <MisColegas /> },
                     { path: "/talento-empresas", element: <RegisteredUsers/> },
                     { path: "/techMarket-Chat", element: <ChatsUsers/> },
                     { path: "/Pruebas/:user", element:<ChatPage/> },
