@@ -303,6 +303,7 @@ const ChatsUsers = () => {
             if (!selectedChat?.id) {
                 // Crear nuevo chat
                 console.log("ChatsUsers: Creando nuevo chat y enviando primer mensaje...");
+                console.log(publicationFromNavigation);
                 CreateChatMessage(userIdFromNavigation, messageInput, publicationFromNavigation?.id || null)
                     .then((response) => {
                         const newChat = {
@@ -323,7 +324,7 @@ const ChatsUsers = () => {
                             image: userImageFromNavigation || "https://via.placeholder.com/150",
                             messages: [{ ...response, message: messageInput }],
                             publication: publicationFromNavigation?.id || null,
-                            transmitter: publicationFromNavigation.id? true : false,
+                            transmitter: publicationFromNavigation? true : false,
                             name_user2: userNameFromNavigation,
                             id_user2: userIdFromNavigation,
                         });
