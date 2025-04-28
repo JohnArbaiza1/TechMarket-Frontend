@@ -309,7 +309,6 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
         }
     }
 
-
     return (
         <section className='followCard'>
             <header className='followCard-Header'>
@@ -322,7 +321,9 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
                 <div className='followCard-container-buttons'>
                     <button
                         className={getButtonClass()}
-                        onClick={applicants ? () => viewProfile(user.user_name) : () => onFollowToggle(user.id)}
+                        onClick={applicants
+                            ? () => viewProfile(user.user_name)
+                            : () => onFollowToggle(user.id)}
                     >
                         {getButtonText()}
                     </button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getFollowers, getFollowing } from '../../Services/followersService';
+import { getFollowers, getFollowing, unfollowUser } from '../../Services/followersService';
 import { toast } from 'sonner';
-import { UserCard } from '../../Components/Card';
+import { CardSeguidos } from '../../Components/FollowCard';
 import '../../Styles/Logueado/misColegas.css';
 import { Row, Col, Accordion } from 'react-bootstrap';
 import { FaUsers} from 'react-icons/fa'; 
@@ -14,16 +14,31 @@ const MisColegas = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() =>{
-        const token = localStorage.getItem('token')
+    const handleUnfollow = async (userId) => {
+        const token = localStorage.getItem('token');
+        try {
+            await unfollowUser(userId, token); // llamada al backend
+            setFollowing((prev) => prev.filter((user) => user.id !== userId)); // actualiza el estado
+            toast.success("Has dejado de seguir al usuario.");
+        } catch (error) {
+            console.error("Error al dejar de seguir:", error);
+            toast.error(error || "No se pudo dejar de seguir al usuario.");
+        }
+    };
 
-        const fetchData = async () =>{
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+    
+        const fetchData = async () => {
+            // Mostrar toast de carga
+            const loadingToastId = toast.loading("Cargando colegas...",{position:'top-center'});
+    
             try {
                 const [followersData, followingData] = await Promise.all([
                     getFollowers(token),
                     getFollowing(token),
                 ]);
-
+    
                 setFollowers(followersData);
                 setFollowing(followingData);
             } catch (error) {
@@ -31,13 +46,16 @@ const MisColegas = () => {
                 toast.error("No se pudo cargar la información de tus colegas.");
                 console.error(error);
             } finally {
+                // Cerrar toast de carga
+                toast.dismiss(loadingToastId);
                 setLoading(false);
             }
         };
+    
         fetchData();
     }, []);
 
-    if(loading) return  toast.dismiss("Cargando Colegas");
+    if (loading) return null;
 
     return(
         <>
@@ -54,7 +72,7 @@ const MisColegas = () => {
                                             <div className="users-list">
                                                 {following.length > 0 ? (
                                                     following.map((user) => (
-                                                    <UserCard key={user.id} user={user} profile={user.profile} />
+                                                    <CardSeguidos key={user.id} user={user} profile={user.profile} onFollowToggle={handleUnfollow}/>
                                                     ))
                                                 ) : (
                                                     <p>No sigues a ningún usuario aún.</p>
@@ -74,7 +92,7 @@ const MisColegas = () => {
                                             <div className="users-list">
                                                 {followers.length > 0 ? (
                                                     followers.map((user) => (
-                                                    <UserCard key={user.id} user={user} profile={user.profile} />
+                                                    <CardSeguidos key={user.id} user={user} profile={user.profile} showButtons={{ profile: true, message: true, unfollow: false }}/>
                                                     ))
                                                 ) : (
                                                     <p>Nadie te sigue todavía.</p>
@@ -92,7 +110,6 @@ const MisColegas = () => {
             </section>
         </>
     );
-
 };
 
 export default MisColegas;

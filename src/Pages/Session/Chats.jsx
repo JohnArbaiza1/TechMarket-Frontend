@@ -73,19 +73,87 @@ const ChatsUsers = () => {
 
 
     // Crear un nuevo chat si no existe uno ya creado 
+    // useEffect(() => {
+    //      if (!userIdFromNavigation || chatInitializedFromNavigation) return;
+    //         const currentUserId = parseInt(localStorage.getItem("user_id"));
+
+    //         const existingChat = chats.find(chat =>
+    //             (chat.user_one.id === currentUserId && chat.user_two.id === userIdFromNavigation) ||
+    //             (chat.user_two.id === currentUserId && chat.user_one.id === userIdFromNavigation)
+    //         );
+
+    //         if (existingChat) {
+    //             const otherUser = existingChat.user_one.id === currentUserId
+    //                 ? existingChat.user_two
+    //                 : existingChat.user_one;      
+    //             setSelectedChat({
+    //                 id: existingChat.id,
+    //                 name: otherUser.user_name,
+    //                 image: otherUser.profile?.image_url || "https://via.placeholder.com/150",
+    //                 messages: existingChat.messages,
+    //                 publication: publicationFromNavigation?.id || null,
+    //                 transmitter: existingChat.user_one.id === currentUserId,
+    //                 name_user2: otherUser.user_name,
+    //                 id_user2: otherUser.id,
+    //             });
+    //         } else {
+    //             const newChat = {
+    //                 id: null,
+    //                 user_one: { id: currentUserId },
+    //                 user_two: { id: userIdFromNavigation },
+    //                 id_publication: publicationFromNavigation?.id || null,
+    //                 messages: [],
+    //             };
+
+    //             setSelectedChat({
+    //                 id: newChat.id,
+    //                 name: userNameFromNavigation + (publicationFromNavigation? " ° " + publicationFromNavigation.title : ""),
+    //                 image: userImageFromNavigation || "https://via.placeholder.com/150",
+    //                 messages: [],
+    //                 publication: publicationFromNavigation?.id || null,
+    //                 transmitter: publicationFromNavigation.id? true : false,
+    //                 name_user2: userNameFromNavigation,
+    //                 id_user2: userIdFromNavigation,
+    //             });
+    //         }
+
+    //      console.log("ChatsUsers: Initializing chat from navigation state.");
+    //      setChatInitializedFromNavigation(true);
+    // }, [chats, userIdFromNavigation, chatInitializedFromNavigation]); 
+
     useEffect(() => {
-         if (!userIdFromNavigation || chatInitializedFromNavigation) return;
+            // Validación de los datos necesarios para crear el chat
+            if (!userIdFromNavigation || !userNameFromNavigation) {
+                console.warn("Faltan datos en la navegación para crear el chat.");
+                return;
+            }
+        
+            // Obtener el currentUserId desde localStorage
             const currentUserId = parseInt(localStorage.getItem("user_id"));
-
-            const existingChat = chats.find(chat =>
-                (chat.user_one.id === currentUserId && chat.user_two.id === userIdFromNavigation) ||
-                (chat.user_two.id === currentUserId && chat.user_one.id === userIdFromNavigation)
-            );
-
+        
+            // Si currentUserId no está definido o es NaN, terminar la ejecución
+            if (isNaN(currentUserId)) {
+                console.error("Error: `currentUserId` no está definido o es inválido.");
+                return;
+            }
+        
+            // Buscar si ya existe un chat entre el usuario actual y el usuario de la navegación
+            const existingChat = chats.find(chat => {
+                const userOneId = chat?.user_one?.id;
+                const userTwoId = chat?.user_two?.id;
+        
+                return (
+                    (userOneId === currentUserId && userTwoId === userIdFromNavigation) ||
+                    (userTwoId === currentUserId && userOneId === userIdFromNavigation)
+                );
+            });
+        
             if (existingChat) {
+                // Si ya existe un chat, seleccionamos el chat y configuramos el estado
                 const otherUser = existingChat.user_one.id === currentUserId
                     ? existingChat.user_two
-                    : existingChat.user_one;      
+                    : existingChat.user_one;
+        
                 setSelectedChat({
                     id: existingChat.id,
                     name: otherUser.user_name,
@@ -97,6 +165,7 @@ const ChatsUsers = () => {
                     id_user2: otherUser.id,
                 });
             } else {
+                // Si no existe un chat, creamos un nuevo chat
                 const newChat = {
                     id: null,
                     user_one: { id: currentUserId },
@@ -104,22 +173,21 @@ const ChatsUsers = () => {
                     id_publication: publicationFromNavigation?.id || null,
                     messages: [],
                 };
-
+        
                 setSelectedChat({
                     id: newChat.id,
-                    name: userNameFromNavigation + (publicationFromNavigation? " ° " + publicationFromNavigation.title : ""),
+                    name: userNameFromNavigation + (publicationFromNavigation ? " ° " + publicationFromNavigation.title : ""),
                     image: userImageFromNavigation || "https://via.placeholder.com/150",
                     messages: [],
                     publication: publicationFromNavigation?.id || null,
-                    transmitter: publicationFromNavigation.id? true : false,
+                    transmitter: publicationFromNavigation?.id ? true : false,
                     name_user2: userNameFromNavigation,
                     id_user2: userIdFromNavigation,
                 });
-            }
-
-         console.log("ChatsUsers: Initializing chat from navigation state.");
-         setChatInitializedFromNavigation(true);
-    }, [chats, userIdFromNavigation, chatInitializedFromNavigation]); 
+        }
+        console.log("ChatsUsers: Initializing chat from navigation state.");
+        setChatInitializedFromNavigation(true);
+    }, [chats, userIdFromNavigation, chatInitializedFromNavigation, publicationFromNavigation, userNameFromNavigation, userImageFromNavigation]);
 
 
     //para reaccionar a NUEVOS CHATS desde el contexto

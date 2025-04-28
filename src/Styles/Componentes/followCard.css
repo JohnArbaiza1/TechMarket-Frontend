@@ -1,0 +1,16 @@
+.follow-card {
+    width: 500px;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    font-size: .8rem;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.follow-card-header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
