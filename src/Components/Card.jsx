@@ -4,6 +4,7 @@ import { ModalAplicants, ModalPublication, ModalAcceptedApplicants } from './Mod
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { MdPersonSearch } from 'react-icons/md';
 
 // Componente funcional Card para mostrar los planes y sus precios
 export function CardPrice ({title,subtitle,texto,description}){
@@ -281,7 +282,7 @@ export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfi
 
     if (!profile) return null;
 
-    const getButtonText = () => applicants ? 'Ver perfil' : (isFollowing ? "Siguiendo" : "Seguir");
+    const getButtonText = () => applicants ? <MdPersonSearch size={18} /> : (isFollowing ? "Siguiendo" : "Seguir");
 
     const getButtonClass = () => applicants
         ? 'btn-followCard is-following'

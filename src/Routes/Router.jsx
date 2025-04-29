@@ -20,6 +20,7 @@ import RegisteredUsers from "../Pages/Session/Discover";
 import MisColegas from "../Pages/Session/Colegas";
 import ChatsUsers from "../Pages/Session/Chats";
 import CreditCard from "../Pages/Session/updateMembership";
+import AboutPage from "../Pages/Others/About";
 
 //importamos los layouts
 import Layout from "../Layouts/layout";
@@ -41,6 +42,14 @@ const router = createBrowserRouter([
                 element: (
                     <PublicRoute>
                         <Principal/>
+                    </PublicRoute>
+                )
+            },
+            {
+                path: "about",
+                element: (
+                    <PublicRoute>
+                        <AboutPage/>
                     </PublicRoute>
                 )
             },
