@@ -35,6 +35,11 @@ const Home = () => {
 
 
     return (
+            
+    <div className="grid-header">
+            <h1>Publicaciones</h1>
+            <h2>¡Encuentra tu próximo proyecto!</h2>    
+    
         <div className="grid-container">
             {publications.map((publication) => {
                 const isApplied = userApplications.some(
@@ -58,6 +63,7 @@ const Home = () => {
                 );
             })}
         </div>
+    </div>
     );
     
 };

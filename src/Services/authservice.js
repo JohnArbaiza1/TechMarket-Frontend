@@ -142,9 +142,31 @@ const updateMembership = async (id_membership) => {
     }
 }
 
+const getMembership = async (id_membership) => {
+    try {
+        const authorization = localStorage.getItem("token");
+        const response = await axios.get(
+            `${API_URL}membership/${id_membership}`, 
+            {
+                headers: {
+                    Authorization: `Bearer ${authorization}`
+                }
+            }
+        );
+        return response;
+    } catch (e) {
+        if (e.response) {
+            throw e.response.data.message || "Error al obtener la membresía";
+        } else {
+            throw "Error de servidor";
+        }
+    }
+}
+
 export default {
     register,
     login,
     logout,
-    updateMembership
+    updateMembership,
+    getMembership
 }

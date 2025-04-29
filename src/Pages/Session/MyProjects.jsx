@@ -43,10 +43,11 @@ const MisProyectos = () => {
     return (
         <div className="grid-container">
             {loading ? (
-                <p></p>
+                <h2>Cargando publicaciones ...</h2>
             ) : myPublications.length === 0 ? (
                 <p>No has creado ninguna publicación aún.</p>
             ) : (
+                
                 myPublications.map((publication) => (
                     <CardPublication
                         key={publication.id}

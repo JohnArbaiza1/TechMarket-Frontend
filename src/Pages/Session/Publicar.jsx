@@ -7,6 +7,10 @@ import axios from 'axios';
 import ModalComponent from '../../Components/Modal';
 import { usePublicationState } from '../../Hooks/usePublicationState';
 import { useModalState } from '../../Hooks/useModalState';
+import { toast } from 'sonner';
+import authService from '../../Services/authservice';
+
+const { getMembership } = authService;
 
 const Publicaciones = () =>{
     // Usamos el hook usePublicationState para manejar los estados de la publicación
@@ -29,6 +33,7 @@ const Publicaciones = () =>{
     //Estados para trabajar la cantidad de publicaciones segun el plan
     const [maxPublications, setMaxPublications] = useState(0);  // Maximo de publicaciones según el plan
     const [currentPublications, setCurrentPublications] = useState(0); // Publicaciones actuales
+    const [membership, setMembership] = useState(null); // Estado para la membresía actual
     const now = new Date();
 
     // Usamos el hook useModalState para manejar los estados y funciones de los modales
@@ -58,10 +63,21 @@ const Publicaciones = () =>{
                     
                 }
             };
+            const fetchMembership = async () => {
+                try {
+                    const data = await getMembership(localStorage.getItem("id_membership"));
+                    setMembership(data.data);
+                    console.log(data.data);
+                } catch (error) {
+                    setError("Error al obtener la membresía.");
+                }};
 
+
+                fetchMembership();
             fetchPublicationLimit();
+            
         }
-    }, [setMaxPublications, setCurrentPublications, setError]);   
+    }, [setMaxPublications, setCurrentPublications, setError, setMembership]);   
     
     // Función para el envío de los datos de la publicación
     const handleSubmit = async (e) => {
@@ -118,16 +134,28 @@ const Publicaciones = () =>{
 
         try {
             const response = await createPublication(formData);
-            setSuccess("Publicación creada con éxito");
-            setShowSuccessModal(true);
-            setCurrentPublications(currentPublications + 1);
-            setTitle('');
-            setDescription('');
-            setTags('');
-            setQuota(1);
-            setImage(null);
-            setPreview(null);
-            console.log(response);
+            if (response.status !== 200) {
+                toast.success('Publicación creada con éxito', {position:'top-center', duration: 3000});
+                setSuccess("Publicación creada con éxito");
+                setShowSuccessModal(true);
+                setCurrentPublications(currentPublications + 1);
+                setTitle('');
+                setDescription('');
+                setTags('');
+                setQuota(1);
+                setImage(null);
+                setPreview(null);
+            } else if(response.status === 400) {
+                toast.error('Error al crear la publicación, limite de publicaciones alcanzado', {position:'top-center', duration: 3000});
+                setError("Error al crear la publicación. Limite de publicaciones alcanzado.");
+                setShowErrorModal(true);
+            }else{
+                toast.error('Error al crear la publicación', {position:'top-center', duration: 3000});
+                setError("Error al crear la publicación.");
+                setShowErrorModal(true);
+            }
+           
+        
         // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setShowErrorModal(true);
@@ -143,7 +171,11 @@ const Publicaciones = () =>{
                     <h2 className='mensaje'>Crear Nueva Publicación</h2>
                     <br />
                     <div className="title-input text-center mb-3">
-                        <p>Publicaciones: {currentPublications} de {maxPublications} disponibles</p>
+                        {membership && membership.unlimited_publications ? (
+                            <p className="mensaje">¡Tienes un plan Premium! Puedes crear tantas publicaciones como desees.</p>
+                        ) : (
+                            <p>Publicaciones: {currentPublications} de {maxPublications} disponibles</p>
+                        )}
                     </div>
 
                     <Row>

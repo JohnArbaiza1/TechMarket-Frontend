@@ -19,7 +19,7 @@ export const createPublication = async (publicationData) => {
             }
         );
 
-        return response.data;
+        return response;
     } catch (error) {
         console.error("Error al crear la publicación:", error.response?.data || error.message);
         throw error;
