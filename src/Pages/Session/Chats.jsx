@@ -49,20 +49,18 @@ const ChatsUsers = () => {
     useEffect(() => {
         const fetchChats = async () => {
             try {
-                console.log("ChatsUsers: Fetching initial chats...");
                 const response = await getChats();
-                console.log("ChatsUsers: Initial chats received:", response);
 
                 const sortedChats = response.sort((chatA, chatB) => {
                     const lastMessageTimeA = chatA.messages?.length > 0 ? new Date(chatA.messages[chatA.messages.length - 1].created_at).getTime() : 0;
                     const lastMessageTimeB = chatB.messages?.length > 0 ? new Date(chatB.messages[chatB.messages.length - 1].created_at).getTime() : 0;
                     return lastMessageTimeB - lastMessageTimeA;
                 });
+
                 
 
                 setChats(sortedChats);
 
-                console.log("ChatsUsers: Initial chats set and sorted.");
             } catch (error) {
                 console.error("ChatsUsers: Error al cargar los chats:", error);
             }
@@ -353,8 +351,6 @@ const ChatsUsers = () => {
 
      // handleSelectChat 
      const handleSelectChat = async (chat) => {
-
-        console.log(`ChatsUsers: Seleccionando chat ${chat.id}`);
         const currentUserId = parseInt(localStorage.getItem("user_id"));
         const otherUser = chat.user_one.id === currentUserId ? chat.user_two : chat.user_one;
 
@@ -367,6 +363,7 @@ const ChatsUsers = () => {
             transmitter: chat.user_one.id === currentUserId,
             name_user2: otherUser.user_name,
             id_user2: otherUser.id,
+            is_selected: chat.is_selected,
         };
 
          try {
@@ -383,7 +380,7 @@ const ChatsUsers = () => {
         setSelectedChat(chatToSelect);
      };
      //Toast para manejar la aceptación de solicitud
-     const handleAcceptRequest = () => {
+     const handleAcceptRequest = (status) => {
         
         const appContainer = document.getElementsByClassName("home-layout")[0]; 
         if (appContainer) {
@@ -392,7 +389,8 @@ const ChatsUsers = () => {
     
         toast(
             <div style={{ textAlign: "center", zIndex: 1051 }}> {/* Asegurar que el toast esté encima */}
-                <p>¿Estás seguro de que deseas aceptar esta solicitud?</p>
+                {status ? <p>¿Estás seguro de que deseas aceptar esta solicitud?</p> : <p>¿Estás seguro de que deseas eliminar esta solicitud?</p>}
+                
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
                     <button
                         className="btn btn-success"
@@ -402,12 +400,19 @@ const ChatsUsers = () => {
                             if (appContainer) {
                                 appContainer.classList.remove("blur-background"); 
                             }
-                            const response = await updateApplicant(selectedChat.publication, selectedChat.id_user2, true);
+                            const response = await updateApplicant(selectedChat.publication, selectedChat.id_user2, status);
                             if (response.status === 200) {
-                                toast.success("Solicitud aceptada con éxito.");
                                 const btnAccept = document.getElementById('btn-accept');
-                                if (btnAccept) {
-                                    btnAccept.style.display = 'none'; // Ocultar el botón de aceptar
+                                if(status){
+                                    toast.success("Solicitud aceptada con éxito.");
+                                    if (btnAccept) {
+                                        btnAccept.textContent = "Solicitud aceptada";
+                                    }
+                                }else{
+                                    toast.success("Solicitud eliminada con éxito.");
+                                    if (btnAccept) {
+                                        btnAccept.textContent = "Aceptar solicitud";
+                                    }
                                 }
                                 //setSelectedChat(null);
                             }else if(response.status === 205) {
@@ -548,16 +553,27 @@ const ChatsUsers = () => {
                                                 >
                                                     Ver perfil
                                                 </button>
-                                                {selectedChat.transmitter && selectedChat.publication && (
+
+                                                {selectedChat.transmitter && selectedChat.publication && !selectedChat.is_selected && (
                                                     <button
                                                         id='btn-accept'
                                                         className="btn btn-secondary w-auto"
                                                         style={{ padding: "5px 10px", fontSize: "14px" }}
-                                                        onClick={handleAcceptRequest}
+                                                        onClick={() => handleAcceptRequest(true)}
                                                     >
                                                         Aceptar solicitud
                                                     </button>
-                                                )}
+                                                ) }
+                                                {selectedChat.transmitter && selectedChat.publication && selectedChat.is_selected && (
+                                                    <button
+                                                        id='btn-accept'
+                                                        className="btn btn-secondary w-auto"
+                                                        style={{ padding: "5px 10px", fontSize: "14px" }}
+                                                        onClick={()=> handleAcceptRequest(false)}
+                                                    >
+                                                        Solicitud aceptada
+                                                    </button>
+                                                    )}
                                             </div>
                                         </div>
                                         <div className="flex-grow-1 p-3 overflow-auto">

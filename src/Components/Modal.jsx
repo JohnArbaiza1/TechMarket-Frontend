@@ -123,7 +123,7 @@ export const ModalAplicants = ({ isOpen, isClose, applicants, publication, viewA
 };
 export const ModalAcceptedApplicants = ({ isOpen, onClose, acceptedApplicants, publication }) => {
     if (!isOpen) return null;
-
+    const navigate = useNavigate();
     return (
         <div className="modal-overlay">
             <div className="modal-content">
@@ -139,7 +139,7 @@ export const ModalAcceptedApplicants = ({ isOpen, onClose, acceptedApplicants, p
                                 profile={applicant.users.profile}
                                 isFollowing={false}
                                 onFollowToggle={() => {}}
-                                viewProfile={(username) => console.log(`Ver perfil de ${username}`)}
+                                viewProfile={(username) => navigate(`/profile/${username}`)}
                                 publication={publication}
                                 applicants={true}
                                 inAcceptedView={true}
