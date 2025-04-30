@@ -16,11 +16,16 @@ import Publicaciones from "../Pages/Session/Publicar";
 import ConfigProfile from "../Pages/Session/ConfigPerfil";
 import SettingsPage from "../Pages/Session/SettingsPage";
 import MisProyectos from "../Pages/Session/MyProjects";
-import RegisteredUsers from "../Pages/Session/Colegas";
+import RegisteredUsers from "../Pages/Session/Discover";
+import MisColegas from "../Pages/Session/Colegas";
+import ChatsUsers from "../Pages/Session/Chats";
+import CreditCard from "../Pages/Session/updateMembership";
+import AboutPage from "../Pages/Others/About";
 
 //importamos los layouts
 import Layout from "../Layouts/layout";
 import SessionLayout from "../Layouts/layout_session";
+import ChatPage from "../Pages/Session/PruebaMensajes";
 
 const router = createBrowserRouter([
     {
@@ -37,6 +42,14 @@ const router = createBrowserRouter([
                 element: (
                     <PublicRoute>
                         <Principal/>
+                    </PublicRoute>
+                )
+            },
+            {
+                path: "about",
+                element: (
+                    <PublicRoute>
+                        <AboutPage/>
                     </PublicRoute>
                 )
             },
@@ -72,11 +85,16 @@ const router = createBrowserRouter([
                     { path: "/home", element: <Home /> },
                     { path: "/publicar", element: <Publicaciones /> },
                     { path: "/profile", element: <PerfilUser /> },
+                    { path: "/profile/:username", element: <PerfilUser /> },
                     { path: "/settings", element: <SettingsPage /> },
                     { path: "/myprojects", element: <MisProyectos /> },
                     { path: "/proyectos-empresa", element: <MisProyectos /> },
-                    { path: "/colegas", element: <RegisteredUsers /> },
-                    { path: "/talento-empresas", element: <RegisteredUsers/> },
+                    { path: "/descubrir", element: <RegisteredUsers /> },
+                    { path: "/colegas", element: <MisColegas /> },
+                    { path: "/talento-empresas", element: <MisColegas/> },
+                    { path: "/techMarket-Chat", element: <ChatsUsers/> },
+                    { path: "/Pruebas/:user", element:<ChatPage/> },
+                    { path: "/update-membership", element:<CreditCard/> },
                 ],
             },
             {

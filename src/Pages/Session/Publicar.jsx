@@ -7,6 +7,10 @@ import axios from 'axios';
 import ModalComponent from '../../Components/Modal';
 import { usePublicationState } from '../../Hooks/usePublicationState';
 import { useModalState } from '../../Hooks/useModalState';
+import { toast } from 'sonner';
+import authService from '../../Services/authservice';
+
+const { getMembership } = authService;
 
 const Publicaciones = () =>{
     // Usamos el hook usePublicationState para manejar los estados de la publicación
@@ -15,20 +19,21 @@ const Publicaciones = () =>{
         description, setDescription,
         image, setImage,
         quota, setQuota,
-        rating, setRating,
+        rating,
         tags, setTags,
         preview, setPreview,
         loading, setLoading,
-        error, setError,
-        success, setSuccess,
+        setError,
+        setSuccess,
         handleImageChange,
         handleRemoveImage , 
-        tagColor, setTagColor
+        API_URL
     }= usePublicationState();
 
     //Estados para trabajar la cantidad de publicaciones segun el plan
     const [maxPublications, setMaxPublications] = useState(0);  // Maximo de publicaciones según el plan
     const [currentPublications, setCurrentPublications] = useState(0); // Publicaciones actuales
+    const [membership, setMembership] = useState(null); // Estado para la membresía actual
     const now = new Date();
 
     // Usamos el hook useModalState para manejar los estados y funciones de los modales
@@ -36,7 +41,7 @@ const Publicaciones = () =>{
         showSuccessModal, setShowSuccessModal,
         showErrorModal, setShowErrorModal,
         showLimitModal, setShowLimitModal,
-        modalMessage, setModalMessage,
+        setModalMessage,
         handleCloseSuccessModal,
         handleCloseErrorModal,
         handleCloseLimitModal       
@@ -54,12 +59,24 @@ const Publicaciones = () =>{
                     setCurrentPublications(data.currentPublications);
                 } catch (error) {
                     setError("Error al obtener el límite de publicaciones.");
+                    console.log(error);
                 }
             };
+            const fetchMembership = async () => {
+                try {
+                    const data = await getMembership(localStorage.getItem("id_membership"));
+                    setMembership(data.data);
+                    // console.log(data.data);
+                } catch (error) {
+                    setError("Error al obtener la membresía.");
+                    console.log(error);
+                }};
 
+                fetchMembership();
             fetchPublicationLimit();
+            
         }
-    }, [setMaxPublications, setCurrentPublications, setError]);   
+    }, [setMaxPublications, setCurrentPublications, setError, setMembership]);   
     
     // Función para el envío de los datos de la publicación
     const handleSubmit = async (e) => {
@@ -96,6 +113,7 @@ const Publicaciones = () =>{
                 );
 
                 imageUrl = imageResponse.data.url;
+            // eslint-disable-next-line no-unused-vars
             } catch (error) {
                 setError("Error al subir la imagen. Usando imagen predeterminada.");
             }
@@ -115,15 +133,29 @@ const Publicaciones = () =>{
 
         try {
             const response = await createPublication(formData);
-            setSuccess("Publicación creada con éxito");
-            setShowSuccessModal(true);
-            setCurrentPublications(currentPublications + 1);
-            setTitle('');
-            setDescription('');
-            setTags('');
-            setQuota(1);
-            setImage(null);
-            setPreview(null);
+            if (response.status !== 200) {
+                // toast.success('Publicación creada con éxito', {position:'top-center', duration: 3000});
+                setSuccess("Publicación creada con éxito");
+                setShowSuccessModal(true);
+                setCurrentPublications(currentPublications + 1);
+                setTitle('');
+                setDescription('');
+                setTags('');
+                setQuota(1);
+                setImage(null);
+                setPreview(null);
+            } else if(response.status === 400) {
+                toast.error('Error al crear la publicación, limite de publicaciones alcanzado', {position:'top-center', duration: 3000});
+                setError("Error al crear la publicación. Limite de publicaciones alcanzado.");
+                setShowErrorModal(true);
+            }else{
+                toast.error('Error al crear la publicación', {position:'top-center', duration: 3000});
+                setError("Error al crear la publicación.");
+                setShowErrorModal(true);
+            }
+        
+        
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setShowErrorModal(true);
         } finally {
@@ -138,7 +170,11 @@ const Publicaciones = () =>{
                     <h2 className='mensaje'>Crear Nueva Publicación</h2>
                     <br />
                     <div className="title-input text-center mb-3">
-                        <p>Publicaciones: {currentPublications} de {maxPublications} disponibles</p>
+                        {membership && membership.unlimited_publications ? (
+                            <p className="mensaje">¡Tienes un plan Premium! Puedes crear tantas publicaciones como desees.</p>
+                        ) : (
+                            <p>Publicaciones: {currentPublications} de {maxPublications} disponibles</p>
+                        )}
                     </div>
 
                     <Row>
@@ -168,8 +204,7 @@ const Publicaciones = () =>{
                                     />
                                 </div>
 
-                                <div className="tags">
-                                    <div className="form-group">
+                                <div className="form-group">
                                         <label className="title-input" htmlFor="tags">Etiquetas</label>
                                         <input
                                             type="text"
@@ -180,18 +215,19 @@ const Publicaciones = () =>{
                                             placeholder="Comas separadas"
                                             required
                                         />
-                                    </div>
+                                </div>
 
-                                    <div className="form-group">
-                                        <label className="title-input" htmlFor="tagColor">Color Tag</label>
-                                        <input
-                                            type="color"
-                                            className="form-control form-Tag"
-                                            id="tagColor"
-                                            value={tagColor}
-                                            onChange={(e) => setTagColor(e.target.value)}
-                                        />
-                                    </div>
+                                <div className="form-group">
+                                    <label className="title-input" htmlFor="quota">Ingrese el número de Cupos</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        id="quota"
+                                        value={quota}
+                                        min="1"
+                                        onChange={(e) => setQuota(Number(e.target.value))}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="form-group">
@@ -251,7 +287,7 @@ const Publicaciones = () =>{
                                                 <span
                                                     key={index}
                                                     style={{
-                                                        backgroundColor: tagColor, // Color de fondo de la etiqueta
+                                                        backgroundColor: '#169976', // Color de fondo de la etiqueta
                                                         color: '#fff',  // Color del texto de la etiqueta
                                                         padding: '5px 10px',
                                                         borderRadius: '15px',
@@ -290,23 +326,23 @@ const Publicaciones = () =>{
                 show={showSuccessModal}
                 onHide={handleCloseSuccessModal}
                 title="Publicación Exitosa"
-                message={modalMessage}
+                message={"¡Listo! Tu proyecto ya está publicado y listo para recibir postulaciones."}
                 variant="success"
             />
             {/* Modal de Error */}
             <ModalComponent
                 show={showErrorModal}
                 onHide={handleCloseErrorModal}
-                title="Error"
-                message={modalMessage}
-                variant="danger"
+                title="Oops..."
+                message={"¡Algo salió mal!"}
+                variant="error"
             />
             {/* Modal de Límite alcanzado */}
             <ModalComponent
                 show={showLimitModal}
                 onHide={handleCloseLimitModal}
                 title="Límite de Publicaciones"
-                message={modalMessage}
+                message={"No puedes crear más publicaciones. Te recomendamos actualizar tu plan para continuar publicando."}
                 variant="warning"
                 onAction={() => {
                 

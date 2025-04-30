@@ -1,7 +1,10 @@
-import { postAplicationProyect, delApplicantUserPublication} from '../Services/aplicationsService';
+import { postAplicationProyect, delApplicantUserPublication, getApplicantByPublication, getApplicantByStatus, updateApplicant} from '../Services/aplicationsService';
 import '../Styles/Componentes/card.css';
-import { ModalPublication } from './Modal';
+import { ModalAplicants, ModalPublication, ModalAcceptedApplicants } from './Modal';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { MdPersonSearch } from 'react-icons/md';
 
 // Componente funcional Card para mostrar los planes y sus precios
 export function CardPrice ({title,subtitle,texto,description}){
@@ -56,16 +59,20 @@ CardProject.defaultProps = {
 };
 
 //Componente Card para las publicaciones
-export const CardPublication = ({ image, tags, title, description, date, quota, rating, id_publication, isApplied}) => {
+export const CardPublication = ({ image, tags, title, description, date, quota, rating, publication, isApplied,isOwner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpenApplicants, setIsModalOpenApplicants] = useState(false);
+    const [isModalOpenAccepted, setIsModalOpenAccepted] = useState(false);
     const [isAppliedCard, setIsApplied] = useState(isApplied); // Estado para verificar si el usuario ya aplicó al proyecto
-
+    const [dataApplicants, setDataApplicants] = useState([]); // Estado para almacenar los datos de los solicitantes
+    const [isLoading, setIsLoading] = useState(false); // Estado para manejar la carga de datos
+    const [acceptedApplicants, setAcceptedApplicants] = useState([]); // Estado para los solicitantes aceptados
     // Función para generar un color HEX aleatorio
     const getRandomColor = () => {
         const letters = ["#8B5DFF", "#2E186A", "#5E308C", "#CB6E5A", "#BC522B"];
         return letters[Math.floor(Math.random() * letters.length)];
     };
-
+    const navigate = useNavigate();
     const color1 = getRandomColor();
     const color2 = getRandomColor();
 
@@ -78,27 +85,50 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
     const handleApply = async () => {
         try {
             const response = await postAplicationProyect({
-                id_publication: id_publication, // ID de la publicación
+                id_publication: publication.id, // ID de la publicación
             });
 
             if (response.status === 201) {
-                alert('Aplicado al proyecto exitosamente');
+                toast.success("Aplicación enviada exitosamente", { position: 'top-center', duration: 3000 });
                 setIsApplied(true); // Cambiar el estado a "aplicado"
+            } else if( response.status === 203) {
+                toast.error(
+                    (t) => (
+                        <div>
+                            <span>No puedes aplicar a este proyecto porque ya superaste el límite de aplicaciones de tu plan</span>
+                            <button 
+                                onClick={() => navigate("/update_membership")} 
+                                style={{
+                                    marginLeft: '10px',
+                                    backgroundColor: '#8B5DFF',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    padding: '5px 10px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Actualizar plan
+                            </button>
+                        </div>
+                    ), 
+                    { position: 'top-center', duration: 6000 }
+                );
             } else if (response.status === 400) {
-                alert('Ya estás aplicado a este proyecto');
+                toast.info("Ya has aplicado a este proyecto", { position: 'top-center', duration: 3000 });
             } else {
-                alert('Ocurrió un error inesperado. Inténtalo nuevamente.');
+                toast.error("Ocurrió un error inesperado. Inténtalo nuevamente.", { position: 'top-center', duration: 3000 });
             }
         } catch (error) {
             console.error('Error al aplicar al proyecto:', error.response?.data || error.message);
-            alert('Ocurrió un error al procesar tu solicitud. Inténtalo más tarde.');
+            toast.error("Ocurrió un error al aplicar al proyecto. Inténtalo más tarde.", { position: 'top-center', duration: 3000 });
         }
     };
     // Función para manejar el evento de cancelar la solicitud
     const handleCancel = async () => {
         try {
-           const response = await delApplicantUserPublication(
-                id_publication // ID de la publicación
+            const response = await delApplicantUserPublication(
+                publication.id // ID de la publicación
             ); 
             if (response.status === 200) {
                 alert('Aplicación cancelada exitosamente');
@@ -113,6 +143,45 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
             alert('Ocurrió un error al cancelar la solicitud. Inténtalo más tarde.');
         }
     };
+
+    // Función para ver las solicitudes 
+    const handleViewApplications = async () => {
+        setIsLoading(true); // Inicia el estado de carga
+        try {
+            const response = await getApplicantByPublication(publication.id);
+            if (response.status === 200) {
+                setDataApplicants(response.data); // Guardar los datos de los solicitantes en el estado
+                setIsModalOpenApplicants(true); // Abrir el modal solo después de cargar los datos
+            } else if (response.status === 203) {
+                toast.info("No hay solicitudes para mostrar", { position: 'top-center', duration: 3000 });
+            } else {
+                toast.error("Ocurrió un error inesperado. Inténtalo nuevamente.", { position: 'top-center', duration: 3000 });
+            }
+        } catch (error) {
+            console.error('Error al cargar las solicitudes:', error.response?.data || error.message);
+            toast.error("Ocurrió un error al cargar las solicitudes. Inténtalo más tarde.", { position: 'top-center', duration: 3000 });
+        } finally {
+            setIsLoading(false); // Finaliza el estado de carga
+        }
+    };
+    const handleViewAcceptedApplicants = async () => {
+        setIsLoading(true);
+        try {
+            const response = await getApplicantByStatus(publication.id);
+            if (response.status === 200) {
+                setAcceptedApplicants(response.data);
+                setIsModalOpenAccepted(true); // Abrir el modal
+            } else {
+                toast.info("No hay solicitantes aceptados para mostrar", { position: 'top-center', duration: 3000 });
+            }
+        } catch (error) {
+            console.error('Error al cargar los solicitantes aceptados:', error.response?.data || error.message);
+            toast.error("Ocurrió un error al cargar los solicitantes aceptados. Inténtalo más tarde.", { position: 'top-center', duration: 3000 });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
 
     return (
         <>
@@ -139,14 +208,35 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     </div>
                     <h3 className="card-titlePublication">{title}</h3>
                     <p className="card-date">Cupos disponibles: {quota}</p>
-                    <p className='card-date'>Rating: {rating}</p>
+                    {//<p className='card-date'>Rating: {rating}</p>
+                    }
                     <p className="card-date">{date}</p>
-
                     <div className="cardButtonContainer">
-                        <p style={{paddingRight: '35%', paddingTop: '1.5vh' ,fontSize: '14px', color: '#8B5DFF' }}> {isApplied ? "Ya aplicado" : ""}</p>
-                            <button onClick={handleModalToggle} className="card-button">
-                                Leer más
-                            </button>
+                        {isOwner ? (
+                            <div className='btn-container'>
+                                <button 
+                                    onClick={handleViewApplications} 
+                                    className="card-button"
+                                >
+                                    Solicitudes
+                                </button>
+                                <button onClick={handleViewAcceptedApplicants} className="card-button">
+                                    Ver aceptados
+                                </button>
+                                <button onClick={handleModalToggle} className="card-button">
+                                    Leer más
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <p style={{paddingRight: '35%', paddingTop: '1.5vh', fontSize: '14px', color: '#8B5DFF' }}>
+                                    {isApplied ? "Ya aplicado" : ""}
+                                </p>
+                                <button onClick={handleModalToggle} className="card-button">
+                                    Leer más
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
                 <ModalPublication
@@ -157,7 +247,27 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
                     onApply={handleApply}
                     onCancel={handleCancel}
                     isApplied={isAppliedCard}
+                    isOwner={isOwner}
                 />
+                
+                {isLoading ? (
+                    <div className="loading-indicator">Cargando solicitudes...</div>
+                ) : (
+                    <>
+                        <ModalAplicants
+                            isOpen={isModalOpenApplicants}
+                            isClose={() => setIsModalOpenApplicants(false)}
+                            applicants={dataApplicants}
+                            publication={publication}
+                        />
+                        <ModalAcceptedApplicants
+                            isOpen={isModalOpenAccepted}
+                            onClose={() => setIsModalOpenAccepted(false)}
+                            acceptedApplicants={acceptedApplicants}
+                            publication={publication}
+                        />
+                    </>
+                )}
             </div>
         </>
     );
@@ -167,4 +277,94 @@ CardPublication.defaultProps = {
     image: null
 };
 
+export const UserCard = ({ user, profile, isFollowing, onFollowToggle, viewProfile, applicants, publication, inAcceptedView }) => {
+    const navigate = useNavigate();
+
+    if (!profile) return null;
+
+    const getButtonText = () => applicants ? <MdPersonSearch size={18} /> : (isFollowing ? "Siguiendo" : "Seguir");
+
+    const getButtonClass = () => applicants
+        ? 'btn-followCard is-following'
+        : (isFollowing ? 'btn-followCard is-following' : 'btn-followCard');
+
+    const handleSendMessage = () => {
+        if(applicants){
+            navigate("/techMarket-Chat", { state: { userId: user.id, userName: user.user_name, userImage: profile.image_url, publication: publication } });
+        }else{
+            navigate("/techMarket-Chat", { state: { userId: user.id, userName: user.user_name, userImage: profile.image_url } });
+        }
+        
+    };
+    const handleDeleteApplicant = async () => {
+        try {
+            const response = await updateApplicant(publication.id, user.id, false);
+            if (response.status === 200) {
+                toast.success("Solicitud eliminada exitosamente", { position: 'top-center', duration: 3000 });
+            } else {
+                toast.error("Ocurrió un error inesperado. Inténtalo nuevamente.", { position: 'top-center', duration: 3000 });
+            }
+        } catch (error) {
+            console.error('Error al eliminar la solicitud:', error.response?.data || error.message);
+            toast.error("Ocurrió un error al eliminar la solicitud. Inténtalo más tarde.", { position: 'top-center', duration: 3000 });
+        }
+    }
+
+    return (
+        <section className='followCard'>
+            <header className='followCard-Header'>
+                <img src={profile.image_url} alt="img-profile" className='followCard-Profile' />
+                <div className="followCard-info">
+                    <span className='followCard-name'>{profile.first_name} {profile.last_name}</span>
+                    <span className="followCard-info-userName">@{user.user_name}</span>
+                </div>
+
+                <div className='followCard-container-buttons'>
+                    <button
+                        className={getButtonClass()}
+                        onClick={applicants
+                            ? () => viewProfile(user.user_name)
+                            : () => onFollowToggle(user.id)}
+                    >
+                        {getButtonText()}
+                    </button>
+
+                    <button onClick={handleSendMessage} className="btn-followCard">
+                        Mensaje
+                    </button>
+                    {inAcceptedView && (
+                        <button onClick={handleDeleteApplicant} className="btn-followCard">
+                            X
+                        </button>
+                    )}
+                </div>
+            </header>
+        </section>
+    );
+};
+
+export const MessageCard = ({image, user, message,notification,onClick}) =>{
+
+    return(
+        <section className="chatCard" onClick={onClick}>
+            <div className="chatCard-header">
+                <img src={image} alt="Profile" className="chatCard-avatar" />
+
+                <div className="chatCard-body">
+                    <div className="chatCard-username">@{user}</div>
+                    <div className="chatCard-message">{message}</div>
+                </div>
+
+                {notification && (
+                    <div className="content-noti">
+                        <div className="chatCard-notification">
+                            <span>{notification}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </section>
+
+    );
+}
 export default CardProject;

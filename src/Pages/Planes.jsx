@@ -18,7 +18,7 @@ export function Planes(){
         const fetchMemberships = async () => {
             try {
                 const response = await viewPlanes(); // Llamamos a la función viewPlanes
-                console.log("Datos de la API:", response.data); // Verifica la estructura de los datos
+                // console.log("Datos de la API:", response.data); // Verifica la estructura de los datos
                 setMemberships(response.data); // Establecemos los datos en el estado
             } catch (error) {
                 console.error("Error al obtener las membresías:", error);
@@ -35,10 +35,10 @@ export function Planes(){
     }
 
     const userPlans = memberships.filter(membership => 
-        membership.membership_name === "Inicial" || membership.membership_name === "Pro"
+        membership.membership_name === "Debug" || membership.membership_name === "DeployPro"
     );
     const enterprisePlans = memberships.filter(membership => membership.membership_name.includes("Enterprise"));
-    const planesTodos = memberships.filter(membership => membership.membership_name.includes("Todo en Uno"));
+    const planesTodos = memberships.filter(membership => membership.membership_name.includes("TechStack Max"));
 
     return(
         <>

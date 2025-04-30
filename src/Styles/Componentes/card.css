@@ -135,7 +135,8 @@
 Estilo de la card de la publicacion
 */
 .cardPublication{
-    width: 280px;
+    width: 100%;
+    max-width: 100%;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -192,26 +193,101 @@ Estilo de la card de la publicacion
     margin-top: auto; 
 }
 
+.btn-container{
+    width: 100%;
+}
+
 .card-button {
+    padding: 13px 9px;
+    margin: 4px;
     display: inline-block;
     text-decoration: none;
     background-color: #6c4ed6;
     color: white;
-    padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
     text-align: center;
     transition: background-color 0.3s;
     width: fit-content;
-    
+    border: none;
 }
 
 .card-button:hover {
     background-color: #5639c8;
 }
 
-/*-----------------------------------------------*/
+/*-----------------------------------------------
+    Card de los mensajes
+*/
+.cahtCard{
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    border-bottom: 1px solid #BDA0D9;
+    background-color: #fff;
+    transition: background 0.2s ease;
+}
 
+.chatCard-header{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.chatCard-avatar{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chatCard-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chatCard-username {
+    font-weight: 500;
+    color: #2E186A;
+    font-size: 15px;
+}
+
+.chatCard-message {
+    font-size: 14px;
+    color: #5E308C;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-noti{
+    margin-left: auto; 
+    padding-right: 8px;
+}
+
+.chatCard-notification {
+    background-color: #FAAA65;
+    color: white;
+    padding: 4px 1px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 24px;
+    text-align: center;
+}
+
+.chatCard:hover,
+.chatCard:hover .chatCard-username,
+.chatCard:hover .chatCard-message {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+/*-----------------------------------------------*/
 @media (max-width: 768px) {
     .card {
         width: 90%; 
@@ -259,3 +335,8 @@ Estilo de la card de la publicacion
     }
 }
 
+@media (max-width: 468px) {
+    .cardPrice {
+        width: 235px;
+    }
+}

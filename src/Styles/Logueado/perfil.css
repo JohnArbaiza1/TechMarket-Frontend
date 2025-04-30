@@ -24,7 +24,7 @@
 
 .img-profile{
     width: 150px;
-    height: auto;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid white;
@@ -142,6 +142,7 @@ li{
 
     .img-profile {
         width: 100px;
+        height: 100px;
     }
 
     .cuerpo-profile {

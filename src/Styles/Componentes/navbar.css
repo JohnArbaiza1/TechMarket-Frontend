@@ -97,25 +97,45 @@
 }
 
 .notification-icon {
+    width: 160px;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2E186A;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
-.notifications .badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: red;
+.notification-text {
+    font-size: 14px;
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 50%;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(10px);
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.5s ease, transform 0.5s ease, max-width 0.5s ease;
 }
 
 .notifications {
     text-decoration: none;
-    color: #2E186A;
+    color: white;
     font-size: 1.4rem;
     position: relative;
+    margin-left: 8px;
+}
+
+.notification-icon.show {
+    opacity: 1;
+}
+
+.notification-text.show {
+    opacity: 1;
+    transform: translateX(0);
+    max-width: 200px; 
 }
 
 .profile-menu {
@@ -134,5 +154,25 @@
 
     .nav-link.active.sign-up{
         text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav-icons{
+        gap: 10px;
+    }
+    .notification-text {
+        display: none !important;
+    }
+
+    .notification-icon {
+        width: 50px;
+        height: 50px;
+        padding: 8px 10px;
+        border-radius: 50%;
+    }
+
+    .notifications {
+        margin-left: 0;
     }
 }

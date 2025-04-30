@@ -6,6 +6,9 @@
     justify-content: center;
 }
 
+/*-----------------------------------------------
+                Card de los usuarios
+-------------------------------------------------*/
 .followCard{
     width: 500px;
     display: flex;
@@ -69,13 +72,11 @@
     color: #fff;
 }
 
-
 .btn-followCard.is-following:hover{
     background-color: #CB6E5A;
     transition: .3s ease all background-color;
     color: #fff;
 }
-
 
 .btn-followCard:hover{
     background-color: #8B5DFF;
@@ -113,6 +114,5 @@
     .btn-followCard {
         padding: 4px 10px; 
         font-size: 12px; 
-
     }
 }

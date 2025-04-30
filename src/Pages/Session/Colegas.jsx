@@ -1,111 +1,119 @@
 import { useEffect, useState } from 'react';
-import userServices from '../../Services/userServices';
-import { getProfile } from "../../Services/profileService";
-import { toast } from 'sonner'; 
-import '../../Styles/Logueado/RegisteredUsers.css' 
+import { getFollowers, getFollowing, unfollowUser } from '../../Services/followersService';
+import { toast } from 'sonner';
+import { CardSeguidos } from '../../Components/FollowCard';
+import '../../Styles/Logueado/misColegas.css';
+import { Row, Col, Accordion } from 'react-bootstrap';
+import { FaUsers} from 'react-icons/fa'; 
+import { RiUserFollowFill } from 'react-icons/ri';
 
-const RegisteredUsers = () =>{
-    //Definimos los estados a emplear
-    const [users, setUsers] = useState([]);
-    const [profiles, setProfiles] = useState({});
+const MisColegas = () => {
+    //Definimos los Estados a emplear
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true); 
-    // Estado que mantiene el estado de seguimiento de cada usuario
-    const [followingStatus, setFollowingStatus] = useState({});
 
-    // Función que cambia el estado isFollowing de un usuario específico
-    const handleClick = (userId) => {
-        setFollowingStatus((prevStatus) => ({
-            ...prevStatus,
-            [userId]: !prevStatus[userId], // Cambia el estado solo para ese usuario
-        }));
-    };
-
-    //hacemos un renderizado condicional
-    const getButtonText = (userId) => {
-        return followingStatus[userId] ? "Siguiendo" : "Seguir";
-    };
-
-    const getButtonClass = (userId) => {
-        return followingStatus[userId] ? 'btn-followCard is-following' : 'btn-followCard';
+    const handleUnfollow = async (userId) => {
+        const token = localStorage.getItem('token');
+        try {
+            await unfollowUser(userId, token); // llamada al backend
+            setFollowing((prev) => prev.filter((user) => user.id !== userId)); // actualiza el estado
+            toast.success("Has dejado de seguir al usuario.");
+        } catch (error) {
+            console.error("Error al dejar de seguir:", error);
+            toast.error(error || "No se pudo dejar de seguir al usuario.");
+        }
     };
 
     useEffect(() => {
-        const fetchUsersAndProfiles = async () => {
-        const loadingToastId = toast.loading("Cargando usuarios...",{position:'top-center'});
+        const token = localStorage.getItem('token');
+    
+        const fetchData = async () => {
+            // Mostrar toast de carga
+            const loadingToastId = toast.loading("Cargando colegas...",{position:'top-center'});
+    
             try {
-                const token = localStorage.getItem("token");
-                const usersData = await userServices.getAllUsers(token);
-                setUsers(usersData);
-
-                // Obtener todos los perfiles en paralelo
-                const profilePromises = usersData.map(user => getProfile(user.id));
-                const profilesData = await Promise.all(profilePromises);
-
-                // Asociar cada perfil a su user.id
-                const profilesMap = {};
-                usersData.forEach((user, index) => {
-                    profilesMap[user.id] = profilesData[index].data;
-                });
-
-                setProfiles(profilesMap);
+                const [followersData, followingData] = await Promise.all([
+                    getFollowers(token),
+                    getFollowing(token),
+                ]);
+    
+                setFollowers(followersData);
+                setFollowing(followingData);
+            } catch (error) {
+                setError("Error al cargar tus colegas");
+                toast.error("No se pudo cargar la información de tus colegas.");
+                console.error(error);
+            } finally {
+                // Cerrar toast de carga
                 toast.dismiss(loadingToastId);
-                toast.success("Usuarios cargados correctamente",{position:'top-center',duration: 3000});
-
-            } catch (err) {
-                console.error("Error cargando usuarios o perfiles:", err);
-                // Cerramos el toast de carga y mostramos error
-                toast.dismiss(loadingToastId);
-                toast.error("No se pudieron cargar los usuarios. Intenta nuevamente.");
-            }finally {
-                setLoading(false);  // Al finalizar la carga, cambiamos el estado
+                setLoading(false);
             }
         };
-
-        fetchUsersAndProfiles();
+    
+        fetchData();
     }, []);
 
-    if (loading) {
-        return null; // Mientras cargan los datos no mostramos nada, el toast se encargará de la retroalimentación
-    }
+    if (loading) return null;
 
-    if (error) return <div>{error}</div>;
+    if (error) {
+        return <div> 😬 Parece que hubo un tropiezo. Pero no te preocupes, los ingenieros están al mando.</div>;
+    }
+    
     return(
         <>
-            <h2 className="title text-center">Usuarios que Hacen Parte de Nuestra Comunidad</h2>
-            <div className="users-list">
-                {users.map(user => {
-                    const profile = profiles[user.id];
-                    if (!profile) return null;
+            <section className="container-colegas">
+                <h2 className="title text-center">Mis Colegas</h2><br />
+                <div className="mis-colegas">
+                    <Row>
+                        <Col> 
+                            <h3 className='subtitle-colegas text-center'>Usuarios que sigues</h3>
+                            <Accordion>
+                                <Accordion.Item eventKey="0">
+                                    <Accordion.Header> <FaUsers  className='icon-colegas'/> Ver más</Accordion.Header> 
+                                        <Accordion.Body>
+                                            <div className="users-list">
+                                                {following.length > 0 ? (
+                                                    following.map((user) => (
+                                                    <CardSeguidos key={user.id} user={user} profile={user.profile} onFollowToggle={handleUnfollow}/>
+                                                    ))
+                                                ) : (
+                                                    <p>No sigues a ningún usuario aún.</p>
+                                                )}
+                                            </div>
+                                        </Accordion.Body>
+                                    
+                                </Accordion.Item>
+                            </Accordion>
+                        </Col>
+                        <Col>
+                            <h3 className='subtitle-colegas text-center'>Usuarios que te siguen</h3>
+                            <Accordion>
+                                <Accordion.Item eventKey="0">
+                                    <Accordion.Header> <RiUserFollowFill className='icon-colegas' /> Ver más</Accordion.Header> 
+                                        <Accordion.Body>
+                                            <div className="users-list">
+                                                {followers.length > 0 ? (
+                                                    followers.map((user) => (
+                                                    <CardSeguidos key={user.id} user={user} profile={user.profile} showButtons={{ profile: true, message: true, unfollow: false }}/>
+                                                    ))
+                                                ) : (
+                                                    <p>Nadie te sigue todavía.</p>
+                                                )}
+                                            </div>
 
-                    return (
-                        <section key={user.id} className='followCard'>
-                            <header className='followCard-Header'>
-                                <img src={profile.image_url} alt="img-profile" className='followCard-Profile' />
-                                <div className="followCard-info">
-                                    <span className='followCard-name'>{profile.first_name} {profile.last_name}</span>
-                                    <span className="followCard-info-userName">@{user.user_name}</span>
-                                </div>
+                                        </Accordion.Body>                               
+                                </Accordion.Item>
+                            </Accordion>
+                        </Col>
+                    </Row>
 
-                                <div className='followCard-container-buttons'>
-                                    <button
-                                        className={getButtonClass(user.id)}
-                                        onClick={() => handleClick(user.id)} // Pasar el id del usuario
-                                    >
-                                        {getButtonText(user.id)}
-                                    </button>
+                </div>
 
-                                    <button className="btn-followCard">
-                                        Mensaje
-                                    </button>
-                                </div>
-                            </header>
-                        </section>
-                    );
-                })}
-            </div>
+            </section>
         </>
     );
-}
+};
 
-export default RegisteredUsers;
+export default MisColegas;

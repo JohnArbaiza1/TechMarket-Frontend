@@ -3,10 +3,13 @@ import { CardPublication } from "../../Components/Card";
 import { getPulications } from "../../Services/publicationServices";
 import { getPulicationsByidUser } from "../../Services/aplicationsService";
 import "../../Styles/Home.css";
+import Echo from "../../Services/laravel-echo.client";
+import { getChatIds } from "../../Services/chatService";
 
 const Home = () => {
     const [publications, setPublications] = useState([]);
     const [userApplications, setUserApplications] = useState([]);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,9 +31,15 @@ const Home = () => {
     
         fetchData();
     }, []);
-    
+
+
 
     return (
+            
+    <div className="grid-header">
+            <h1 className="title text-center">Publicaciones</h1>
+            <h2 className="text-center" style={{color:' #2E186A'}}>¡Encuentra tu próximo proyecto!</h2>    
+    
         <div className="grid-container">
             {publications.map((publication) => {
                 const isApplied = userApplications.some(
@@ -47,12 +56,14 @@ const Home = () => {
                         quota={publication.quota}
                         rating={publication.publication_rating}
                         description={publication.publication_description}
-                        id_publication={publication.id}
+                        publication={publication}
                         isApplied={isApplied}
+                        isOwner={publication.id_user == localStorage.getItem("user_id")}
                     />
                 );
             })}
         </div>
+    </div>
     );
     
 };

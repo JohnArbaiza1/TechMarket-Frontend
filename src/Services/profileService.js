@@ -54,3 +54,15 @@ export const updateProfile = async (idUser, profileData) => {
         }
     });
 };
+// Funcion para obtener el perfil de un usuario por su nombre de usuario
+export const getProfileByUsername = async (username) => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No hay token disponible");
+
+    return await axios.get(`${API_URL}profile/user/${username}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+};
