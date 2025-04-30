@@ -91,7 +91,7 @@ const router = createBrowserRouter([
                     { path: "/proyectos-empresa", element: <MisProyectos /> },
                     { path: "/descubrir", element: <RegisteredUsers /> },
                     { path: "/colegas", element: <MisColegas /> },
-                    { path: "/talento-empresas", element: <RegisteredUsers/> },
+                    { path: "/talento-empresas", element: <MisColegas/> },
                     { path: "/techMarket-Chat", element: <ChatsUsers/> },
                     { path: "/Pruebas/:user", element:<ChatPage/> },
                     { path: "/update-membership", element:<CreditCard/> },

@@ -198,16 +198,8 @@ const PerfilUser = () => {
                                 </ul>
                             </div>
                         </div>
+
                         <div className="more-info">
-                            <div>
-                                <h4 className="title-Profile"><FaBriefcase /> Portafolio en nuestra plataforma</h4>
-                                <ul> 
-                                    {applications.length > 0 ? applications.map((application, index) => (
-                                            <li key={index}>{application.publication.title}</li>
-                                    )) : <li>No ha participado en ningun proyecto</li>}
-                                    
-                                </ul>
-                            </div>
                             <div>
                                 <h4 className="title-Profile"><FaEnvelope/> Proyectos publicados</h4>
                                 <ul> 
@@ -218,8 +210,25 @@ const PerfilUser = () => {
                                 </ul>
                             </div>
                         </div>
-                        
                     </section>
+
+                    <div className="my-projects">
+                        <h4 className="title-more-info"><FaBriefcase /> Portafolio en nuestra plataforma</h4>
+                        <div>
+                            {applications.length === 0 ? (
+                                <div style={{color:'white'}}>No ha participado en ningún proyecto.</div>
+                            ) : (
+                                applications.map((application, index) => (
+                                    <div key={index} className="project-card launch">
+                                        <div className="icon">🚀</div>
+                                        <div className="body-card-projects">
+                                            <h2 className="title-my-projects">{application.publication?.title || "Sin título"}</h2>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
                 </div>
             </Container>
             <br />

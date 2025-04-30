@@ -3,6 +3,7 @@ import { Card, Form, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"; 
 import {getProfile, updateProfile} from "../Services/profileService";
 import {toast } from "sonner";
+import { useProfile } from "../Contexts/ProfileContext";
 
 const FormularioEditPerfil = ({ userId, mode }) => {
     const [formData, setFormData] = useState({
@@ -12,9 +13,9 @@ const FormularioEditPerfil = ({ userId, mode }) => {
         address: "",
         description: "",
         education: "",
-        work_experience:"",
-        skills:"",
-        social_media_links:"",
+        work_experience: "",
+        skills: "",
+        social_media_links: "",
         github: "",
         image: null,
         image_url_manual: "",
@@ -22,9 +23,11 @@ const FormularioEditPerfil = ({ userId, mode }) => {
 
     const [imagePreview, setImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
-    const navigate = useNavigate(); // Hook para redirigir
-    const membershipId = parseInt(localStorage.getItem("id_membership")); // 1 = Profesional, 3 = Empresa
+    const navigate = useNavigate();
+    const membershipId = parseInt(localStorage.getItem("id_membership"));
     const isCompany = membershipId === 3;
+
+    const { refreshProfile } = useProfile(); //  Hook del contexto
 
     useEffect(() => {
         if (mode === "edit" && userId) {
@@ -43,6 +46,7 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                         social_media_links: data.social_media_links || "",
                         github: data.github || "",
                         image: null,
+                        image_url_manual: "",
                     });
 
                     if (data.image_url) setImagePreview(data.image_url);
@@ -96,14 +100,7 @@ const FormularioEditPerfil = ({ userId, mode }) => {
 
         let imageUrl = "";
 
-        if (formData.image) {
-            try {
-                imageUrl = URL.createObjectURL(formData.image);
-            } catch (err) {
-                toast.error("Error al subir la imagen.", { position: "top-center" });
-                console.log(err);       
-            }
-        } else if (formData.image_url_manual?.trim()) {
+        if (formData.image_url_manual?.trim()) {
             imageUrl = formData.image_url_manual.trim();
         } else if (formData.github) {
             imageUrl = `https://unavatar.io/github/${formData.github.trim()}`;
@@ -118,11 +115,16 @@ const FormularioEditPerfil = ({ userId, mode }) => {
 
         try {
             const response = await updateProfile(userId, payload);
+
             toast.success("Perfil actualizado exitosamente", { position: "top-center" });
-            // Actualizar el localStorage con la nueva imagen
+
+            // ACTUALIZA EL CONTEXTO DEL PERFIL GLOBAL
+            await refreshProfile();
+
+            // También puedes guardar la imagen localmente si la usas en otros componentes
             localStorage.setItem("image_url", imageUrl);
-            // Redirigir a la vista de perfil
-            navigate("/profile"); // Redirige a la vista de perfil
+
+            navigate("/profile");
             return response;
         } catch (error) {
             console.error("Error al guardar el perfil:", error);
@@ -147,7 +149,7 @@ const FormularioEditPerfil = ({ userId, mode }) => {
 
     return (
         <Card className="w-100 p-4">
-            <h2 className="mb-4">Configura tu perfil</h2>
+            <h2 className="mb-4">Editar perfil</h2>
             <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col>{renderInput(isCompany ? "Nombre de la empresa" : "Nombre", "first_name")}</Col>
@@ -160,32 +162,29 @@ const FormularioEditPerfil = ({ userId, mode }) => {
                 {renderInput(isCompany ? "Servicios ofrecidos" : "Experiencia", "work_experience")}
                 <Row>
                     <Col>{renderInput(isCompany ? "Tecnologías utilizadas" : "Skills", "skills", "text", "textarea")}</Col>
-                    <Col>{renderInput("Enlaces de redes sociales", "social_media_links", "text", "textarea")}</Col>
+                    <Col>{renderInput("Redes sociales", "social_media_links", "text", "textarea")}</Col>
                 </Row>
                 {renderInput("GitHub (opcional)", "github")}
 
                 <Form.Group className="mb-3">
-                    <Form.Label>O pega una URL de imagen</Form.Label>
+                    <Form.Label>URL de imagen (opcional)</Form.Label>
                     <Form.Control
                         type="text"
                         name="image_url_manual"
                         value={formData.image_url_manual}
                         onChange={handleChange}
-                        placeholder="https://ejemplo.com/mi-imagen.jpg"
+                        placeholder="https://ejemplo.com/imagen.jpg"
                     />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Imagen de perfil</Form.Label>
-                    <Form.Control type="file" name="image" onChange={handleChange} disabled/>
-                    {imagePreview && (
-                        <img
-                            src={imagePreview}
-                            alt="Vista previa"
-                            style={{ width: "150px", height: "150px", marginTop: "10px", objectFit: "cover", borderRadius: "10px" }}
-                        />
-                    )}
-                </Form.Group>
+                {imagePreview && (
+                    <img
+                        src={imagePreview}
+                        alt="Vista previa"
+                        style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "10px", marginBottom: "15px" }}
+                    />
+                )}
+
                 <Button type="submit">Guardar</Button>
             </Form>
         </Card>

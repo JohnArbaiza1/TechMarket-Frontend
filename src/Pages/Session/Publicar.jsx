@@ -134,7 +134,7 @@ const Publicaciones = () =>{
         try {
             const response = await createPublication(formData);
             if (response.status !== 200) {
-                toast.success('Publicación creada con éxito', {position:'top-center', duration: 3000});
+                // toast.success('Publicación creada con éxito', {position:'top-center', duration: 3000});
                 setSuccess("Publicación creada con éxito");
                 setShowSuccessModal(true);
                 setCurrentPublications(currentPublications + 1);

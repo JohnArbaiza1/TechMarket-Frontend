@@ -36,7 +36,7 @@ const Sidebar = ({ isOpen, onClose, onToggleCollapse }) => {
     //Definimos los enlaces que veran las empresas
     const companyLinks = [
         { icon: "fa-solid fa-share-from-square", text: "Proyectos Publicados", href: "/proyectos-empresa" },
-        { icon: "fas fa-users", text: "Explorar talento", href: "/talento-empresas" },
+        { icon: "fas fa-users", text: "Colegas", href: "/talento-empresas" },
     ];
 
     const techStackMaxLinks = [
