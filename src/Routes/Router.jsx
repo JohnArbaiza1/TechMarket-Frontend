@@ -8,9 +8,8 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoute from "./PublicRoute";
 
 //importamos las pages a emplear
+//Vistas privadas
 import Home from "../Pages/Session/Home";
-import Principal from "../Pages/Principal";
-import {Planes} from "../Pages/Planes";
 import PerfilUser from "../Pages/Session/Perfil";
 import Publicaciones from "../Pages/Session/Publicar";
 import ConfigProfile from "../Pages/Session/ConfigPerfil";
@@ -20,12 +19,17 @@ import RegisteredUsers from "../Pages/Session/Discover";
 import MisColegas from "../Pages/Session/Colegas";
 import ChatsUsers from "../Pages/Session/Chats";
 import CreditCard from "../Pages/Session/updateMembership";
+//Vistas publicas
+import Principal from "../Pages/Principal";
+import {Planes} from "../Pages/Planes";
 import AboutPage from "../Pages/Others/About";
+import MisionVision from "../Pages/Others/Mission_Vision";
 
 //importamos los layouts
 import Layout from "../Layouts/layout";
 import SessionLayout from "../Layouts/layout_session";
 import ChatPage from "../Pages/Session/PruebaMensajes";
+import TerminosCondicions from "../Pages/Others/Conditions";
 
 const router = createBrowserRouter([
     {
@@ -50,6 +54,22 @@ const router = createBrowserRouter([
                 element: (
                     <PublicRoute>
                         <AboutPage/>
+                    </PublicRoute>
+                )
+            },
+            {
+                path: "mision-vision",
+                element: (
+                    <PublicRoute>
+                        <MisionVision/>
+                    </PublicRoute>
+                )
+            },
+            {
+                path: "condiciones",
+                element: (
+                    <PublicRoute>
+                        <TerminosCondicions/>
                     </PublicRoute>
                 )
             },
