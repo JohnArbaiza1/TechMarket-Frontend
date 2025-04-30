@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () =>{
     return(
         <>
@@ -26,7 +28,8 @@ const Footer = () =>{
                         <h5 className="titulo">Acerca de</h5>
                         <ul className="nav flex-column">
                             <li className="nav-item mb-2"><a href="#" className="nav-link p-0 ">¿Quiénes somos?</a></li>
-                            <li className="nav-item mb-2"><a href="#" className="nav-link p-0 ">Visión y Misión</a></li>
+                            <li className="nav-item mb-2"> 
+                            <Link className="nav-link p-0 " to="/mision-vision"> Visión y Misión </Link> </li>
                             <li className="nav-item mb-2"><a href="#" className="nav-link p-0 ">Precios</a></li>
                             <li className="nav-item mb-2"><a href="#" className="nav-link p-0 ">Noticias</a></li>
                         </ul>
@@ -35,7 +38,8 @@ const Footer = () =>{
                     <div className="col mb-3">
                         <h5 className="titulo">Políticas</h5>
                         <ul className="nav flex-column">
-                            <li className="nav-item mb-2"><a href="#" className="nav-link p-0 ">Términos y condiciones</a></li>
+                            <li className="nav-item mb-2">
+                                <Link className="nav-link p-0 " to="/condiciones"> Términos y condiciones</Link></li>
                         </ul>
                     </div>
                 </footer>
