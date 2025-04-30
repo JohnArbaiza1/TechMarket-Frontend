@@ -380,48 +380,55 @@ const ChatsUsers = () => {
         setSelectedChat(chatToSelect);
      };
      //Toast para manejar la aceptación de solicitud
-     const handleAcceptRequest = (status) => {
+     const handleAcceptRequest = (status, chat) => {
         
-        const appContainer = document.getElementsByClassName("home-layout")[0]; 
+        const appContainer = document.getElementsByClassName("home-layout")[0];
         if (appContainer) {
-            appContainer.classList.add("blur-background"); 
+            appContainer.classList.add("blur-background");
         }
     
         toast(
-            <div style={{ textAlign: "center", zIndex: 1051 }}> {/* Asegurar que el toast esté encima */}
+            <div style={{ textAlign: "center", zIndex: 1051 }}>
                 {status ? <p>¿Estás seguro de que deseas aceptar esta solicitud?</p> : <p>¿Estás seguro de que deseas eliminar esta solicitud?</p>}
-                
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
                     <button
                         className="btn btn-success"
                         style={{ padding: "5px 10px", fontSize: "14px" }}
                         onClick={async () => {
-                            toast.dismiss(); 
+                            toast.dismiss();
                             if (appContainer) {
-                                appContainer.classList.remove("blur-background"); 
+                                appContainer.classList.remove("blur-background");
                             }
                             const response = await updateApplicant(selectedChat.publication, selectedChat.id_user2, status);
                             if (response.status === 200) {
-                                const btnAccept = document.getElementById('btn-accept');
-                                if(status){
+                                const btnAccept = document.getElementById("btn-accept");
+                                if (status) {
                                     toast.success("Solicitud aceptada con éxito.");
+                                    chat.is_selected = true;
+    
                                     if (btnAccept) {
                                         btnAccept.textContent = "Solicitud aceptada";
                                     }
-                                }else{
+                                } else {
                                     toast.success("Solicitud eliminada con éxito.");
+                                    chat.is_selected = false;
+    
                                     if (btnAccept) {
                                         btnAccept.textContent = "Aceptar solicitud";
                                     }
                                 }
-                                //setSelectedChat(null);
-                            }else if(response.status === 205) {
-                                toast.error("Error al aceptar la solicitud. La publicacion no tiene cupo.");
-                            }
-                             else {
+    
+                                // Actualizar el estado de chats
+                                setChats((prevChats) =>
+                                    prevChats.map((c) =>
+                                        c.id === chat.id ? { ...c, is_selected: chat.is_selected } : c
+                                    )
+                                );
+                            } else if (response.status === 205) {
+                                toast.error("Error al aceptar la solicitud. La publicación no tiene cupo.");
+                            } else {
                                 toast.error("Error al aceptar la solicitud. Inténtalo más tarde.");
                             }
-                            
                         }}
                     >
                         Sí
@@ -430,7 +437,7 @@ const ChatsUsers = () => {
                         className="btn btn-danger"
                         style={{ padding: "5px 10px", fontSize: "14px" }}
                         onClick={() => {
-                            toast.dismiss(); 
+                            toast.dismiss();
                             if (appContainer) {
                                 appContainer.classList.remove("blur-background");
                             }
@@ -441,7 +448,7 @@ const ChatsUsers = () => {
                 </div>
             </div>,
             {
-                duration: Infinity, 
+                duration: Infinity,
                 style: {
                     position: "fixed",
                     top: "50%",
@@ -559,7 +566,7 @@ const ChatsUsers = () => {
                                                         id='btn-accept'
                                                         className="btn btn-secondary w-auto"
                                                         style={{ padding: "5px 10px", fontSize: "14px" }}
-                                                        onClick={() => handleAcceptRequest(true)}
+                                                        onClick={() => handleAcceptRequest(true, selectedChat)}
                                                     >
                                                         Aceptar solicitud
                                                     </button>
@@ -569,7 +576,7 @@ const ChatsUsers = () => {
                                                         id='btn-accept'
                                                         className="btn btn-secondary w-auto"
                                                         style={{ padding: "5px 10px", fontSize: "14px" }}
-                                                        onClick={()=> handleAcceptRequest(false)}
+                                                        onClick={()=> handleAcceptRequest(false, selectedChat)}
                                                     >
                                                         Solicitud aceptada
                                                     </button>
