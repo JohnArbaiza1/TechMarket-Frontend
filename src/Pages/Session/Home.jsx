@@ -37,8 +37,8 @@ const Home = () => {
     return (
             
     <div className="grid-header">
-            <h1>Publicaciones</h1>
-            <h2>¡Encuentra tu próximo proyecto!</h2>    
+            <h1 className="title text-center">Publicaciones</h1>
+            <h2 className="text-center" style={{color:' #2E186A'}}>¡Encuentra tu próximo proyecto!</h2>    
     
         <div className="grid-container">
             {publications.map((publication) => {

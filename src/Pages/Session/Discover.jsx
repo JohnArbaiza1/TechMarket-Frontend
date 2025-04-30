@@ -53,7 +53,6 @@ const RegisteredUsers = () =>{
             try {
                 const token = localStorage.getItem("token");
                 const loggedUserId = parseInt(localStorage.getItem("user_id")); // Obtén el ID del usuario logueado
-    
                 const usersData = await userServices.getAllUsers(token);
     
                 // Filtrar al usuario logueado
@@ -79,7 +78,6 @@ const RegisteredUsers = () =>{
             }
         };
     
-
     const fetchFollowingStatus = async () => {
         const token = localStorage.getItem("token");
 
@@ -118,7 +116,7 @@ const RegisteredUsers = () =>{
     if (error) return <div>{error}</div>;
     return(
         <>
-            <h2 className="title text-center">Usuarios que Hacen Parte de Nuestra Comunidad</h2>
+            <h2 className="title text-center">Usuarios que Hacen Parte de Nuestra Comunidad 🤖</h2>
             <div className="users-list">
             {users.map(user => {
                 const profile = profiles[user.id];

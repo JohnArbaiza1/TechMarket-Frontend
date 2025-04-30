@@ -57,6 +57,10 @@ const MisColegas = () => {
 
     if (loading) return null;
 
+    if (error) {
+        return <div> 😬 Parece que hubo un tropiezo. Pero no te preocupes, los ingenieros están al mando.</div>;
+    }
+    
     return(
         <>
             <section className="container-colegas">

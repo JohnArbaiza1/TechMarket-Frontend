@@ -60,7 +60,7 @@ const login = async (userLogin, password) => {
             user_pass:password
         });
 
-        console.log("Respuesta del backend en login:", response.data);
+        // console.log("Respuesta del backend en login:", response.data);
 
         //Guardamos el token en el storage si el login es exitoso
         if (response.data && response.data.token) {

@@ -18,7 +18,7 @@ export function Planes(){
         const fetchMemberships = async () => {
             try {
                 const response = await viewPlanes(); // Llamamos a la función viewPlanes
-                console.log("Datos de la API:", response.data); // Verifica la estructura de los datos
+                // console.log("Datos de la API:", response.data); // Verifica la estructura de los datos
                 setMemberships(response.data); // Establecemos los datos en el estado
             } catch (error) {
                 console.error("Error al obtener las membresías:", error);

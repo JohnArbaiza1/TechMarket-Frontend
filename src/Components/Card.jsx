@@ -72,7 +72,7 @@ export const CardPublication = ({ image, tags, title, description, date, quota, 
         const letters = ["#8B5DFF", "#2E186A", "#5E308C", "#CB6E5A", "#BC522B"];
         return letters[Math.floor(Math.random() * letters.length)];
     };
-
+    const navigate = useNavigate();
     const color1 = getRandomColor();
     const color2 = getRandomColor();
 

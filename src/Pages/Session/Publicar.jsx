@@ -60,18 +60,17 @@ const Publicaciones = () =>{
                 } catch (error) {
                     setError("Error al obtener el límite de publicaciones.");
                     console.log(error);
-                    
                 }
             };
             const fetchMembership = async () => {
                 try {
                     const data = await getMembership(localStorage.getItem("id_membership"));
                     setMembership(data.data);
-                    console.log(data.data);
+                    // console.log(data.data);
                 } catch (error) {
                     setError("Error al obtener la membresía.");
+                    console.log(error);
                 }};
-
 
                 fetchMembership();
             fetchPublicationLimit();
@@ -154,7 +153,7 @@ const Publicaciones = () =>{
                 setError("Error al crear la publicación.");
                 setShowErrorModal(true);
             }
-           
+        
         
         // eslint-disable-next-line no-unused-vars
         } catch (error) {

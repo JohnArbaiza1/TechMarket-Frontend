@@ -16,7 +16,7 @@ const MisProyectos = () => {
                 if (!userId) throw new Error("Faltan datos de usuario");
 
                 const data = await getPublicationsUser(userId);
-                console.log("Publicaciones del usuario:", data);
+                // console.log("Publicaciones del usuario:", data);
                 setMyPublications(data);
                 
                 toast.dismiss(loadingToastId);
@@ -43,7 +43,7 @@ const MisProyectos = () => {
     return (
         <div className="grid-container">
             {loading ? (
-                <h2>Cargando publicaciones ...</h2>
+                <h2 className="title text-center"> 📦Desempacando magia digital...</h2>
             ) : myPublications.length === 0 ? (
                 <p>No has creado ninguna publicación aún.</p>
             ) : (
