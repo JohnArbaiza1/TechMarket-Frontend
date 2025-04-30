@@ -6,6 +6,8 @@ import '../../Styles/Logueado/perfil.css'
 import { getProfileByUsername } from "../../Services/profileService";
 import { useParams } from "react-router-dom";
 import { useProfile } from "../../Contexts/ProfileContext";
+import { getApplicantByUser } from "../../Services/aplicationsService";
+import { getPublicationsUserMin } from "../../Services/publicationServices";
 
 const PerfilUser = () => {
     const { username } = useParams(); // Obtenemos el username de la URL
@@ -17,31 +19,64 @@ const PerfilUser = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isCompany, setIsCompany] = useState(false);
+    const [applications, setApplications] = useState([]);
+    const [publications, setPublications] = useState([]);
     // Datos de localStorage
     const userName = localStorage.getItem("user_name");
     const email = localStorage.getItem("email");
+    const idUser = localStorage.getItem("user_id");
+
+    const fetchAplications = async () => {
+        const loadingToastId = toast.loading("Cargando aplicaciones...");
+        try {
+            let response = null; // Cambiado de `const` a `let`
+            if (!username) {
+                response = await getApplicantByUser(idUser); // Usamos `idUser` aquí
+            } else {
+                response = await getApplicantByUser(user.id); // Usamos `user.id` aquí
+            }
+    
+            setApplications(response.data);
+            toast.dismiss(loadingToastId);
+            toast.success("Aplicaciones cargadas correctamente");
+        } catch (err) {
+            setError("Error al cargar las aplicaciones");
+            toast.dismiss(loadingToastId);
+            toast.error("No se pudo cargar las aplicaciones. Intenta nuevamente.");
+            console.error(err);
+        }
+    };
+
+    const fetchPublications = async () => {
+        const loadingToastId = toast.loading("Cargando publicaciones...");
+        try {
+            let response = null; // Cambiado de `const` a `let`
+            if (!username) {
+                response = await getPublicationsUserMin(idUser); // Usamos `idUser` aquí
+            } else {
+                response = await getPublicationsUserMin(user.id); // Usamos `user.id` aquí
+            }
+    
+            setPublications(response.data);
+            toast.dismiss(loadingToastId);
+            toast.success("Publicaciones cargadas correctamente");
+        } catch (err) {
+            setError("Error al cargar las publicaciones");
+            toast.dismiss(loadingToastId);
+            toast.error("No se pudo cargar las publicaciones. Intenta nuevamente.");
+            console.error(err);
+        }
+    };
 
     useEffect(() => {
-        // Si no hay username en la URL, usamos el perfil del contexto
-        if (!username) {
-            if (!myProfileLoading) {
-                const membershipId = parseInt(localStorage.getItem("id_membership"));
-                setIsCompany(membershipId === 3);
-                setLoading(false);
-            }
-            return;
-        }
-        
-        // Si hay username, cargamos el perfil de otro usuario
+        // Función para cargar el perfil de otro usuario
         const fetchOtherProfile = async () => {
-            // Guardamos el ID del toast para poder cerrarlo más tarde
             const loadingToastId = toast.loading("Cargando perfil...");
-            
             try {
                 const response = await getProfileByUsername(username);
                 setOtherProfile(response.data.profile);
-                setUser(response.data);
-                setIsCompany(response.data.id_membership === 3 || response.data.id_membership === 4); // Verificamos si es una empresa
+                setUser(response.data); // Actualizamos el estado de `user`
+                setIsCompany(response.data.id_membership === 3 || response.data.id_membership === 4);
                 toast.dismiss(loadingToastId);
                 toast.success("Perfil cargado correctamente");
             } catch (err) {
@@ -53,9 +88,32 @@ const PerfilUser = () => {
                 setLoading(false);
             }
         };
+    
+        // Si no hay username en la URL, usamos el perfil del contexto
+        if (!username) {
+            const membershipId = parseInt(localStorage.getItem("id_membership"));
+            setIsCompany(membershipId === 3);
+            setLoading(false);
+            fetchAplications();
+            fetchPublications();
+            return;
+        }
+    
+        // Si hay un username, cargamos el perfil de otro usuario
+        if (username) {
+            fetchOtherProfile();
+        }
+    }, [username]);
+    
+    // Nuevo useEffect para cargar aplicaciones y publicaciones después de que `user` esté disponible
+    useEffect(() => {
+        if (!user) return; // Esperar hasta que `user` esté definido
+    
         
-        fetchOtherProfile();
-    }, [username, myProfileLoading]);
+    
+        fetchAplications();
+        fetchPublications();
+    }, [user]); // Este useEffect depende de `user`
 
     // Determinar qué perfil mostrar
     const profileToShow = username ? otherProfile : myProfile;
@@ -140,6 +198,27 @@ const PerfilUser = () => {
                                 </ul>
                             </div>
                         </div>
+                        <div className="more-info">
+                            <div>
+                                <h4 className="title-Profile"><FaBriefcase /> Portafolio en nuestra plataforma</h4>
+                                <ul> 
+                                    {applications.length > 0 ? applications.map((application, index) => (
+                                            <li key={index}>{application.publication.title}</li>
+                                    )) : <li>No ha participado en ningun proyecto</li>}
+                                    
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="title-Profile"><FaEnvelope/> Proyectos publicados</h4>
+                                <ul> 
+                                    {publications.length > 0 ? publications.map((publication, index) => (
+                                            <li key={index}>{publication.title}</li>
+                                    )) :
+                                    <li> No ha publicado ningun proyecto</li>}
+                                </ul>
+                            </div>
+                        </div>
+                        
                     </section>
                 </div>
             </Container>

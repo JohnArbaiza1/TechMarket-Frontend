@@ -129,6 +129,23 @@ export const delApplicantUserPublication = async (id_publication) => {
             throw error;
         }
     }
+    //obtene las aplicaciones que ha hecho el usuario siempre y cuando el is_selected sea true
+    export const getApplicantByUser = async (id_user) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Faltan datos de autenticación");
+
+            const response = await axios.get(`${API_URL}applicants/user/${id_user}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return response;
+        } catch (error) {
+            console.error("Error al obtener las solicitudes:", error.response?.data || error.message);
+            throw error;
+        }
+    }
 
 
 

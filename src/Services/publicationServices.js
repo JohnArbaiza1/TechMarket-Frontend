@@ -76,6 +76,24 @@ export const getPublicationsUser = async (userId) => {
         throw error;
     }
 };
+export const getPublicationsUserMin = async (userId) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Faltan datos de autenticación");
+
+        const response = await axios.get(`${API_URL}publications/${userId}/min`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Error al obtener las publicaciones del usuario:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 
 //Para obtener una publicación por su ID
 export const getPublicationById = async (publicationId) => {
