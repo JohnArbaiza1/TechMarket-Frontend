@@ -12,9 +12,9 @@ const SessionLayout = () => {
     const isMessagesRoute = location.pathname === "/techMarket-Chat";
 
     return (
-        <div className="home-layout">
+        <div className="home-layout" id="home-layout">
             <NavHome onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-            <div className="home-content">
+            <div className="home-content"  id="homeidcontent" >
                 <Sidebar 
                     isOpen={isSidebarOpen} 
                     onClose={() => setIsSidebarOpen(false)} 

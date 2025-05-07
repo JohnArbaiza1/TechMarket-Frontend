@@ -16,6 +16,7 @@
     box-sizing: border-box; /* Incluye padding y borde en el tamaño total */
 }
 
+
 @media (max-width: 768px) {
     .grid-container {
         grid-template-columns: repeat(auto-fit, minmax(280px, 320px)); /* Ajusta para pantallas más pequeñas */

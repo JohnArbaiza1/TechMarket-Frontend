@@ -114,6 +114,25 @@ export const getPublicationById = async (publicationId) => {
     }
 };
 
+//Para obtener las publicaciones por page
+export const getPublicationsByPage = async (page) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Faltan datos de autenticación");
+
+        const response = await axios.get(`${API_URL}publications/page/${page}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener las publicaciones por página:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 
 
 
