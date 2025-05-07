@@ -107,9 +107,13 @@ const FormularioPerfil = ({ userId, onProfileSave }) => {
             imageUrl = `https://unavatar.io/github/${formData.github.trim()}`;
         } else {
             // Si no hay GitHub, asignar imagen por defecto según tipo de cuenta
-            imageUrl = isCompany
-                ? "https://img.freepik.com/free-vector/project-life-cycle-abstract-concept-vector-illustration-successful-project-management-stages-project-completion-task-assignment-business-case-resource-requirements-abstract-metaphor_335657-2941.jpg"
-                : "https://img.freepik.com/vector-gratis/generacion-ideas-negocio-desarrollo-plan-hombre-pensativo-personaje-dibujos-animados-bombilla-mentalidad-tecnica-mente-emprendedora-proceso-lluvia-ideas_335657-2104.jpg";
+            const random = Math.random() > 0.5 ? 1 : 2;
+
+            if (isCompany) {
+                imageUrl = `/assets/company${random}.jpeg`;
+            } else {
+                imageUrl = `/assets/user${random}.jpeg`;
+            }
         }
 
         const dataToSend = {
