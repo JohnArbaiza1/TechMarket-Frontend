@@ -37,7 +37,7 @@ const Home = () => {
 
             // Actualizar el estado de paginación
             setHasMore(publicationsData.last_page != currentPage); // Verificar si hay más páginas
-            if (publicationsData.next_page_url) {
+            if (publicationsData.next_page_url && publicationsData.last_page != currentPage) {
                 setCurrentPage((prevPage) => prevPage + 1); // Incrementar la página actual
             }
         } catch (error) {
@@ -93,7 +93,7 @@ const Home = () => {
                     return (
                         <CardPublication
                             key={publication.id}
-                            image={publication.image || ""}
+                            image=""
                             tags={publication.tags.split(", ")}
                             title={publication.title}
                             date={new Date(publication.created_at).toLocaleDateString()}
