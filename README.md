@@ -24,7 +24,7 @@
   </a>
 </p>
 
- ## Instalación 🔧
+ ## 🔧 Instalación 
   Para visualizar y ejecutar el proyecto localmente, sigue estos pasos:
   
   1. Clona este repositorio:
@@ -49,6 +49,14 @@
   ```
     npm run dev
   ```
+
+## 📖 Wiki 
+Si deseas profundizar en las herramientas implementadas, te compartimos sus sitios oficiales a continuación:
+
+- [React](https://es.react.dev/)
+- [Vite](https://vite.dev/guide/)
+- [React Bootstrap](https://react-bootstrap.netlify.app/)
+- [Bootstrap](https://getbootstrap.com/) 
 
 ## 👨‍💻 Desarrolladores
 
