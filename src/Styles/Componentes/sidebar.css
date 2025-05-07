@@ -123,14 +123,14 @@
         left: 0;
         height: 100vh;
         width: 250px;
-        background: #8B5DFF;
+        background: #8b5dffda;
         transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
     }
 
-    .item a{
-        color: white;
-
+    .sidebar .item a{
+        color: #fafafa;
+        font-weight: 600;
     }
 
     .sidebar.open {

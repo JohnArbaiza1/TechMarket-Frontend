@@ -160,4 +160,10 @@
     border-radius: 4px;
 }
 
+@media (max-width: 480px){
+    .chat-sidebar{
+        margin-top: 80px;
+        margin-left: 5px;
+    }
+}
 

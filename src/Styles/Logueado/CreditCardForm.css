@@ -133,3 +133,54 @@ input, select {
 .btn-plan:hover {
     background: #5E308C;
 }
+
+/* Responsive*/
+@media (max-width: 768px) {
+    .credit-form-wrapper {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 30px;
+    }
+
+    .card-front, .card-back {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .credit-form {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .credit-form-wrapper {
+        padding: 10px;
+    }
+
+    .card-number {
+        font-size: 1.1rem;
+    }
+
+    .card-bottom {
+        font-size: 0.8rem;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .cvv-box {
+        font-size: 0.9rem;
+        padding: 4px 8px;
+    }
+
+    .btn-plan {
+        font-size: 0.95rem;
+        padding: 8px;
+    }
+}
