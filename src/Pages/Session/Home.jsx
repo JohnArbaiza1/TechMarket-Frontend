@@ -93,7 +93,7 @@ const Home = () => {
                     return (
                         <CardPublication
                             key={publication.id}
-                            image={publication.image || ""}
+                            image=""
                             tags={publication.tags.split(", ")}
                             title={publication.title}
                             date={new Date(publication.created_at).toLocaleDateString()}
