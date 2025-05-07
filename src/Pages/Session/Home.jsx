@@ -36,7 +36,7 @@ const Home = () => {
             });
 
             // Actualizar el estado de paginación
-            setHasMore(publicationsData.next_page_url !== null); // Verificar si hay más páginas
+            setHasMore(publicationsData.last_page != currentPage); // Verificar si hay más páginas
             if (publicationsData.next_page_url) {
                 setCurrentPage((prevPage) => prevPage + 1); // Incrementar la página actual
             }
@@ -60,7 +60,7 @@ const Home = () => {
         const scrollTop = container.scrollTop;
         const scrollHeight = container.scrollHeight;
         const clientHeight = container.clientHeight;
-        console.log(scrollTop, scrollHeight, clientHeight);
+
         if (scrollTop + clientHeight >= scrollHeight - 100) {
 
             if (hasMore && !isLoading) {
@@ -93,7 +93,7 @@ const Home = () => {
                     return (
                         <CardPublication
                             key={publication.id}
-                            image=""
+                            image={publication.image || ""}
                             tags={publication.tags.split(", ")}
                             title={publication.title}
                             date={new Date(publication.created_at).toLocaleDateString()}
