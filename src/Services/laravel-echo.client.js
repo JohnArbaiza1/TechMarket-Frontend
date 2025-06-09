@@ -7,7 +7,7 @@ window.Pusher = Pusher;
 window.Echo = new Echo({
     broadcaster: 'reverb',  
     wsHost: window.location.hostname,
-    key: 'h3sqchfut0tiu8cexujr',    
+    key: '3ankxejwjtcjdmh4glk5',    
     wsPort: 8080,           
     wssPort: 8080,          
     forceTLS: false,        
