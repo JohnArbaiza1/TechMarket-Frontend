@@ -8,8 +8,22 @@ import '../Styles/principal.css'
 const Principal = () =>{
     return(
         <>
-            
-            <br />
+            <div className="container mt-4 inicio">
+                <h3 className="title text-center">El futuro de la tecnología empieza aquí</h3>
+                <div className="container text-center">
+                <img
+                    src={images["img-6"]}
+                    alt="Imagen bienvenida"
+                    className="img-banner img-fluid d-block mx-auto"
+                />
+                </div>
+
+                <p className="texto-info text-center">
+                Únete a una comunidad donde los expertos tecnológicos encuentran inspiración, colaboración y crecimiento. <br />
+                Aquí, cada conexión es una oportunidad para aprender, avanzar y construir el futuro juntos.
+                </p>
+            </div>
+
             <div className="container mt-4">
                 <div className="row">
                     <div className="col">

@@ -13,7 +13,7 @@ const Navbar = () => {
     // Array de objetos -> links que contienen la información de cada enlace a mostrar en el navbar
     const links = [
         { text: "Principal", href: "/principal" },
-        { text: "About", href: "/about" },
+        { text: "Nosotros", href: "/about" },
         { text: "Planes", href: "/planes" },
     ];
 
