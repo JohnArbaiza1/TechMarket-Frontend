@@ -28,10 +28,17 @@ const MisProyectos = () => {
                     toast.info('No has creado ninguna publicación aún');
                 }
             } catch (error) {
-                console.error("Error al cargar tus publicaciones:", error.message);
-                // Cerramos el toast de carga en caso de error
                 toast.dismiss(loadingToastId);
-                toast.error(`Error al cargar publicaciones: ${error.message}`);
+                // console.error("Error al cargar tus publicaciones:", error.message);
+                // Cerramos el toast de carga en caso de error
+                // Manejo especial para 404
+                if (error.response?.status === 404) {
+                    setMyPublications([]); // Trátalo como una lista vacía
+                    toast.info('No has creado ninguna publicación aún');
+                } else {
+                    console.error("Error al cargar tus publicaciones:", error.message);
+                    toast.error(`Error al cargar publicaciones: ${error.message}`);
+                }
             } finally {
                 setLoading(false);
             }

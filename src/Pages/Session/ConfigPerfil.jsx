@@ -36,7 +36,7 @@ const ConfigProfile = () => {
                     <Col xs={12} md={6} className="text-center">
                         <h2 style={styles.titleForm}>¡Hola! Bienvenido a TechMarket, un lugar  donde los proyectos y el talento se encuentran. </h2>
                         <Image 
-                            src={images["img-3"]} 
+                            src={images["img-7"]} 
                             alt="Imagen de perfil" 
                             style={{ filter: "drop-shadow(2px 10px 10px rgb(46, 24, 106))"}}
                             fluid 

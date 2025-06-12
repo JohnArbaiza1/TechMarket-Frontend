@@ -6,23 +6,31 @@
     text-align: center;
 }
 
+
+
 .container2{
     padding: 22px;
-    background: white;
-    border: 1px solid #2a14474f;
-    border-radius: 10px;
-    box-shadow: 0px 6px 8px rgba(164, 164, 219, 0.384);
 }
 
-.cardPublicationPrevia{
-    width: 380px;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
+.header-publication{
+    background-color:#2A1447 ;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
 
+.mensaje{
+    font-family: "Tektur", sans-serif;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.subtitle-publication {
+    color: white;
+    font-family: "Raleway", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .title-input{
@@ -32,12 +40,34 @@
     font-size: 18px;
 }
 
+.cuerpo-publicacion{
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    box-shadow: 0px 6px 8px rgba(164, 164, 219, 0.384);
+    padding: 20px;
+    margin-top: -24px;     
+    padding-top: 35px;  
+    position: relative;
+}
+
 .form-group{
     margin-bottom: 10px;
     flex: 1;
 }
 .form-control{
     border:1px solid #bda0d993;
+}
+
+.cardPublicationPrevia{
+    width: 380px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0px 6px 8px rgba(164, 164, 219, 0.384);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
 }
 
 .tags{
@@ -102,7 +132,7 @@
 
 .col-publication{
     overflow-y: auto;
-    border-right: 2px solid #5E308C;
+    border-right: 4px solid #5E308C;
 }
 
 
@@ -110,5 +140,14 @@
 @media (max-width: 480px) {
     .cardPublicationPrevia{
         width: auto;
+    }
+
+    .col-publication{
+    overflow-y: auto;
+    border-right: none;
+    }
+
+    .title-previa{
+        margin-top: 20px;
     }
 }

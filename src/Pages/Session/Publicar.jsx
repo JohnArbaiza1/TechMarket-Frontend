@@ -167,16 +167,20 @@ const Publicaciones = () =>{
         <>
             <Container>
                 <div className="container2">
-                    <h2 className='mensaje'>Crear Nueva Publicación</h2>
-                    <br />
-                    <div className="title-input text-center mb-3">
-                        {membership && membership.unlimited_publications ? (
-                            <p className="mensaje">¡Tienes un plan Premium! Puedes crear tantas publicaciones como desees.</p>
-                        ) : (
-                            <p>Publicaciones: {currentPublications} de {maxPublications} disponibles</p>
-                        )}
+                    <div className="header-publication">
+                        <br />
+                        <h2 className='mensaje'>Crear Nueva Publicación</h2>
+                        <div className="subtitle-publication text-center mb-3">
+                            {membership && membership.unlimited_publications ? (
+                                <p className="mensaje">¡Tienes un plan Premium! Puedes crear tantas publicaciones como desees.</p>
+                            ) : (
+                                <p>Publicaciones: {currentPublications} de {maxPublications} disponibles</p>
+                            )}
+                        </div>
+                        <br />
                     </div>
-
+                    <br />
+                <div className="cuerpo-publicacion">
                     <Row>
                         <Col className="col-publication">
                             <form onSubmit={handleSubmit}>
@@ -265,7 +269,7 @@ const Publicaciones = () =>{
                         </Col>
                         
                         <Col className="d-flex flex-column align-items-center">
-                            <div className="text-center mb-3">
+                            <div className="text-center mb-3 title-previa">
                                 <h2 className="title-input">Vista Previa</h2>
                             </div>
                             <br />
@@ -319,6 +323,8 @@ const Publicaciones = () =>{
                             </div>
                         </Col>
                     </Row>
+                </div>
+
                 </div>
             </Container>
 
